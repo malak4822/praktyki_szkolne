@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>38387700535-vjocdhktvc6rio7jgcmvpp1onr8p4lnp.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.38387700535-vjocdhktvc6rio7jgcmvpp1onr8p4lnp</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>38387700535-8s928n7foiumlri7f73gaba59qpp0v68.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDCIfCGDrDmDsSuHRQVRUajmQi4D6OXFks</string>
+	<key>GCM_SENDER_ID</key>
+	<string>38387700535</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.prakty</string>
+	<key>PROJECT_ID</key>
+	<string>praktyki-szkolne</string>
+	<key>STORAGE_BUCKET</key>
+	<string>praktyki-szkolne.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:38387700535:ios:737b8739f3cb91e47d80b2</string>
+</dict>
+</plist>
