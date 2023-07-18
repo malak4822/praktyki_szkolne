@@ -4,6 +4,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  // LOG OUT LOG OUT LOG OUT LOG OUT
+
+  Future<void> logout() async {
+    await auth.signOut();
+    notifyListeners();
+  }
+
   // CREATING USERS CREATING USERS CREATING USERS
 
   String _username = 'Username';
@@ -12,7 +19,6 @@ class GoogleSignInProvider extends ChangeNotifier {
   void createName(newName) {
     _username = newName;
     notifyListeners();
-    print(_username);
   }
 
   Future<void> createUser(email, password) async {

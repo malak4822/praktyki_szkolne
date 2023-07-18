@@ -1,5 +1,5 @@
 import 'package:animated_icon_button/animated_icon_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +7,7 @@ import 'package:prakty/providers/provider.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -27,8 +28,28 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoginClicked = true;
   bool isTextObscured = true;
 
+  // final database = FirebaseDatabase.instance.ref();
+
+  List<String> usersId = [];
+
+  Future<void> getUsersIds() async {
+    final userCollection =
+        await FirebaseFirestore.instance.collection('users/').get();
+    userCollection.docs.forEach((element) {
+     usersId.add(element.reference.id);
+    });
+  }
+
+  @override
+  void initState() {
+    getUsersIds();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // final user = database.child('users/user2/');
+
     final signInProvider =
         Provider.of<GoogleSignInProvider>(context, listen: false);
     final signInListenProvider = Provider.of<GoogleSignInProvider>(context);
@@ -40,6 +61,20 @@ class _LoginPageState extends State<LoginPage> {
       Column(
         children: [
           const Spacer(),
+          ElevatedButton(
+              onPressed: () async {
+                // try {
+                //   await user.set({
+                //     'email': 'kmalak2138@gmail.com',
+                //     'password': '142321',
+                //     'username': 'kamil',
+                //   });
+                //   print('Dane Zmienione ! :)');
+                // } catch (e) {
+                //   debugPrint('Wystąpił Błąd ! -> ${e.toString()}');
+                // }
+              },
+              child: const Icon(Icons.zoom_out_rounded)),
           AnimatedContainer(
             curve: Curves.linearToEaseOut,
             duration: const Duration(milliseconds: 400),

@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "38387700535",
+    "firebase_url": "https://praktyki-szkolne-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "praktyki-szkolne",
     "storage_bucket": "praktyki-szkolne.appspot.com"
   },
@@ -37,6 +38,13 @@
             {
               "client_id": "38387700535-vhs21otgc600l54inqt7sr4ji84jv6e2.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "38387700535-6thftha5cthu64j71doim6n6vf1ac3rc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.prakty.RunnerTests"
+              }
             }
           ]
         }

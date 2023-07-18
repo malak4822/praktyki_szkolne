@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:prakty/loginpage.dart';
+import 'package:prakty/main%20copy.dart';
 import 'package:prakty/providers/provider.dart';
 import 'package:provider/provider.dart';
 
@@ -42,11 +44,19 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color.fromARGB(255, 33, 33, 33),
-      body: Center(
-        child: LoginPage(),
-      ),
-    );
+    return Scaffold(
+        backgroundColor: const Color.fromARGB(255, 33, 33, 33),
+        body: Center(
+          child: StreamBuilder<User?>(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return const LoginPage();
+              } else {
+                return const WelcomePage();
+              }
+            },
+          ),
+        ));
   }
 }
