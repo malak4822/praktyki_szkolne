@@ -1,5 +1,4 @@
 import 'package:animated_icon_button/animated_icon_button.dart';
-// import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,16 +27,16 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoginClicked = true;
   bool isTextObscured = true;
 
-  // final database = FirebaseDatabase.instance.ref();
 
   List<String> usersId = [];
 
   Future<void> getUsersIds() async {
     final userCollection =
         await FirebaseFirestore.instance.collection('users/').get();
-    userCollection.docs.forEach((element) {
-     usersId.add(element.reference.id);
-    });
+    for (var element in userCollection.docs) {
+      usersId.add(element.reference.id);
+    }
+    print(usersId);
   }
 
   @override
@@ -48,11 +47,11 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final user = database.child('users/user2/');
-
     final signInProvider =
         Provider.of<GoogleSignInProvider>(context, listen: false);
+
     final signInListenProvider = Provider.of<GoogleSignInProvider>(context);
+
     return Stack(children: [
       wciecia(Alignment.bottomRight, "images/login/login_bottomRight.png"),
       wciecia(Alignment.bottomLeft, "images/login/login_bottomLeft.png"),
@@ -61,20 +60,6 @@ class _LoginPageState extends State<LoginPage> {
       Column(
         children: [
           const Spacer(),
-          ElevatedButton(
-              onPressed: () async {
-                // try {
-                //   await user.set({
-                //     'email': 'kmalak2138@gmail.com',
-                //     'password': '142321',
-                //     'username': 'kamil',
-                //   });
-                //   print('Dane Zmienione ! :)');
-                // } catch (e) {
-                //   debugPrint('Wystąpił Błąd ! -> ${e.toString()}');
-                // }
-              },
-              child: const Icon(Icons.zoom_out_rounded)),
           AnimatedContainer(
             curve: Curves.linearToEaseOut,
             duration: const Duration(milliseconds: 400),
@@ -89,6 +74,9 @@ class _LoginPageState extends State<LoginPage> {
           const SizedBox(height: 15),
           logPut(false, null, mailCont, 'Email', const Icon(Icons.email),
               TextInputType.emailAddress),
+          Visibility(
+              visible: signInProvider.isEmailEmpty,
+              child: Text('Wpisz Email', style: myFont)),
           Visibility(
               visible: signInProvider.isEmailExists,
               child: Text('Konto z tym e-mailem już istnieje', style: myFont)),
@@ -120,6 +108,9 @@ class _LoginPageState extends State<LoginPage> {
               const Icon(Icons.key_rounded),
               TextInputType.visiblePassword),
           Visibility(
+              visible: signInProvider.isPasswdEmpty,
+              child: Text('Wpisz Hasło', style: myFont)),
+          Visibility(
               visible: signInListenProvider.isPassErrorShown,
               child: Text('Zbyt słabe hasło, popraw je', style: myFont)),
           const SizedBox(height: 15),
@@ -134,11 +125,13 @@ class _LoginPageState extends State<LoginPage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 30, vertical: 15)),
                   onPressed: () {
-                    setState(() {});
                     if (_isLoginClicked) {
-                      // login
+                      signInProvider.login(mailCont.text, passCont.text,
+                          LoggedVia.emailAndPassword);
                     }
-                    _isLoginClicked = true;
+                    setState(() {
+                      _isLoginClicked = true;
+                    });
                   },
                   child: _isLoginClicked
                       ? GradientText(
@@ -163,8 +156,6 @@ class _LoginPageState extends State<LoginPage> {
                           horizontal: 30, vertical: 15)),
                   onPressed: () {
                     if (!_isLoginClicked) {
-                      // CHECK IF DATA IS CORRECT
-                      signInProvider.createName(nameCont.text);
                       signInProvider.createUser(mailCont.text, passCont.text);
                     }
                     setState(() {
@@ -191,9 +182,12 @@ class _LoginPageState extends State<LoginPage> {
               Directionality(
                 textDirection: TextDirection.rtl,
                 child: ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    signInProvider.login(
+                        mailCont.text, passCont.text, LoggedVia.google);
+                  },
                   icon: const FaIcon(FontAwesomeIcons.google),
-                  label: const Text("Zarejestruj się przez"),
+                  label: const Text("Loguj przez"),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.fromLTRB(30, 10, 35, 10),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -207,7 +201,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           const Spacer(),
         ],
-      )
+      ),
     ]);
   }
 

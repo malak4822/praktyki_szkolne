@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:prakty/error.dart';
 import 'package:prakty/loginpage.dart';
-import 'package:prakty/main%20copy.dart';
+import 'package:prakty/welcome.dart';
 import 'package:prakty/providers/provider.dart';
 import 'package:provider/provider.dart';
 
@@ -44,6 +45,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    bool showErrorMessage =
+        Provider.of<GoogleSignInProvider>(context).showErrorMessage;
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 33, 33, 33),
         body: Center(
@@ -51,9 +54,25 @@ class _MyHomePageState extends State<MyHomePage> {
             stream: FirebaseAuth.instance.authStateChanges(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                return const LoginPage();
+                return Stack(
+                  children: [
+                    const WelcomePage(),
+                    Center(
+                        child: Visibility(
+                            visible: showErrorMessage,
+                            child: const ErrorMessage())),
+                  ],
+                );
               } else {
-                return const WelcomePage();
+                return Stack(
+                  children: [
+                    const LoginPage(),
+                    Center(
+                        child: Visibility(
+                            visible: showErrorMessage,
+                            child: const ErrorMessage())),
+                  ],
+                );
               }
             },
           ),

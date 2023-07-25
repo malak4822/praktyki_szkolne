@@ -15,15 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "38387700535-8s928n7foiumlri7f73gaba59qpp0v68.apps.googleusercontent.com",
+          "client_id": "38387700535-jef7a6hkc41mki0f0hnfdou63ts2b41g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.praktykiszkolne.malaq",
-            "certificate_hash": "1cdd1748364df03c4b8ad0b73e2e0cfbc138af50"
+            "certificate_hash": "ebe71d8cfaf261cf643e49eec1cf8eb6df0e58e4"
           }
         },
         {
-          "client_id": "38387700535-vhs21otgc600l54inqt7sr4ji84jv6e2.apps.googleusercontent.com",
+          "client_id": "38387700535-mfg3ik1e1u0ufrcmgqp9gpb3lqqkt2j6.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -36,7 +36,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "38387700535-vhs21otgc600l54inqt7sr4ji84jv6e2.apps.googleusercontent.com",
+              "client_id": "38387700535-mfg3ik1e1u0ufrcmgqp9gpb3lqqkt2j6.apps.googleusercontent.com",
               "client_type": 3
             },
             {

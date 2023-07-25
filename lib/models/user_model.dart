@@ -1,21 +1,13 @@
-class User {
-  const User({
+class MyUser {
+  String userId;
+  String username;
+  String email;
+  String profilePicture;
+
+  MyUser({
+    required this.userId,
     required this.username,
     required this.email,
     required this.profilePicture,
-    required this.userId,
   });
-  final String userId;
-  final String username;
-  final String email;
-  final String profilePicture;
-
-  toJson() {
-    return {
-      'userId': userId,
-      'username': username,
-      'email': email,
-      'profilePicture': profilePicture,
-    };
-  }
 }
