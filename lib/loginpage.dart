@@ -2,11 +2,11 @@ import 'package:animated_icon_button/animated_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:prakty/providers/provider.dart';
+import 'package:prakty/providers/loginconstrains.dart';
+import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -27,21 +27,9 @@ class _LoginPageState extends State<LoginPage> {
   bool _isLoginClicked = true;
   bool isTextObscured = true;
 
-
-  List<String> usersId = [];
-
-  Future<void> getUsersIds() async {
-    final userCollection =
-        await FirebaseFirestore.instance.collection('users/').get();
-    for (var element in userCollection.docs) {
-      usersId.add(element.reference.id);
-    }
-    print(usersId);
-  }
-
   @override
   void initState() {
-    getUsersIds();
+    Provider.of<GoogleSignInProvider>(context, listen: false).getUsersIds();
     super.initState();
   }
 
@@ -50,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
     final signInProvider =
         Provider.of<GoogleSignInProvider>(context, listen: false);
 
-    final signInListenProvider = Provider.of<GoogleSignInProvider>(context);
+    final logConstrainsListener = Provider.of<LoginConstrains>(context);
 
     return Stack(children: [
       wciecia(Alignment.bottomRight, "images/login/login_bottomRight.png"),
@@ -67,22 +55,35 @@ class _LoginPageState extends State<LoginPage> {
             height: _isLoginClicked ? 0 : 60,
             child: Visibility(
               visible: !_isLoginClicked,
-              child: logPut(false, null, nameCont, 'Użytkownik',
+              child: logPut(false, null, nameCont, 'Imię I Nazwisko',
                   const Icon(Icons.person), TextInputType.name),
             ),
           ),
+          Visibility(
+              visible: logConstrainsListener.isUsernameTooShort,
+              child: Text('Sory Ale Imię I Nazwisko Jest Zbyt Krótkie',
+                  style: myFont)),
+          Visibility(
+              visible: logConstrainsListener.isUsernameTooLong,
+              child: Text('Imię I Nazwisko Może Mieć Maksymalnie 22 znaki',
+                  style: myFont)),
           const SizedBox(height: 15),
           logPut(false, null, mailCont, 'Email', const Icon(Icons.email),
               TextInputType.emailAddress),
           Visibility(
-              visible: signInProvider.isEmailEmpty,
-              child: Text('Wpisz Email', style: myFont)),
+              visible: logConstrainsListener.isEmailEmpty,
+              child: Text('Sory Ale Musisz Wpisać Email', style: myFont)),
           Visibility(
-              visible: signInProvider.isEmailExists,
-              child: Text('Konto z tym e-mailem już istnieje', style: myFont)),
+              visible: logConstrainsListener.isUserFound,
+              child: Text('Nie Ma Takiego Użytkownika :<', style: myFont)),
           Visibility(
-              visible: signInListenProvider.isEmailValidErrorShown,
-              child: Text('Email jest nie poprawny', style: myFont)),
+              visible: logConstrainsListener.doEmailExist,
+              child: Text('Sory Ale Konto z tym e-mailem już istnieje :<',
+                  style: myFont)),
+          Visibility(
+              visible: logConstrainsListener.isEmailValidErrorShown,
+              child: Text('Sory Ale Ten Email Nie Jest Poprawny :<',
+                  style: myFont)),
           const SizedBox(height: 15),
           logPut(
               isTextObscured,
@@ -99,8 +100,11 @@ class _LoginPageState extends State<LoginPage> {
                 duration: const Duration(milliseconds: 400),
                 splashColor: Colors.transparent,
                 icons: const <AnimatedIconItem>[
-                  AnimatedIconItem(icon: Icon(Icons.remove_red_eye_outlined)),
-                  AnimatedIconItem(icon: Icon(Icons.remove_red_eye)),
+                  AnimatedIconItem(
+                      icon: Icon(Icons.remove_red_eye_outlined,
+                          color: Colors.white)),
+                  AnimatedIconItem(
+                      icon: Icon(Icons.remove_red_eye, color: Colors.black)),
                 ],
               ),
               passCont,
@@ -108,83 +112,88 @@ class _LoginPageState extends State<LoginPage> {
               const Icon(Icons.key_rounded),
               TextInputType.visiblePassword),
           Visibility(
-              visible: signInProvider.isPasswdEmpty,
-              child: Text('Wpisz Hasło', style: myFont)),
+              visible: logConstrainsListener.isPasswordWrong,
+              child: Text('Sory Ale Jakiś Błąd Się Wkradł W Hasło :<',
+                  style: myFont)),
           Visibility(
-              visible: signInListenProvider.isPassErrorShown,
-              child: Text('Zbyt słabe hasło, popraw je', style: myFont)),
+              visible: logConstrainsListener.isPasswdEmpty,
+              child: Text('Sory Ale Musisz Wpisać Hasło', style: myFont)),
+          Visibility(
+              visible: logConstrainsListener.isPassErrorShown,
+              child: Text('Sory Ale To Hasło Jest Zbyt Słabe', style: myFont)),
           const SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.horizontal(
-                              left: Radius.circular(30))),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 15)),
-                  onPressed: () {
-                    if (_isLoginClicked) {
-                      signInProvider.login(mailCont.text, passCont.text,
-                          LoggedVia.emailAndPassword);
-                    }
-                    setState(() {
-                      _isLoginClicked = true;
-                    });
-                  },
-                  child: _isLoginClicked
-                      ? GradientText(
-                          'Zaloguj',
-                          style: const TextStyle(fontSize: 21),
-                          colors: const [
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.horizontal(left: Radius.circular(30))),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 15)),
+                onPressed: () {
+                  logConstrainsListener.clearWarnings();
+                  if (_isLoginClicked) {
+                    signInProvider.loginDesicion(mailCont.text, passCont.text,
+                        LoggedVia.emailAndPassword, context);
+                  }
+                  setState(() {
+                    _isLoginClicked = true;
+                  });
+                },
+                child: _isLoginClicked
+                    ? GradientText(
+                        'Zaloguj',
+                        style: const TextStyle(fontSize: 21),
+                        colors: const [
+                          Color.fromARGB(255, 120, 239, 255),
+                          Color.fromARGB(255, 98, 255, 156)
+                        ],
+                      )
+                    : Text(
+                        "Zaloguj",
+                        style: GoogleFonts.overpass(fontSize: 20),
+                      )),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: almostBlack,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.horizontal(
+                            right: Radius.circular(30))),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30, vertical: 15)),
+                onPressed: () {
+                  logConstrainsListener.clearWarnings();
+                  if (!_isLoginClicked) {
+
+                    signInProvider.createUser(
+                        mailCont.text, passCont.text, nameCont.text, context);
+
+                  }
+
+                  setState(() {
+                    _isLoginClicked = false;
+                  });
+                },
+                child: _isLoginClicked
+                    ? Text(
+                        "Zarejestruj",
+                        style: GoogleFonts.overpass(fontSize: 20),
+                      )
+                    : GradientText('Zarejestruj',
+                        style: const TextStyle(fontSize: 21),
+                        colors: const [
                             Color.fromARGB(255, 120, 239, 255),
                             Color.fromARGB(255, 98, 255, 156)
-                          ],
-                        )
-                      : Text(
-                          "Zaloguj",
-                          style: GoogleFonts.overpass(fontSize: 20),
-                        )),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: almostBlack,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.horizontal(
-                              right: Radius.circular(30))),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 30, vertical: 15)),
-                  onPressed: () {
-                    if (!_isLoginClicked) {
-                      signInProvider.createUser(mailCont.text, passCont.text);
-                    }
-                    setState(() {
-                      _isLoginClicked = false;
-                    });
-                  },
-                  child: _isLoginClicked
-                      ? Text(
-                          "Zarejestruj",
-                          style: GoogleFonts.overpass(fontSize: 20),
-                        )
-                      : GradientText(
-                          'Zarejestruj',
-                          style: const TextStyle(fontSize: 21),
-                          colors: const [
-                            Color.fromARGB(255, 120, 239, 255),
-                            Color.fromARGB(255, 98, 255, 156)
-                          ],
-                        )),
-            ],
-          ),
+                          ]))
+          ]),
           Column(
             children: [
               Directionality(
                 textDirection: TextDirection.rtl,
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    signInProvider.login(
-                        mailCont.text, passCont.text, LoggedVia.google);
+                    signInProvider.loginDesicion(mailCont.text, passCont.text,
+                        LoggedVia.google, context);
                   },
                   icon: const FaIcon(FontAwesomeIcons.google),
                   label: const Text("Loguj przez"),

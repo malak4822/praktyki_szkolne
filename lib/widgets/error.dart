@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:prakty/providers/provider.dart';
+import 'package:prakty/providers/loginconstrains.dart';
 import 'package:provider/provider.dart';
 
 class ErrorMessage extends StatelessWidget {
@@ -8,14 +8,12 @@ class ErrorMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var signInProvider =
-        Provider.of<GoogleSignInProvider>(context, listen: false);
+    var loginConstrAccess =
+        Provider.of<LoginConstrains>(context, listen: false);
     return Stack(children: [
       InkWell(
           onTap: () async {
-            if (await signInProvider.checkInternetConnectivity() == true) {
-              signInProvider.toogleErrorMessage();
-            }
+            await loginConstrAccess.checkInternetConnectivity();
           },
           child: Container(color: Colors.white.withOpacity(0.6))),
       Center(
@@ -30,19 +28,21 @@ class ErrorMessage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                     const SizedBox(height: 20),
-                    Text('Napotkaliśmy Problem',
+                    Text('Houston, Mamy Problem',
                         style: GoogleFonts.overpass(
                             color: Colors.white,
                             fontSize: 24,
                             fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 10),
-                    Text(
-                      textAlign: TextAlign.center,
-                      signInProvider.createMessage(null),
-                      style: GoogleFonts.overpass(
-                        color: Colors.white,
-                      ),
-                    ),
+                    const Spacer(),
+                    SingleChildScrollView(
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Text(
+                              Provider.of<LoginConstrains>(context).errorText,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.overpass(
+                                  color: Colors.white, fontSize: 16),
+                            ))),
                     const Spacer(),
                     SizedBox(
                         width: double.infinity,
@@ -55,11 +55,7 @@ class ErrorMessage extends StatelessWidget {
                           child: const Icon(Icons.restart_alt,
                               size: 32, color: Colors.white),
                           onPressed: () async {
-                            if (await signInProvider
-                                    .checkInternetConnectivity() ==
-                                true) {
-                              signInProvider.toogleErrorMessage();
-                            }
+                            await loginConstrAccess.checkInternetConnectivity();
                           },
                         )),
                   ])))),

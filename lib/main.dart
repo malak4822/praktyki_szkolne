@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:prakty/error.dart';
+import 'package:prakty/providers/loginconstrains.dart';
+import 'package:prakty/widgets/error.dart';
 import 'package:prakty/loginpage.dart';
 import 'package:prakty/welcome.dart';
-import 'package:prakty/providers/provider.dart';
+import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -18,8 +19,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => GoogleSignInProvider(),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (c) => GoogleSignInProvider()),
+          ChangeNotifierProvider(create: (c) => LoginConstrains())
+        ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Prakty',
@@ -45,37 +49,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    bool showErrorMessage =
-        Provider.of<GoogleSignInProvider>(context).showErrorMessage;
+    bool loginConstrAccess =
+        Provider.of<LoginConstrains>(context).showErrorMessage;
     return Scaffold(
-        backgroundColor: const Color.fromARGB(255, 33, 33, 33),
-        body: Center(
-          child: StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Stack(
-                  children: [
-                    const WelcomePage(),
-                    Center(
-                        child: Visibility(
-                            visible: showErrorMessage,
-                            child: const ErrorMessage())),
-                  ],
-                );
-              } else {
-                return Stack(
-                  children: [
-                    const LoginPage(),
-                    Center(
-                        child: Visibility(
-                            visible: showErrorMessage,
-                            child: const ErrorMessage())),
-                  ],
-                );
-              }
-            },
-          ),
-        ));
+      backgroundColor: const Color.fromARGB(255, 33, 33, 33),
+      body: Center(
+        child: Stack(children: [
+          StreamBuilder<User?>(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return const WelcomePage();
+                } else {
+                  return const LoginPage();
+                }
+              }),
+          Visibility(visible: loginConstrAccess, child: const ErrorMessage()),
+        ]),
+      ),
+    );
   }
 }
