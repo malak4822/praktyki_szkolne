@@ -164,10 +164,8 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   logConstrainsListener.clearWarnings();
                   if (!_isLoginClicked) {
-
                     signInProvider.createUser(
                         mailCont.text, passCont.text, nameCont.text, context);
-
                   }
 
                   setState(() {

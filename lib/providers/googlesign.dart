@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:prakty/providers/loginconstrains.dart';
+import 'package:prakty/services/database.dart';
 import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 
@@ -11,15 +12,11 @@ enum LoggedVia { emailAndPassword, google }
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  final MyUser _currentUser = MyUser(
-      userId: 'userId',
-      username: 'username',
-      email: 'email',
-      profilePicture: 'profilePicture');
+  MyUser _currentUser =
+      MyUser(userId: '', username: '', email: '', profilePicture: '');
   MyUser get getCurrentUser => _currentUser;
 
   final List<String> _usersId = [];
-  get usersId => _usersId;
 
   Future<void> getUsersIds() async {
     final userCollection =
@@ -33,8 +30,13 @@ class GoogleSignInProvider extends ChangeNotifier {
   //
   // LOG OUT LOG OUT LOG OUT LOG OUT
   Future<void> logout() async {
-    await auth.signOut();
-    notifyListeners();
+    try {
+      await auth.signOut();
+      _currentUser =
+          MyUser(userId: '', username: '', email: '', profilePicture: '');
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   //
@@ -50,7 +52,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           loginViaEmailAndPassword(email, password, context);
           break;
         case LoggedVia.google:
-          loginViaGoogle();
+          loginViaGoogle(context);
           break;
       }
     }
@@ -58,7 +60,7 @@ class GoogleSignInProvider extends ChangeNotifier {
 
   //
   //GOOGLE LOGIN GOOGLE LOGIN GOOGLE LOGIN GOOGLE LOGIN
-  Future<void> loginViaGoogle() async {
+  Future<void> loginViaGoogle(context) async {
     GoogleSignIn googleSignIn = GoogleSignIn(
       scopes: ['email', 'https://www.googleapis.com/auth/contacts.readonly'],
     );
@@ -71,7 +73,15 @@ class GoogleSignInProvider extends ChangeNotifier {
           accessToken: googleUserAuth.accessToken,
           idToken: googleUserAuth.idToken);
 
-      await auth.signInWithCredential(credentialTokens);
+      var userCredentials = await auth.signInWithCredential(credentialTokens);
+
+      _currentUser.username = userCredentials.user!.displayName!;
+      _currentUser.email = userCredentials.user!.email!;
+      _currentUser.userId = userCredentials.user!.uid;
+      MyDb().addFirestoreUser(_currentUser);
+
+      print(_currentUser.username);
+      print(userCredentials.user!.email);
     } catch (error) {
       debugPrint(error.toString());
     }
@@ -90,6 +100,9 @@ class GoogleSignInProvider extends ChangeNotifier {
         if (userCredentials.user != null) {
           _currentUser.userId = userCredentials.user!.uid;
           _currentUser.email = userCredentials.user!.email!;
+
+          print(_currentUser.email);
+          print(_currentUser.userId);
         }
       } on FirebaseAuthException catch (e) {
         switch (e.code) {
@@ -127,8 +140,15 @@ class GoogleSignInProvider extends ChangeNotifier {
       } else {
         if (loginConstrAccess.isEmailAndPassEmpty(email, password) == false) {
           try {
-            await auth.createUserWithEmailAndPassword(
-                email: email, password: password);
+            UserCredential authResult =
+                await auth.createUserWithEmailAndPassword(
+                    email: email, password: password);
+
+            _currentUser.username = username;
+            _currentUser.email = email;
+            _currentUser.userId = authResult.user!.uid;
+
+            MyDb().addFirestoreUser(_currentUser);
           } on FirebaseAuthException catch (e) {
             switch (e.code) {
               case 'email-already-in-use':
