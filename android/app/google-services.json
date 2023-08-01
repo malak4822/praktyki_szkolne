@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "38387700535-lbm9fgqbdrumce7kub0u9b63vop81349.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.praktykiszkolne.malaq",
+            "certificate_hash": "8044e3dea036f1dfaba75a6ea85066f8ba482e10"
+          }
+        },
+        {
           "client_id": "38387700535-mfg3ik1e1u0ufrcmgqp9gpb3lqqkt2j6.apps.googleusercontent.com",
           "client_type": 3
         }
