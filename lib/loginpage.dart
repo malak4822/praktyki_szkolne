@@ -130,11 +130,11 @@ class _LoginPageState extends State<LoginPage> {
                             BorderRadius.horizontal(left: Radius.circular(30))),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 15)),
-                onPressed: () {
+                onPressed: () async {
                   logConstrainsListener.clearWarnings();
                   if (_isLoginClicked) {
-                    signInProvider.loginDesicion(mailCont.text, passCont.text,
-                        LoggedVia.emailAndPassword, context);
+                    signInProvider.loginViaEmailAndPassword(
+                        mailCont.text, passCont.text, context);
                   }
                   setState(() {
                     _isLoginClicked = true;
@@ -164,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   logConstrainsListener.clearWarnings();
                   if (!_isLoginClicked) {
-                    signInProvider.createUser(
+                    signInProvider.signUpViaEmail(
                         mailCont.text, passCont.text, nameCont.text, context);
                   }
 
@@ -190,8 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                 textDirection: TextDirection.rtl,
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    signInProvider.loginDesicion(mailCont.text, passCont.text,
-                        LoggedVia.google, context);
+                    signInProvider.loginViaGoogle(context);
                   },
                   icon: const FaIcon(FontAwesomeIcons.google),
                   label: const Text("Loguj przez"),

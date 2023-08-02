@@ -6,22 +6,48 @@ class MyDb {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> addFirestoreUser(MyUser myUser) async {
-    print('USER ID ->>>>> ${myUser.userId}');
-    print(myUser.username);
     try {
-      if (myUser.userId.isNotEmpty && myUser.userId.isNotEmpty) {
-        await _firestore.collection("users").doc(myUser.userId).set({
-          'username': myUser.username,
-          'email': myUser.email,
-          'profilePicture': myUser.profilePicture,
-          'userId': myUser.userId,
-          'accountCreated': Timestamp.now(),
-        });
-      } else {
-        throw Exception('Invalid userId. It must be a non-empty string.');
-      }
+      await _firestore.collection("users").doc(myUser.userId).set({
+        'username': myUser.username,
+        'email': myUser.email,
+        'description': myUser.description,
+        'profilePicture': myUser.profilePicture,
+        'userId': myUser.userId,
+        'registeredViaGoogle': myUser.registeredViaGoogle,
+        'accountCreated': Timestamp.now()
+      });
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  Future<MyUser> getUserInfo(MyUser myUser) async {
+    late String username, userId, description, email, profilePicture;
+    late bool registeredViaGoogle;
+    late Timestamp accountCreated;
+    try {
+      DocumentSnapshot docSnapshot =
+          await _firestore.collection('users').doc(myUser.userId).get();
+
+      Map<String, dynamic>? data = docSnapshot.data() as Map<String, dynamic>;
+
+      username = data["username"];
+      email = data['email'];
+      description = data['description'];
+      profilePicture = data['profilePicture'];
+      userId = data['userId'];
+      registeredViaGoogle = data['registeredViaGoogle'];
+      accountCreated = data['accountCreated'];
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return MyUser(
+        userId: userId,
+        username: username,
+        email: email,
+        description: description,
+        profilePicture: profilePicture,
+        registeredViaGoogle: registeredViaGoogle,
+        accountCreated: accountCreated);
   }
 }

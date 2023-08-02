@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:prakty/loggedparent.dart';
 import 'package:prakty/providers/loginconstrains.dart';
 import 'package:prakty/widgets/error.dart';
 import 'package:prakty/loginpage.dart';
-import 'package:prakty/welcome.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return const WelcomePage();
+                  return const LoggedParentWidget();
                 } else {
                   return const LoginPage();
                 }

@@ -7,13 +7,17 @@ import 'package:prakty/services/database.dart';
 import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 
-enum LoggedVia { emailAndPassword, google }
-
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  MyUser _currentUser =
-      MyUser(userId: '', username: '', email: '', profilePicture: '');
+  MyUser _currentUser = MyUser(
+      userId: '',
+      username: '',
+      email: '',
+      description: '',
+      profilePicture: '',
+      registeredViaGoogle: false,
+      accountCreated: Timestamp(0, 0));
   MyUser get getCurrentUser => _currentUser;
 
   final List<String> _usersId = [];
@@ -26,64 +30,55 @@ class GoogleSignInProvider extends ChangeNotifier {
     }
   }
 
-  // LOGOWANIE WYLOGOWYWANIE REJESTROWANIE LOGOWANIE WYLOGOWYWANIE REJESTROWANIE
-  //
   // LOG OUT LOG OUT LOG OUT LOG OUT
   Future<void> logout() async {
     try {
       await auth.signOut();
-      _currentUser =
-          MyUser(userId: '', username: '', email: '', profilePicture: '');
+      _currentUser = MyUser(
+          userId: '',
+          username: '',
+          description: '',
+          email: '',
+          profilePicture: '',
+          registeredViaGoogle: false,
+          accountCreated: Timestamp(0, 0));
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-  //
-  // LOGIN DESICION LOGIN DESICION LOGIN DESICION LOGIN DESICION
-  void loginDesicion(
-      String email, String password, LoggedVia loginType, context) async {
-    var loginConstrAccess =
-        Provider.of<LoginConstrains>(context, listen: false);
-
-    if (await loginConstrAccess.checkInternetConnectivity() == true) {
-      switch (loginType) {
-        case LoggedVia.emailAndPassword:
-          loginViaEmailAndPassword(email, password, context);
-          break;
-        case LoggedVia.google:
-          loginViaGoogle(context);
-          break;
-      }
-    }
-  }
-
-  //
   //GOOGLE LOGIN GOOGLE LOGIN GOOGLE LOGIN GOOGLE LOGIN
   Future<void> loginViaGoogle(context) async {
     GoogleSignIn googleSignIn = GoogleSignIn(
       scopes: ['email', 'https://www.googleapis.com/auth/contacts.readonly'],
     );
-    try {
-      GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-      GoogleSignInAuthentication googleUserAuth =
-          await googleUser!.authentication;
+    if (await Provider.of<LoginConstrains>(context, listen: false)
+            .checkInternetConnectivity() ==
+        true) {
+      try {
+        GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+        GoogleSignInAuthentication googleUserAuth =
+            await googleUser!.authentication;
 
-      final AuthCredential credentialTokens = GoogleAuthProvider.credential(
-          accessToken: googleUserAuth.accessToken,
-          idToken: googleUserAuth.idToken);
+        final AuthCredential credentialTokens = GoogleAuthProvider.credential(
+            accessToken: googleUserAuth.accessToken,
+            idToken: googleUserAuth.idToken);
 
-      var userCredentials = await auth.signInWithCredential(credentialTokens);
+        var authResult = await auth.signInWithCredential(credentialTokens);
 
-      _currentUser.username = userCredentials.user!.displayName!;
-      _currentUser.email = userCredentials.user!.email!;
-      _currentUser.userId = userCredentials.user!.uid;
-      MyDb().addFirestoreUser(_currentUser);
-
-      print(_currentUser.username);
-      print(userCredentials.user!.email);
-    } catch (error) {
-      debugPrint(error.toString());
+        if (authResult.additionalUserInfo!.isNewUser) {
+          _currentUser.username = authResult.user!.displayName!;
+          _currentUser.email = authResult.user!.email!;
+          _currentUser.profilePicture = authResult.user!.photoURL!;
+          _currentUser.userId = authResult.user!.uid;
+          _currentUser.registeredViaGoogle = true;
+          await MyDb().addFirestoreUser(_currentUser);
+        }
+        _currentUser.userId = authResult.user!.uid;
+        _currentUser = await MyDb().getUserInfo(_currentUser);
+      } catch (error) {
+        debugPrint(error.toString());
+      }
     }
   }
 
@@ -93,41 +88,39 @@ class GoogleSignInProvider extends ChangeNotifier {
       String email, String pass, BuildContext context) async {
     var loginConstrAccess =
         Provider.of<LoginConstrains>(context, listen: false);
-    if (loginConstrAccess.isEmailAndPassEmpty(email, pass) == false) {
-      try {
-        UserCredential userCredentials =
-            await auth.signInWithEmailAndPassword(email: email, password: pass);
-        if (userCredentials.user != null) {
+    if (await loginConstrAccess.checkInternetConnectivity() == true) {
+      if (loginConstrAccess.isEmailAndPassEmpty(email, pass) == false) {
+        try {
+          UserCredential userCredentials = await auth
+              .signInWithEmailAndPassword(email: email, password: pass);
           _currentUser.userId = userCredentials.user!.uid;
-          _currentUser.email = userCredentials.user!.email!;
-
-          print(_currentUser.email);
-          print(_currentUser.userId);
+          _currentUser = await MyDb().getUserInfo(_currentUser);
+          notifyListeners();
+        } on FirebaseAuthException catch (e) {
+          switch (e.code) {
+            case 'invalid-email':
+              loginConstrAccess.showEmailIsInvalidError();
+              break;
+            case 'wrong-password':
+              loginConstrAccess.showWrongPasswordError();
+              break;
+            case 'user-not-found':
+              loginConstrAccess.showUserNotFoundError();
+              break;
+            case 'weak-password':
+              loginConstrAccess.switchPassErrorVisibility();
+              break;
+          }
+        } catch (e) {
+          loginConstrAccess.showErrorBox(e);
         }
-      } on FirebaseAuthException catch (e) {
-        switch (e.code) {
-          case 'invalid-email':
-            loginConstrAccess.showEmailIsInvalidError();
-            break;
-          case 'wrong-password':
-            loginConstrAccess.showWrongPasswordError();
-            break;
-          case 'user-not-found':
-            loginConstrAccess.showUserNotFoundError();
-            break;
-          case 'weak-password':
-            loginConstrAccess.switchPassErrorVisibility();
-            break;
-        }
-      } catch (e) {
-        loginConstrAccess.showErrorBox(e);
       }
     }
   }
 
   //
   // CREATING USERS CREATING USERS CREATING USERS
-  Future<void> createUser(
+  Future<void> signUpViaEmail(
       String email, String password, String username, context) async {
     var loginConstrAccess =
         Provider.of<LoginConstrains>(context, listen: false);
@@ -146,9 +139,10 @@ class GoogleSignInProvider extends ChangeNotifier {
 
             _currentUser.username = username;
             _currentUser.email = email;
+            _currentUser.registeredViaGoogle = false;
             _currentUser.userId = authResult.user!.uid;
-
-            MyDb().addFirestoreUser(_currentUser);
+            _currentUser.accountCreated = Timestamp.now();
+            await MyDb().addFirestoreUser(_currentUser);
           } on FirebaseAuthException catch (e) {
             switch (e.code) {
               case 'email-already-in-use':
