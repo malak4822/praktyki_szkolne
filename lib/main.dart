@@ -38,11 +38,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final myPrimaryFont = GoogleFonts.overpass(fontSize: 22, fontWeight: FontWeight.bold);
+final myPrimaryFont =
+    GoogleFonts.overpass(fontSize: 22, fontWeight: FontWeight.bold);
 
 final myErrorFont = GoogleFonts.overpass(
     fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
-    
+
 const almostBlack = Color.fromARGB(255, 25, 25, 25);
 
 const List<Color> gradient = [
