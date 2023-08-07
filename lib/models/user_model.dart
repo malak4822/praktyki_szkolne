@@ -3,7 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class MyUser {
   String userId;
   String username;
+  //
   String description;
+  int age;
+  bool isNormalUser;
+  //
   String email;
   String profilePicture;
   late bool registeredViaGoogle;
@@ -12,6 +16,8 @@ class MyUser {
   MyUser({
     required this.userId,
     required this.username,
+    required this.age,
+    required this.isNormalUser,
     required this.description,
     required this.email,
     required this.profilePicture,

@@ -11,6 +11,8 @@ class MyDb {
         'username': myUser.username,
         'email': myUser.email,
         'description': myUser.description,
+        'age': myUser.age,
+        'isNormalUser': myUser.isNormalUser,
         'profilePicture': myUser.profilePicture,
         'userId': myUser.userId,
         'registeredViaGoogle': myUser.registeredViaGoogle,
@@ -23,7 +25,8 @@ class MyDb {
 
   Future<MyUser> getUserInfo(MyUser myUser) async {
     late String username, userId, description, email, profilePicture;
-    late bool registeredViaGoogle;
+    late bool registeredViaGoogle, isNormalUser;
+    late int age;
     late Timestamp accountCreated;
     try {
       DocumentSnapshot docSnapshot =
@@ -34,6 +37,8 @@ class MyDb {
       username = data["username"];
       email = data['email'];
       description = data['description'];
+      age = data['age'];
+      isNormalUser = data['isNormalUser'];
       profilePicture = data['profilePicture'];
       userId = data['userId'];
       registeredViaGoogle = data['registeredViaGoogle'];
@@ -46,6 +51,8 @@ class MyDb {
         username: username,
         email: email,
         description: description,
+        age: age,
+        isNormalUser: isNormalUser,
         profilePicture: profilePicture,
         registeredViaGoogle: registeredViaGoogle,
         accountCreated: accountCreated);

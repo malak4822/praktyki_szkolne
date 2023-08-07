@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+class WorksPage extends StatelessWidget {
+  const WorksPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +11,9 @@ class MyWidget extends StatelessWidget {
         // final item = items[index];
 
         return ListTile(
-          // title: item.buildTitle(context),
-          // subtitle: item.buildSubtitle(context),
-        );
+            // title: item.buildTitle(context),
+            // subtitle: item.buildSubtitle(context),
+            );
       },
     );
   }

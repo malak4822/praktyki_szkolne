@@ -13,8 +13,10 @@ class GoogleSignInProvider extends ChangeNotifier {
   MyUser _currentUser = MyUser(
       userId: '',
       username: '',
-      email: '',
       description: '',
+      age: 0,
+      isNormalUser: false,
+      email: '',
       profilePicture: '',
       registeredViaGoogle: false,
       accountCreated: Timestamp(0, 0));
@@ -38,6 +40,8 @@ class GoogleSignInProvider extends ChangeNotifier {
           userId: '',
           username: '',
           description: '',
+          age: 0,
+          isNormalUser: false,
           email: '',
           profilePicture: '',
           registeredViaGoogle: false,
@@ -88,7 +92,7 @@ class GoogleSignInProvider extends ChangeNotifier {
         _currentUser.userId = auth.currentUser!.uid;
       }
       _currentUser = await MyDb().getUserInfo(_currentUser);
-    notifyListeners();
+      notifyListeners();
     } catch (e) {
       debugPrint(e.toString());
     }

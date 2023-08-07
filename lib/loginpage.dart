@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     final signInProvider =
         Provider.of<GoogleSignInProvider>(context, listen: false);
 
-    final logConstrainsListener = Provider.of<LoginConstrains>(context);
+    // final logConstrainsListener = Provider.of<LoginConstrains>(context);
 
     return  Stack(children: [
       wciecia(Alignment.bottomRight, "images/login/login_bottomRight.png"),
