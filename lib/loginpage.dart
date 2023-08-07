@@ -20,7 +20,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController nameCont = TextEditingController();
   final TextEditingController mailCont = TextEditingController();
   final TextEditingController passCont = TextEditingController();
-
   bool _isLoginClicked = true;
   bool isTextObscured = true;
 
@@ -37,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final logConstrainsListener = Provider.of<LoginConstrains>(context);
 
-    return Stack(children: [
+    return  Stack(children: [
       wciecia(Alignment.bottomRight, "images/login/login_bottomRight.png"),
       wciecia(Alignment.bottomLeft, "images/login/login_bottomLeft.png"),
       wciecia(Alignment.topRight, "images/login/login_topRight.png"),
@@ -53,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Visibility(
               visible: !_isLoginClicked,
               child: logPut(false, null, nameCont, 'Imię I Nazwisko',
-                  const Icon(Icons.person), TextInputType.name),
+                  const Icon(Icons.person), TextInputType.name, context),
             ),
           ),
           Visibility(
@@ -66,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                   style: myErrorFont)),
           const SizedBox(height: 15),
           logPut(false, null, mailCont, 'Email', const Icon(Icons.email),
-              TextInputType.emailAddress),
+              TextInputType.emailAddress, context),
           Visibility(
               visible: logConstrainsListener.isEmailEmpty,
               child: Text('Sory Ale Musisz Wpisać Email', style: myErrorFont)),
@@ -95,7 +94,6 @@ class _LoginPageState extends State<LoginPage> {
                   });
                 },
                 duration: const Duration(milliseconds: 400),
-                splashColor: Colors.transparent,
                 icons: const <AnimatedIconItem>[
                   AnimatedIconItem(
                       icon: Icon(Icons.remove_red_eye_outlined,
@@ -107,7 +105,8 @@ class _LoginPageState extends State<LoginPage> {
               passCont,
               'Hasło',
               const Icon(Icons.key_rounded),
-              TextInputType.visiblePassword),
+              TextInputType.visiblePassword,
+              context),
           Visibility(
               visible: logConstrainsListener.isPasswordWrong,
               child: Text('Sory Ale Jakiś Błąd Się Wkradł W Hasło :<',
@@ -117,7 +116,8 @@ class _LoginPageState extends State<LoginPage> {
               child: Text('Sory Ale Musisz Wpisać Hasło', style: myErrorFont)),
           Visibility(
               visible: logConstrainsListener.isPassErrorShown,
-              child: Text('Sory Ale To Hasło Jest Zbyt Słabe', style: myErrorFont)),
+              child: Text('Sory Ale To Hasło Jest Zbyt Słabe',
+                  style: myErrorFont)),
           const SizedBox(height: 15),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             ElevatedButton(
@@ -141,10 +141,7 @@ class _LoginPageState extends State<LoginPage> {
                     ? GradientText(
                         'Zaloguj',
                         style: const TextStyle(fontSize: 21),
-                        colors: const [
-                          Color.fromARGB(255, 120, 239, 255),
-                          Color.fromARGB(255, 98, 255, 156)
-                        ],
+                        colors: gradient,
                       )
                     : Text(
                         "Zaloguj",
@@ -152,7 +149,6 @@ class _LoginPageState extends State<LoginPage> {
                       )),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: almostBlack,
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.horizontal(
                             right: Radius.circular(30))),
@@ -175,11 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: GoogleFonts.overpass(fontSize: 20),
                       )
                     : GradientText('Zarejestruj',
-                        style: const TextStyle(fontSize: 21),
-                        colors: const [
-                            Color.fromARGB(255, 120, 239, 255),
-                            Color.fromARGB(255, 98, 255, 156)
-                          ]))
+                        style: const TextStyle(fontSize: 21), colors: gradient))
           ]),
           Column(
             children: [

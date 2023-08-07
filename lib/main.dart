@@ -30,9 +30,11 @@ class MyApp extends StatelessWidget {
           title: 'Prakty',
           theme: ThemeData(
               elevatedButtonTheme: ElevatedButtonThemeData(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          const Color.fromARGB(255, 43, 43, 43))))),
+            style: ButtonStyle(
+              elevation: MaterialStateProperty.all(0),
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    Colors.white.withOpacity(0.6))),
+          )),
           home: const MyHomePage(title: 'Prakty'),
         ));
   }
@@ -43,7 +45,7 @@ final myPrimaryFont =
 
 final myErrorFont = GoogleFonts.overpass(
     fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
-
+    
 const almostBlack = Color.fromARGB(255, 25, 25, 25);
 
 const List<Color> gradient = [
@@ -66,23 +68,27 @@ class _MyHomePageState extends State<MyHomePage> {
     bool loginConstrAccess =
         Provider.of<LoginConstrains>(context).showErrorMessage;
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 33, 33, 33),
-      body: Center(
-        child: Stack(children: [
-          StreamBuilder<User?>(
-              stream: FirebaseAuth.instance.authStateChanges(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  Provider.of<GoogleSignInProvider>(context, listen: false)
-                      .setUserOnStart();
-                  return const LoggedParentWidget();
-                } else {
-                  return const LoginPage();
-                }
-              }),
-          Visibility(visible: loginConstrAccess, child: const ErrorMessage()),
-        ]),
-      ),
+      body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(colors: gradient),
+          ),
+          child: Center(
+            child: Stack(children: [
+              StreamBuilder<User?>(
+                  stream: FirebaseAuth.instance.authStateChanges(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      Provider.of<GoogleSignInProvider>(context, listen: false)
+                          .setUserOnStart();
+                      return const LoggedParentWidget();
+                    } else {
+                      return const LoginPage();
+                    }
+                  }),
+              Visibility(
+                  visible: loginConstrAccess, child: const ErrorMessage()),
+            ]),
+          )),
     );
   }
 }
