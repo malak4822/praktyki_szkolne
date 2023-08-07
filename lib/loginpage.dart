@@ -2,6 +2,7 @@ import 'package:animated_icon_button/animated_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:prakty/main.dart';
 import 'package:prakty/providers/loginconstrains.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/widgets/inputwindows.dart';
@@ -14,10 +15,6 @@ class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
-
-final myFont = GoogleFonts.overpass(
-    fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
-const almostBlack = Color.fromARGB(255, 25, 25, 25);
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController nameCont = TextEditingController();
@@ -62,28 +59,28 @@ class _LoginPageState extends State<LoginPage> {
           Visibility(
               visible: logConstrainsListener.isUsernameTooShort,
               child: Text('Sory Ale Imię I Nazwisko Jest Zbyt Krótkie',
-                  style: myFont)),
+                  style: myErrorFont)),
           Visibility(
               visible: logConstrainsListener.isUsernameTooLong,
               child: Text('Imię I Nazwisko Może Mieć Maksymalnie 22 znaki',
-                  style: myFont)),
+                  style: myErrorFont)),
           const SizedBox(height: 15),
           logPut(false, null, mailCont, 'Email', const Icon(Icons.email),
               TextInputType.emailAddress),
           Visibility(
               visible: logConstrainsListener.isEmailEmpty,
-              child: Text('Sory Ale Musisz Wpisać Email', style: myFont)),
+              child: Text('Sory Ale Musisz Wpisać Email', style: myErrorFont)),
           Visibility(
               visible: logConstrainsListener.isUserFound,
-              child: Text('Nie Ma Takiego Użytkownika :<', style: myFont)),
+              child: Text('Nie Ma Takiego Użytkownika :<', style: myErrorFont)),
           Visibility(
               visible: logConstrainsListener.doEmailExist,
               child: Text('Sory Ale Konto z tym e-mailem już istnieje :<',
-                  style: myFont)),
+                  style: myErrorFont)),
           Visibility(
               visible: logConstrainsListener.isEmailValidErrorShown,
               child: Text('Sory Ale Ten Email Nie Jest Poprawny :<',
-                  style: myFont)),
+                  style: myErrorFont)),
           const SizedBox(height: 15),
           logPut(
               isTextObscured,
@@ -114,13 +111,13 @@ class _LoginPageState extends State<LoginPage> {
           Visibility(
               visible: logConstrainsListener.isPasswordWrong,
               child: Text('Sory Ale Jakiś Błąd Się Wkradł W Hasło :<',
-                  style: myFont)),
+                  style: myErrorFont)),
           Visibility(
               visible: logConstrainsListener.isPasswdEmpty,
-              child: Text('Sory Ale Musisz Wpisać Hasło', style: myFont)),
+              child: Text('Sory Ale Musisz Wpisać Hasło', style: myErrorFont)),
           Visibility(
               visible: logConstrainsListener.isPassErrorShown,
-              child: Text('Sory Ale To Hasło Jest Zbyt Słabe', style: myFont)),
+              child: Text('Sory Ale To Hasło Jest Zbyt Słabe', style: myErrorFont)),
           const SizedBox(height: 15),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             ElevatedButton(

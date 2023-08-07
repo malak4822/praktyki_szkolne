@@ -82,6 +82,18 @@ class GoogleSignInProvider extends ChangeNotifier {
     }
   }
 
+  void setUserOnStart() async {
+    try {
+      if (auth.currentUser != null) {
+        _currentUser.userId = auth.currentUser!.uid;
+      }
+      _currentUser = await MyDb().getUserInfo(_currentUser);
+    notifyListeners();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   //
   // EMAIL PASS LOGIN EMAIL PASS LOGIN EMAIL PASS LOGIN EMAIL PASS LOGIN
   Future<void> loginViaEmailAndPassword(

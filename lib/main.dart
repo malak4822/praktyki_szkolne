@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/loggedparent.dart';
 import 'package:prakty/providers/loginconstrains.dart';
 import 'package:prakty/widgets/error.dart';
@@ -37,6 +38,18 @@ class MyApp extends StatelessWidget {
   }
 }
 
+final myPrimaryFont = GoogleFonts.overpass(fontSize: 22, fontWeight: FontWeight.bold);
+
+final myErrorFont = GoogleFonts.overpass(
+    fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
+    
+const almostBlack = Color.fromARGB(255, 25, 25, 25);
+
+const List<Color> gradient = [
+  Color.fromARGB(255, 103, 242, 255),
+  Color.fromARGB(255, 0, 162, 226)
+];
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -59,6 +72,8 @@ class _MyHomePageState extends State<MyHomePage> {
               stream: FirebaseAuth.instance.authStateChanges(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  Provider.of<GoogleSignInProvider>(context, listen: false)
+                      .setUserOnStart();
                   return const LoggedParentWidget();
                 } else {
                   return const LoginPage();

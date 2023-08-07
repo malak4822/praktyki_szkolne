@@ -4,6 +4,8 @@ import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
 import 'package:provider/provider.dart';
 
+import '../main.dart';
+
 class FriendsPage extends StatelessWidget {
   const FriendsPage({Key? key}) : super(key: key);
 
@@ -13,10 +15,10 @@ class FriendsPage extends StatelessWidget {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-          onPressed: () async {},
+          onPressed: () {},
           elevation: 0,
           highlightElevation: 0,
-          backgroundColor: Colors.white,
+          backgroundColor: const Color.fromARGB(255, 0, 162, 226),
           child: const Icon(
             Icons.settings,
             size: 40,
@@ -28,17 +30,18 @@ class FriendsPage extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 72,
-                  backgroundColor: Colors.black,
-                  child: CircleAvatar(
-                    radius: 70,
-                    backgroundColor: Colors.white12,
-                    backgroundImage: NetworkImage(
-                     googleProvider.getCurrentUser.registeredViaGoogle ? googleProvider.getCurrentUser.profilePicture : 'https://assets.codepen.io/1480814/av+1.png'),
-                  ),
-                ),
-                const SizedBox(width: 10),
+                Container(
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(colors: gradient)),
+                    child: CircleAvatar(
+                      radius: 72,
+                      backgroundImage: NetworkImage(
+                          googleProvider.getCurrentUser.registeredViaGoogle
+                              ? googleProvider.getCurrentUser.profilePicture
+                              : 'https://assets.codepen.io/1480814/av+1.png'),
+                      backgroundColor: Colors.transparent,
+                    )),
                 Expanded(
                   child: Column(
                     children: [
@@ -48,7 +51,7 @@ class FriendsPage extends StatelessWidget {
                         maxLines: 2,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.overpass(
-                            color: Colors.black,
+                            color: const Color.fromARGB(255, 0, 162, 226),
                             fontSize: 24,
                             fontWeight: FontWeight.w900),
                       ),
@@ -57,6 +60,9 @@ class FriendsPage extends StatelessWidget {
                           style: GoogleFonts.overpass(
                               fontSize: 17, fontWeight: FontWeight.w200)),
                       ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 0, 162, 226)),
                           onPressed: () {
                             Provider.of<GoogleSignInProvider>(context,
                                     listen: false)
@@ -64,6 +70,9 @@ class FriendsPage extends StatelessWidget {
                           },
                           child: const Icon(Icons.exit_to_app)),
                       ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 0, 162, 226)),
                           onPressed: () async {
                             googleProvider.getCurrentUser;
 
