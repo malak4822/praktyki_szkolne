@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
             style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0),
                 backgroundColor: MaterialStateProperty.all<Color>(
+                  
                     Colors.white.withOpacity(0.8))),
           )),
           home: const MyHomePage(title: 'Prakty'),
@@ -46,9 +47,14 @@ final myPrimaryFont =
 final myErrorFont = GoogleFonts.overpass(
     fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
 
+// const List<Color> gradient = [
+//   Color.fromARGB(255, 103, 242, 255),
+//   Color.fromARGB(255, 0, 162, 226)
+// ];
+
 const List<Color> gradient = [
-  Color.fromARGB(255, 103, 242, 255),
-  Color.fromARGB(255, 0, 162, 226)
+  Colors.purple,
+  Colors.blue,
 ];
 
 const Color blackie = Color.fromARGB(255, 0, 79, 110);

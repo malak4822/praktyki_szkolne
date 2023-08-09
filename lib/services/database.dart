@@ -58,4 +58,19 @@ class MyDb {
         registeredViaGoogle: registeredViaGoogle,
         accountCreated: accountCreated);
   }
+
+  Future<String> updateAccount(myUser) async {
+    try {
+      await _firestore.collection('users').doc(myUser.userId).update({
+        'username': myUser.username,
+        'email': myUser.email,
+        'description': myUser.description,
+        'isNormalUser': myUser.isNormalUser,
+        'profilePicture': myUser.profilePicture,
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return '';
+  }
 }

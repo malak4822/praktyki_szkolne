@@ -19,9 +19,13 @@ class LoggedParentWidget extends StatelessWidget {
       builder: (context, widget) => Scaffold(
         bottomNavigationBar: Container(
           decoration: const BoxDecoration(
-              gradient: LinearGradient(colors: gradient, stops: [0.0, 0.8]),
+            
+              gradient: LinearGradient(
+                colors: gradient,
+                stops: [0.0, 0.8],
+              ),
               borderRadius: BorderRadius.vertical(
-                bottom: Radius.elliptical(500, 50),
+                top: Radius.elliptical(300, 20),
               )),
           child: BottomNavigationBar(
             currentIndex: Provider.of<Functions>(context).currentIndex,

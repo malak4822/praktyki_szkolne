@@ -1,34 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:prakty/main.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
 
-import '../main.dart';
-import 'edituserpage.dart';
+import '../services/database.dart';
 
-class FriendsPage extends StatelessWidget {
-  const FriendsPage({Key? key}) : super(key: key);
+class EditUserPage extends StatelessWidget {
+  const EditUserPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     var googleProvider = Provider.of<GoogleSignInProvider>(context);
-
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const EditUserPage()));
-            },
-            elevation: 0,
-            highlightElevation: 0,
-            backgroundColor: const Color.fromARGB(255, 0, 162, 226),
-            child: const Icon(
-              Icons.settings,
-              size: 40,
-            )),
-        body: ListView(children: [
+      body: ListView(
+        children: [
           SizedBox(
               height: 200,
               child: Stack(children: [
@@ -64,14 +50,14 @@ class FriendsPage extends StatelessWidget {
                                           .getCurrentUser.profilePicture
                                       : 'https://assets.codepen.io/1480814/av+1.png',
                                 ),
-                                placeholder: const NetworkImage(
+                                placeholder: const AssetImage(
                                     'https://assets.codepen.io/1480814/av+1.png'),
                               ),
                             )))),
               ])),
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(children: [
+          Expanded(
+            child: Column(
+              children: [
                 Text(
                   googleProvider.getCurrentUser.username,
                   softWrap: true,
@@ -88,51 +74,52 @@ class FriendsPage extends StatelessWidget {
                         color: Colors.black,
                         fontSize: 17,
                         fontWeight: FontWeight.w200)),
-                const SizedBox(height: 20),
-                SizedBox(
-                    height: 140,
-                    child: ListView.separated(
-                        itemCount: 3,
-                        scrollDirection: Axis.horizontal,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(width: 16 ),
-                        itemBuilder: (context, index) =>
-                            skillBox('successTxt', 2)))
-              ])),
-        ]));
-  }
-}
-
-Widget skillBox(successTxt, skillLevel) => Container(
-      height: 120,
-      width: 100,
-      decoration: BoxDecoration(
-          gradient: const LinearGradient(colors: gradient),
-          borderRadius: BorderRadius.circular(8)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.star, color: Colors.white, size: 38),
-          const SizedBox(height: 10),
-          Text(successTxt,
-              style: GoogleFonts.overpass(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 18)),
+              ],
+            ),
+          ),
           Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                  skillLevel,
-                  (index) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 1),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        width: 8,
-                        height: 8,
-                      ))))
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Icon(Icons.home)),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Provider.of<GoogleSignInProvider>(context, listen: false)
+                        .logout();
+                  },
+                  child: const Icon(Icons.exit_to_app)),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
+                  onPressed: () async {
+                    googleProvider.getCurrentUser;
+
+                    await MyDb().getUserInfo(googleProvider.getCurrentUser);
+                    debugPrint(googleProvider.getCurrentUser.username);
+                    debugPrint(googleProvider.getCurrentUser.email);
+                    debugPrint(googleProvider.getCurrentUser.age.toString());
+                    debugPrint(
+                        googleProvider.getCurrentUser.isNormalUser.toString());
+                    debugPrint(googleProvider.getCurrentUser.profilePicture);
+                    debugPrint(googleProvider.getCurrentUser.userId);
+                    debugPrint(googleProvider.getCurrentUser.registeredViaGoogle
+                        .toString());
+                    debugPrint(googleProvider.getCurrentUser.accountCreated
+                        .toString());
+                  },
+                  child: const Icon(Icons.info))
+            ],
+          )
         ],
       ),
     );
+  }
+}
