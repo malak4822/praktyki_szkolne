@@ -28,6 +28,7 @@ class MyDb {
     late bool registeredViaGoogle, isNormalUser;
     late int age;
     late Timestamp accountCreated;
+
     try {
       DocumentSnapshot docSnapshot =
           await _firestore.collection('users').doc(myUser.userId).get();

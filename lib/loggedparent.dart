@@ -17,19 +17,12 @@ class LoggedParentWidget extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => Functions(),
       builder: (context, widget) => Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: Text('Jebać Babilon', style: myPrimaryFont),
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(colors: gradient, stops: [0.0, 0.8]),
-            ),
-          ),
-        ),
         bottomNavigationBar: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(colors: gradient, stops: [0.0, 0.8]),
-          ),
+              gradient: LinearGradient(colors: gradient, stops: [0.0, 0.8]),
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.elliptical(500, 50),
+              )),
           child: BottomNavigationBar(
             currentIndex: Provider.of<Functions>(context).currentIndex,
             onTap: (newIndex) {
@@ -42,7 +35,8 @@ class LoggedParentWidget extends StatelessWidget {
             fixedColor: Colors.white,
             elevation: 0,
             items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.messenger_outline_rounded), label: ""),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.messenger_outline_rounded), label: ""),
               BottomNavigationBarItem(icon: Icon(Icons.business), label: ""),
               BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
             ],

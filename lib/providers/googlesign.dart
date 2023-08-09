@@ -77,6 +77,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           _currentUser.userId = authResult.user!.uid;
           _currentUser.registeredViaGoogle = true;
           await MyDb().addFirestoreUser(_currentUser);
+          print("Rejestrowanie Nowego Użytkownika");
         }
         _currentUser.userId = authResult.user!.uid;
         _currentUser = await MyDb().getUserInfo(_currentUser);
@@ -90,8 +91,8 @@ class GoogleSignInProvider extends ChangeNotifier {
     try {
       if (auth.currentUser != null) {
         _currentUser.userId = auth.currentUser!.uid;
+        _currentUser = await MyDb().getUserInfo(_currentUser);
       }
-      _currentUser = await MyDb().getUserInfo(_currentUser);
       notifyListeners();
     } catch (e) {
       debugPrint(e.toString());
