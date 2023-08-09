@@ -47,9 +47,9 @@ class FriendsPage extends StatelessWidget {
                     child: Container(
                         decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: LinearGradient(colors: gradient)),
+                            gradient: const LinearGradient(colors: gradient)),
                         child: CircleAvatar(
-                            radius: 86,
+                            radius: 85,
                             backgroundColor: Colors.white,
                             child: ClipOval(
                               child: FadeInImage(
@@ -72,30 +72,48 @@ class FriendsPage extends StatelessWidget {
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(children: [
-                Text(
-                  googleProvider.getCurrentUser.username,
-                  softWrap: true,
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.overpass(
-                      color: gradient[1],
-                      fontSize: 24,
-                      fontWeight: FontWeight.w900),
-                ),
-                Text(googleProvider.getCurrentUser.description,
-                    maxLines: 4,
-                    style: GoogleFonts.overpass(
-                        color: Colors.black,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w200)),
-                const SizedBox(height: 20),
+                Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(colors: gradient),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    height: 150,
+                    child: Padding(
+                      padding: const EdgeInsets.all(25),
+                      child: ListView(children: [
+                        Text(
+                          googleProvider.getCurrentUser.username,
+                          softWrap: true,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.overpass(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w900),
+                        ),
+                        Text(googleProvider.getCurrentUser.description,
+                            maxLines: 4,
+                            style: GoogleFonts.overpass(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold)),
+                      ]),
+                    )),
+                const SizedBox(height: 15),
                 SizedBox(
                     height: 140,
-                    child: ListView.separated(
-                        itemCount: 3,
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: 4,
                         scrollDirection: Axis.horizontal,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(width: 16 ),
                         itemBuilder: (context, index) =>
                             skillBox('successTxt', 2)))
               ])),
@@ -105,8 +123,17 @@ class FriendsPage extends StatelessWidget {
 
 Widget skillBox(successTxt, skillLevel) => Container(
       height: 120,
+      margin: const EdgeInsets.all(6),
       width: 100,
       decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
           gradient: const LinearGradient(colors: gradient),
           borderRadius: BorderRadius.circular(8)),
       child: Column(

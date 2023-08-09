@@ -16,4 +16,6 @@ class Functions extends ChangeNotifier {
     _currentIndex = newIndex;
     notifyListeners();
   }
+
+  
 }

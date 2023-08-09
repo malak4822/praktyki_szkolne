@@ -47,15 +47,15 @@ final myPrimaryFont =
 final myErrorFont = GoogleFonts.overpass(
     fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
 
-// const List<Color> gradient = [
-//   Color.fromARGB(255, 103, 242, 255),
-//   Color.fromARGB(255, 0, 162, 226)
-// ];
-
 const List<Color> gradient = [
-  Colors.purple,
-  Colors.blue,
+  Color.fromARGB(255, 103, 242, 255),
+  Color.fromARGB(255, 0, 162, 226)
 ];
+
+// const List<Color> gradient = [
+//   Colors.purple,
+//   Colors.blue,
+// ];
 
 const Color blackie = Color.fromARGB(255, 0, 79, 110);
 
