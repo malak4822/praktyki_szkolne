@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/loggedparent.dart';
+import 'package:prakty/pages/edituserpage.dart';
+import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/loginconstrains.dart';
 import 'package:prakty/widgets/error.dart';
 import 'package:prakty/loginpage.dart';
@@ -26,6 +28,14 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (c) => LoginConstrains())
         ],
         child: MaterialApp(
+          initialRoute: '/root',
+          routes: {
+            '/root': (context) => const MyHomePage(),
+            '/editUser': (context) => ChangeNotifierProvider<EditUser>(
+                  create: (context) => EditUser(),
+                  child: const EditUserPage(),
+                )
+          },
           debugShowCheckedModeBanner: false,
           title: 'Prakty',
           theme: ThemeData(
@@ -33,16 +43,17 @@ class MyApp extends StatelessWidget {
             style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0),
                 backgroundColor: MaterialStateProperty.all<Color>(
-                  
                     Colors.white.withOpacity(0.8))),
           )),
-          home: const MyHomePage(title: 'Prakty'),
+          home: const MyHomePage(),
         ));
   }
 }
 
-final myPrimaryFont =
-    GoogleFonts.overpass(fontSize: 22, fontWeight: FontWeight.bold);
+final fontSize20 = GoogleFonts.overpass(
+    fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white);
+final fontSize16 = GoogleFonts.overpass(
+    fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white);
 
 final myErrorFont = GoogleFonts.overpass(
     fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
@@ -60,9 +71,7 @@ const List<Color> gradient = [
 const Color blackie = Color.fromARGB(255, 0, 79, 110);
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();

@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
-
 import '../main.dart';
-import 'edituserpage.dart';
 
 class FriendsPage extends StatelessWidget {
   const FriendsPage({Key? key}) : super(key: key);
@@ -16,13 +14,8 @@ class FriendsPage extends StatelessWidget {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const EditUserPage()));
+              Navigator.pushNamed(context, '/editUser');
             },
-            elevation: 0,
-            highlightElevation: 0,
             backgroundColor: const Color.fromARGB(255, 0, 162, 226),
             child: const Icon(
               Icons.settings,
@@ -47,7 +40,7 @@ class FriendsPage extends StatelessWidget {
                     child: Container(
                         decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: const LinearGradient(colors: gradient)),
+                            gradient: LinearGradient(colors: gradient)),
                         child: CircleAvatar(
                             radius: 85,
                             backgroundColor: Colors.white,
@@ -76,12 +69,11 @@ class FriendsPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(colors: gradient),
                       borderRadius: BorderRadius.circular(8),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 2,
+                          color: Colors.black54,
+                          spreadRadius: 0.3,
                           blurRadius: 5,
-                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
@@ -115,23 +107,22 @@ class FriendsPage extends StatelessWidget {
                         itemCount: 4,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) =>
-                            skillBox('successTxt', 2)))
+                            skillBox('successTxt', 2, context)))
               ])),
         ]));
   }
 }
 
-Widget skillBox(successTxt, skillLevel) => Container(
+Widget skillBox(successTxt, skillLevel, context) => Container(
       height: 120,
       margin: const EdgeInsets.all(6),
-      width: 100,
+      width: MediaQuery.of(context).size.width / 4,
       decoration: BoxDecoration(
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
+              color: Colors.black54,
+              spreadRadius: 0.3,
               blurRadius: 5,
-              offset: const Offset(0, 3),
             ),
           ],
           gradient: const LinearGradient(colors: gradient),
@@ -141,11 +132,7 @@ Widget skillBox(successTxt, skillLevel) => Container(
         children: [
           const Icon(Icons.star, color: Colors.white, size: 38),
           const SizedBox(height: 10),
-          Text(successTxt,
-              style: GoogleFonts.overpass(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 18)),
+          Text(successTxt, style: fontSize16),
           Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(

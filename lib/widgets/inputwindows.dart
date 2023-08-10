@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:prakty/providers/functions.dart';
-import 'package:provider/provider.dart';
 
 Widget logPut(isTextObscured, myEndingIcon, myController, myHintText,
     myPrefixIcon, myKeyboardType, context) {
-  double fillFieldLvl = Provider.of<Functions>(context).fillFieldLvl;
   return
       // ConstrainedBox(
       // constraints: BoxConstraints(maxWidth: boxWidth),
@@ -22,9 +19,7 @@ Widget logPut(isTextObscured, myEndingIcon, myController, myHintText,
       //   width: fillFieldLvl,
       // ),
       TextField(
-        onChanged: (newValue) {
-          // Provider.of<Functions>(context, listen: false).lvlUp(boxWidth);
-        },
+        onChanged: (newValue) {},
         cursorColor: Colors.white,
         obscureText: isTextObscured,
         textInputAction: TextInputAction.next,
@@ -47,7 +42,25 @@ Widget logPut(isTextObscured, myEndingIcon, myController, myHintText,
         ),
       )
     ],
-  )
-      // )
-      ;
+  );
+}
+
+Widget updateValues(myController) {
+  return TextField(
+    cursorColor: Colors.white,
+    textInputAction: TextInputAction.next,
+    style:
+        GoogleFonts.overpass(fontWeight: FontWeight.bold, color: Colors.white),
+    controller: myController,
+    decoration: InputDecoration(
+      prefixIconColor: Colors.white,
+      focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(width: 2, color: Colors.white),
+          borderRadius: BorderRadius.all(Radius.circular(25))),
+      border: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(25)),
+      ),
+      hintStyle: GoogleFonts.overpass(fontWeight: FontWeight.bold),
+    ),
+  );
 }

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/main.dart';
-import 'package:prakty/providers/functions.dart';
 import 'package:prakty/providers/loginconstrains.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/widgets/inputwindows.dart';
@@ -37,9 +36,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final logConstrainsListener = Provider.of<LoginConstrains>(context);
 
-    return ChangeNotifierProvider(
-        create: (context) => Functions(),
-        builder: (context, widget) => Stack(children: [
+    return Stack(children: [
               wciecia(
                   Alignment.bottomRight, "images/login/login_bottomRight.png"),
               wciecia(
@@ -178,17 +175,12 @@ class _LoginPageState extends State<LoginPage> {
                                   child: _isLoginClicked
                                       ? GradientText(
                                           'Zaloguj',
-                                          style: GoogleFonts.overpass(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold),
+                                          style:fontSize20,
                                           colors: gradient,
                                         )
                                       : Text(
                                           "Zaloguj",
-                                          style: GoogleFonts.overpass(
-                                              fontSize: 20,
-                                              color: blackie,
-                                              fontWeight: FontWeight.bold),
+                                          style: fontSize20,
                                         )),
                               ElevatedButton(
                                   style: ElevatedButton.styleFrom(
@@ -214,15 +206,10 @@ class _LoginPageState extends State<LoginPage> {
                                   child: _isLoginClicked
                                       ? Text(
                                           "Zarejestruj",
-                                          style: GoogleFonts.overpass(
-                                              fontSize: 20,
-                                              color: blackie,
-                                              fontWeight: FontWeight.bold),
+                                          style:fontSize20,
                                         )
                                       : GradientText('Zarejestruj',
-                                          style: GoogleFonts.overpass(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold),
+                                          style: fontSize20,
                                           colors: gradient))
                             ]),
                         Column(children: [
@@ -250,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
                         ]),
                         const Spacer()
                       ])))
-            ]));
+            ]);
   }
 
   wciecia(Alignment place, String path) {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/providers/loginconstrains.dart';
 import 'package:provider/provider.dart';
+
+import '../main.dart';
 
 class ErrorMessage extends StatelessWidget {
   const ErrorMessage({super.key});
@@ -29,10 +30,7 @@ class ErrorMessage extends StatelessWidget {
                       children: [
                     const SizedBox(height: 20),
                     Text('Houston, Mamy Problem',
-                        style: GoogleFonts.overpass(
-                            color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold)),
+                        style: fontSize20),
                     const Spacer(),
                     SingleChildScrollView(
                         child: Padding(
@@ -40,8 +38,7 @@ class ErrorMessage extends StatelessWidget {
                             child: Text(
                               Provider.of<LoginConstrains>(context).errorText,
                               textAlign: TextAlign.center,
-                              style: GoogleFonts.overpass(
-                                  color: Colors.white, fontSize: 16),
+                              style: fontSize16,
                             ))),
                     const Spacer(),
                     SizedBox(

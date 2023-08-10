@@ -32,6 +32,8 @@ class GoogleSignInProvider extends ChangeNotifier {
     }
   }
 
+
+
   // LOG OUT LOG OUT LOG OUT LOG OUT
   Future<void> logout() async {
     try {
@@ -77,7 +79,6 @@ class GoogleSignInProvider extends ChangeNotifier {
           _currentUser.userId = authResult.user!.uid;
           _currentUser.registeredViaGoogle = true;
           await MyDb().addFirestoreUser(_currentUser);
-          print("Rejestrowanie Nowego Użytkownika");
         }
         _currentUser.userId = authResult.user!.uid;
         _currentUser = await MyDb().getUserInfo(_currentUser);
