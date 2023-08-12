@@ -5,6 +5,8 @@ import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
 
+import '../pages/userpage.dart';
+
 class EditPopUpParent extends StatefulWidget {
   const EditPopUpParent({super.key, required this.openWidgetIndex});
 
@@ -20,18 +22,18 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
   final TextEditingController passCont = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    var editUserProvider = Provider.of<EditUser>(context);
-    var googleSingInProvider = Provider.of<GoogleSignInProvider>(context);
+    // var listenEditUser = Provider.of<EditUser>(context).skillBoxAdeed;
 
     List<Widget> editWidgetTypes = [
-      editUserNameDescriptionPassword(),
-      editSkillSet(),
+      editSkillSet(context),
       editPhoto(),
+      editUserNameDescriptionPassword(),
     ];
 
     return Stack(children: [
       InkWell(
-          onTap: () => editUserProvider.toogleEditingPopUp(null),
+          onTap: () => Provider.of<EditUser>(context, listen: false)
+              .toogleEditingPopUp(),
           child: Container(
               color: Colors.white.withOpacity(0.7),
               child: Align(
@@ -67,19 +69,98 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     );
   }
 
-  Widget editSkillSet() {
+  Widget editSkillSet(context) {
+    var skillBoxAdded = Provider.of<EditUser>(context).skillBoxAdeed;
+    
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ListView.builder(
-            shrinkWrap: true,
-            itemCount: 4,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) => Container(
-                  color: Colors.red,
-                  width: 100,
-                  height: 140,
-                  margin: const EdgeInsets.all(8),
-                ))
+        const Spacer(flex: 3),
+        Expanded(
+            flex: 5,
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 100),
+              decoration: BoxDecoration(
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black54,
+                      spreadRadius: 0.3,
+                      blurRadius: 5,
+                    ),
+                  ],
+                  gradient: const LinearGradient(colors: gradient),
+                  borderRadius: BorderRadius.circular(8)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.star, color: Colors.white, size: 58),
+                  const SizedBox(height: 20),
+                  Text('mainTile', style: fontSize16),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(
+                          3,
+                          (index) => Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 2),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                width: 16,
+                                height: 16,
+                              ))))
+                ],
+              ),
+            )),
+        const Spacer(flex: 3),
+        Expanded(
+            flex: 4,
+            child: SizedBox(
+                child: ListView.builder(
+                    shrinkWrap: true,
+                    addRepaintBoundaries: true,
+                    itemCount: skillBoxAdded,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      print(skillBoxAdded);
+                      return Row(
+                        children: [
+                          skillBox('Text', 3, context),
+                          if (skillBoxAdded - 1 == index)
+                            InkWell(
+                                onTap: () {
+                                  Provider.of<EditUser>(context, listen: false)
+                                      .addSkillBox();
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 4),
+                                  height: 120,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          spreadRadius: 1,
+                                          blurRadius: 2,
+                                        ),
+                                      ],
+                                      color: Colors.transparent,
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: IconButton(
+                                      iconSize: 38,
+                                      onPressed: () {
+                                     Provider.of<EditUser>(context, listen: false)
+                                      .addSkillBox();
+                                      },
+                                      icon: const Icon(Icons.add,
+                                          color: Colors.white)),
+                                )),
+                        ],
+                      );
+                    }))),
+        const SizedBox(height: 20),
       ],
     );
   }

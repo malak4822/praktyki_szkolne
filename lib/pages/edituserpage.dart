@@ -8,7 +8,9 @@ import '../services/database.dart';
 import '../widgets/edituserpopup.dart';
 
 class EditUserPage extends StatelessWidget {
-  const EditUserPage({super.key});
+  EditUserPage({super.key});
+
+  int essa = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +34,38 @@ class EditUserPage extends StatelessWidget {
                   child: Image(
                       image: AssetImage('images/menuicon.png'), height: 30)),
               Center(
-                child: CircleAvatar(
-                  radius: 84,
-                  backgroundColor: Colors.white,
                   child: CircleAvatar(
-                    radius: 80,
-                    backgroundImage: NetworkImage(
-                      googleProvider.getCurrentUser.registeredViaGoogle
-                          ? googleProvider.getCurrentUser.profilePicture
-                          : 'https://assets.codepen.io/1480814/av+1.png',
-                    ),
-                    child: ClipOval(child: blackBox(0, editUserProvider)),
-                  ),
-                ),
-              )
+                      radius: 85,
+                      backgroundColor: Colors.white,
+                      child: Container(
+                          height: 160,
+                          width: 160,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(colors: gradient),
+                          ),
+                          child: Stack(children: [
+                            ClipOval(
+                              child: FadeInImage(
+                                height: 160,
+                                fadeInDuration:
+                                    const Duration(milliseconds: 500),
+                                image: NetworkImage(
+                                  googleProvider
+                                          .getCurrentUser.registeredViaGoogle
+                                      ? googleProvider
+                                          .getCurrentUser.profilePicture
+                                      : 'https://assets.codepen.io/1480814/av+1.png',
+                                ),
+                                placeholder: const NetworkImage(
+                                    'https://assets.codepen.io/1480814/av+1.png'),
+                              ),
+                            ),
+                            if (googleProvider
+                                    .getCurrentUser.registeredViaGoogle ==
+                                false)
+                              ClipOval(child: blackBox(0, editUserProvider))
+                          ]))))
             ])),
         Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -64,7 +84,6 @@ class EditUserPage extends StatelessWidget {
                   ),
                   height: 150,
                   child: Stack(children: [
-                    blackBox(1, editUserProvider),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 25, vertical: 10),
@@ -75,18 +94,19 @@ class EditUserPage extends StatelessWidget {
                           maxLines: 2,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.overpass(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white,
                               fontSize: 24,
                               fontWeight: FontWeight.w900),
                         ),
                         Text(googleProvider.getCurrentUser.description,
                             maxLines: 4,
                             style: GoogleFonts.overpass(
-                                color: Colors.white.withOpacity(0.3),
+                                color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold)),
                       ]),
-                    )
+                    ),
+                    blackBox(1, editUserProvider)
                   ])),
               const SizedBox(height: 6),
               SizedBox(
@@ -143,7 +163,7 @@ class EditUserPage extends StatelessWidget {
       Visibility(
           visible: editUserProvider.isEditingSeen,
           child: EditPopUpParent(
-            openWidgetIndex: 0,
+            openWidgetIndex: essa,
           )),
     ]));
   }
@@ -156,7 +176,8 @@ class EditUserPage extends StatelessWidget {
       child: IconButton(
         iconSize: 34,
         onPressed: () {
-          editUserProvider.toogleEditingPopUp(index);
+          essa = index;
+          editUserProvider.toogleEditingPopUp();
         },
         icon: const Icon(Icons.mode_edit_outlined),
         color: Colors.white,

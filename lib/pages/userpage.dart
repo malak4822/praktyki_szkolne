@@ -37,30 +37,30 @@ class FriendsPage extends StatelessWidget {
                     child: Image(
                         image: AssetImage('images/menuicon.png'), height: 30)),
                 Center(
-                    child: Container(
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(colors: gradient)),
-                        child: CircleAvatar(
-                            radius: 85,
-                            backgroundColor: Colors.white,
-                            child: ClipOval(
-                              child: FadeInImage(
-                                height: 160,
-                                fit: BoxFit.contain,
-                                fadeInDuration:
-                                    const Duration(milliseconds: 500),
-                                image: NetworkImage(
-                                  googleProvider
-                                          .getCurrentUser.registeredViaGoogle
-                                      ? googleProvider
-                                          .getCurrentUser.profilePicture
-                                      : 'https://assets.codepen.io/1480814/av+1.png',
-                                ),
-                                placeholder: const NetworkImage(
-                                    'https://assets.codepen.io/1480814/av+1.png'),
-                              ),
-                            )))),
+                    child: CircleAvatar(
+                  radius: 85,
+                  backgroundColor: Colors.white,
+                  child: Container(
+                    height: 160,
+                    width: 160,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(colors: gradient),
+                    ),
+                    child: ClipOval(
+                        child: FadeInImage(
+                      height: 160,
+                      fadeInDuration: const Duration(milliseconds: 500),
+                      image: NetworkImage(
+                        googleProvider.getCurrentUser.registeredViaGoogle
+                            ? googleProvider.getCurrentUser.profilePicture
+                            : 'https://assets.codepen.io/1480814/av+1.png',
+                      ),
+                      placeholder: const NetworkImage(
+                          'https://assets.codepen.io/1480814/av+1.png'),
+                    )),
+                  ),
+                ))
               ])),
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),

@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
             '/root': (context) => const MyHomePage(),
             '/editUser': (context) => ChangeNotifierProvider<EditUser>(
                   create: (context) => EditUser(),
-                  child: const EditUserPage(),
+                  child: EditUserPage(),
                 )
           },
           debugShowCheckedModeBanner: false,
