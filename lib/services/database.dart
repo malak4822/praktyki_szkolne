@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:prakty/models/user_model.dart';
+import 'package:prakty/providers/googlesign.dart';
+import 'package:provider/provider.dart';
 
 class MyDb {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -13,6 +15,7 @@ class MyDb {
         'description': myUser.description,
         'age': myUser.age,
         'isNormalUser': myUser.isNormalUser,
+        'skillSet': myUser.skillsSet,
         'profilePicture': myUser.profilePicture,
         'userId': myUser.userId,
         'registeredViaGoogle': myUser.registeredViaGoogle,
@@ -23,54 +26,42 @@ class MyDb {
     }
   }
 
-  Future<MyUser> getUserInfo(MyUser myUser) async {
-    late String username, userId, description, email, profilePicture;
-    late bool registeredViaGoogle, isNormalUser;
-    late int age;
-    late Timestamp accountCreated;
+  Future<void> getUserInfo(context, userId) async {
+    var currentUser = Provider.of<GoogleSignInProvider>(context, listen: false)
+        .getCurrentUser;
 
     try {
       DocumentSnapshot docSnapshot =
-          await _firestore.collection('users').doc(myUser.userId).get();
+          await _firestore.collection('users').doc(userId).get();
 
-      Map<String, dynamic>? data = docSnapshot.data() as Map<String, dynamic>;
+      Map<String, dynamic>? data = docSnapshot.data() as Map<String, dynamic>?;
 
-      username = data["username"];
-      email = data['email'];
-      description = data['description'];
-      age = data['age'];
-      isNormalUser = data['isNormalUser'];
-      profilePicture = data['profilePicture'];
-      userId = data['userId'];
-      registeredViaGoogle = data['registeredViaGoogle'];
-      accountCreated = data['accountCreated'];
+      currentUser.username = data?["username"] ?? "";
+      currentUser.email = data?['email'] ?? "";
+      currentUser.description = data?['description'] ?? "";
+      currentUser.age = data?['age'] ?? 0;
+      currentUser.skillsSet = data?['skillsSet'] ?? {};
+      currentUser.isNormalUser = data?['isNormalUser'] ?? false;
+      currentUser.profilePicture = data?['profilePicture'] ?? "";
+      currentUser.userId = data?['userId'] ?? "";
+      currentUser.registeredViaGoogle = data?['registeredViaGoogle'] ?? false;
+      currentUser.accountCreated = data?['accountCreated'] ?? Timestamp.now();
     } catch (e) {
       debugPrint(e.toString());
     }
-    return MyUser(
-        userId: userId,
-        username: username,
-        email: email,
-        description: description,
-        age: age,
-        isNormalUser: isNormalUser,
-        profilePicture: profilePicture,
-        registeredViaGoogle: registeredViaGoogle,
-        accountCreated: accountCreated);
   }
 
-  Future<String> updateAccount(myUser) async {
+  Future<void> updateNameAndDescription(
+      String userId, String newUsername, String newDescription, context) async {
     try {
-      await _firestore.collection('users').doc(myUser.userId).update({
-        'username': myUser.username,
-        'email': myUser.email,
-        'description': myUser.description,
-        'isNormalUser': myUser.isNormalUser,
-        'profilePicture': myUser.profilePicture,
+      await _firestore.collection('users').doc(userId).update({
+        'username': newUsername,
+        'description': newDescription,
       });
+      Provider.of<GoogleSignInProvider>(context, listen: false)
+          .refresh(newUsername, newDescription);
     } catch (e) {
       debugPrint(e.toString());
     }
-    return '';
   }
 }

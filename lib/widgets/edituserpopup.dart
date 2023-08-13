@@ -6,6 +6,7 @@ import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
 
 import '../pages/userpage.dart';
+import '../services/database.dart';
 
 class EditPopUpParent extends StatefulWidget {
   const EditPopUpParent({super.key, required this.openWidgetIndex});
@@ -17,50 +18,33 @@ class EditPopUpParent extends StatefulWidget {
 }
 
 class _EditPopUpParentState extends State<EditPopUpParent> {
-  final TextEditingController nameCont = TextEditingController();
-  final TextEditingController mailCont = TextEditingController();
-  final TextEditingController passCont = TextEditingController();
   @override
   Widget build(BuildContext context) {
     // var listenEditUser = Provider.of<EditUser>(context).skillBoxAdeed;
 
     List<Widget> editWidgetTypes = [
-      editSkillSet(context),
       editPhoto(),
-      editUserNameDescriptionPassword(),
+      editUserNameDescriptionPassword(context),
+      editSkillSet(context),
     ];
 
-    return Stack(children: [
-      InkWell(
-          onTap: () => Provider.of<EditUser>(context, listen: false)
-              .toogleEditingPopUp(),
+    return Column(children: [
+      Expanded(
+          child: GestureDetector(
+              onTap: () => Provider.of<EditUser>(context, listen: false)
+                  .toogleEditingPopUp())),
+      Expanded(
+          flex: 3,
           child: Container(
-              color: Colors.white.withOpacity(0.7),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                    height: MediaQuery.of(context).size.height * 4 / 5,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                        gradient: LinearGradient(colors: gradient),
-                        borderRadius: BorderRadius.vertical(
-                            top: Radius.elliptical(200, 40))),
-                    child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: editWidgetTypes[widget.openWidgetIndex])),
-              )))
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(colors: gradient),
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.elliptical(200, 40))),
+              child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: editWidgetTypes[widget.openWidgetIndex]))),
     ]);
-  }
-
-  Widget editUserNameDescriptionPassword() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        updateValues(nameCont),
-        const SizedBox(height: 8),
-        updateValues(mailCont),
-      ],
-    );
   }
 
   Widget editPhoto() {
@@ -69,9 +53,38 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     );
   }
 
+  Widget editUserNameDescriptionPassword(context) {
+    var user = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
+    final TextEditingController nameCont =
+        TextEditingController(text: user.username);
+    final TextEditingController description =
+        TextEditingController(text: user.description);
+
+    return Padding(
+        padding: const EdgeInsets.all(30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            updateValues(nameCont, 'Imię I Nazwisko', 1, 24),
+            //
+            const SizedBox(height: 6),
+            //
+            Expanded(child: updateValues(description, 'Opis', 14, 500)),
+            IconButton(
+                onPressed: () async {
+                  await MyDb().updateNameAndDescription(
+                      user.userId, nameCont.text, description.text, context);
+                  Provider.of<EditUser>(context, listen: false)
+                      .toogleEditingPopUp();
+                },
+                icon: const Icon(size: 38, Icons.done, color: Colors.white))
+          ],
+        ));
+  }
+
   Widget editSkillSet(context) {
     var skillBoxAdded = Provider.of<EditUser>(context).skillBoxAdeed;
-    
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -94,22 +107,17 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.star, color: Colors.white, size: 58),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   Text('mainTile', style: fontSize16),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
                           3,
-                          (index) => Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 2),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                width: 16,
-                                height: 16,
+                          (index) => const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 2),
+                              child: CircleAvatar(
+                                radius: 5,
+                                backgroundColor: Colors.white,
                               ))))
                 ],
               ),
@@ -124,7 +132,6 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
                     itemCount: skillBoxAdded,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      print(skillBoxAdded);
                       return Row(
                         children: [
                           skillBox('Text', 3, context),
@@ -151,8 +158,9 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
                                   child: IconButton(
                                       iconSize: 38,
                                       onPressed: () {
-                                     Provider.of<EditUser>(context, listen: false)
-                                      .addSkillBox();
+                                        Provider.of<EditUser>(context,
+                                                listen: false)
+                                            .addSkillBox();
                                       },
                                       icon: const Icon(Icons.add,
                                           color: Colors.white)),

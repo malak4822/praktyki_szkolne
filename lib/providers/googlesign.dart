@@ -10,6 +10,12 @@ import '../models/user_model.dart';
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  void refresh(newUsername, newDescription) {
+    _currentUser.username = newUsername;
+    _currentUser.description = newDescription;
+    notifyListeners();
+  }
+
   MyUser _currentUser = MyUser(
       userId: '',
       username: '',
@@ -19,7 +25,8 @@ class GoogleSignInProvider extends ChangeNotifier {
       email: '',
       profilePicture: '',
       registeredViaGoogle: false,
-      accountCreated: Timestamp(0, 0));
+      accountCreated: Timestamp(0, 0),
+      skillsSet: {});
   MyUser get getCurrentUser => _currentUser;
 
   final List<String> _usersId = [];
@@ -31,8 +38,6 @@ class GoogleSignInProvider extends ChangeNotifier {
       _usersId.add(element.reference.id);
     }
   }
-
-
 
   // LOG OUT LOG OUT LOG OUT LOG OUT
   Future<void> logout() async {
@@ -47,6 +52,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           email: '',
           profilePicture: '',
           registeredViaGoogle: false,
+          skillsSet: {},
           accountCreated: Timestamp(0, 0));
     } catch (e) {
       debugPrint(e.toString());
@@ -80,19 +86,17 @@ class GoogleSignInProvider extends ChangeNotifier {
           _currentUser.registeredViaGoogle = true;
           await MyDb().addFirestoreUser(_currentUser);
         }
-        _currentUser.userId = authResult.user!.uid;
-        _currentUser = await MyDb().getUserInfo(_currentUser);
+        await MyDb().getUserInfo(context, authResult.user!.uid);
       } catch (error) {
         debugPrint(error.toString());
       }
     }
   }
 
-  void setUserOnStart() async {
+  void setUserOnStart(context) async {
     try {
       if (auth.currentUser != null) {
-        _currentUser.userId = auth.currentUser!.uid;
-        _currentUser = await MyDb().getUserInfo(_currentUser);
+        await MyDb().getUserInfo(context, auth.currentUser!.uid);
       }
       notifyListeners();
     } catch (e) {
@@ -111,8 +115,7 @@ class GoogleSignInProvider extends ChangeNotifier {
         try {
           UserCredential userCredentials = await auth
               .signInWithEmailAndPassword(email: email, password: pass);
-          _currentUser.userId = userCredentials.user!.uid;
-          _currentUser = await MyDb().getUserInfo(_currentUser);
+          await MyDb().getUserInfo(_currentUser, userCredentials.user!.uid);
           notifyListeners();
         } on FirebaseAuthException catch (e) {
           switch (e.code) {

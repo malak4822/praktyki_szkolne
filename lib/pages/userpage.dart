@@ -49,6 +49,7 @@ class FriendsPage extends StatelessWidget {
                     ),
                     child: ClipOval(
                         child: FadeInImage(
+                      fit: BoxFit.contain,
                       height: 160,
                       fadeInDuration: const Duration(milliseconds: 500),
                       image: NetworkImage(
@@ -92,7 +93,6 @@ class FriendsPage extends StatelessWidget {
                               fontWeight: FontWeight.w900),
                         ),
                         Text(googleProvider.getCurrentUser.description,
-                            maxLines: 4,
                             style: GoogleFonts.overpass(
                                 color: Colors.white,
                                 fontSize: 16,

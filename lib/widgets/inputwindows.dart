@@ -45,22 +45,27 @@ Widget logPut(isTextObscured, myEndingIcon, myController, myHintText,
   );
 }
 
-Widget updateValues(myController) {
+Widget updateValues(myController, hintTxt, maxLines, maxLength) {
   return TextField(
+    maxLength: maxLength,
+    maxLines: maxLines,
     cursorColor: Colors.white,
     textInputAction: TextInputAction.next,
     style:
         GoogleFonts.overpass(fontWeight: FontWeight.bold, color: Colors.white),
     controller: myController,
     decoration: InputDecoration(
-      prefixIconColor: Colors.white,
+      counterStyle: GoogleFonts.overpass(color: Colors.white),
       focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(width: 2, color: Colors.white),
+          borderSide: BorderSide(width: 3, color: Colors.white),
           borderRadius: BorderRadius.all(Radius.circular(25))),
-      border: const OutlineInputBorder(
+      enabledBorder: const OutlineInputBorder(
+        borderSide: BorderSide(width: 1, color: Colors.white),
         borderRadius: BorderRadius.all(Radius.circular(25)),
       ),
-      hintStyle: GoogleFonts.overpass(fontWeight: FontWeight.bold),
+      hintText: hintTxt,
+      hintStyle: GoogleFonts.overpass(
+          fontWeight: FontWeight.bold, color: Colors.white),
     ),
   );
 }

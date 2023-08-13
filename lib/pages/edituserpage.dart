@@ -10,7 +10,7 @@ import '../widgets/edituserpopup.dart';
 class EditUserPage extends StatelessWidget {
   EditUserPage({super.key});
 
-  int essa = 0;
+  int widgetIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +47,7 @@ class EditUserPage extends StatelessWidget {
                           child: Stack(children: [
                             ClipOval(
                               child: FadeInImage(
+                                fit: BoxFit.contain,
                                 height: 160,
                                 fadeInDuration:
                                     const Duration(milliseconds: 500),
@@ -141,11 +142,13 @@ class EditUserPage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
                 onPressed: () async {
-                  googleProvider.getCurrentUser;
-
-                  await MyDb().getUserInfo(googleProvider.getCurrentUser);
+                  await MyDb().getUserInfo(
+                      context, googleProvider.getCurrentUser.userId);
                   debugPrint(googleProvider.getCurrentUser.username);
+                  debugPrint(googleProvider.getCurrentUser.description);
                   debugPrint(googleProvider.getCurrentUser.email);
+                  debugPrint(
+                      googleProvider.getCurrentUser.skillsSet.toString());
                   debugPrint(googleProvider.getCurrentUser.age.toString());
                   debugPrint(
                       googleProvider.getCurrentUser.isNormalUser.toString());
@@ -163,7 +166,7 @@ class EditUserPage extends StatelessWidget {
       Visibility(
           visible: editUserProvider.isEditingSeen,
           child: EditPopUpParent(
-            openWidgetIndex: essa,
+            openWidgetIndex: widgetIndex,
           )),
     ]));
   }
@@ -176,7 +179,7 @@ class EditUserPage extends StatelessWidget {
       child: IconButton(
         iconSize: 34,
         onPressed: () {
-          essa = index;
+          widgetIndex = index;
           editUserProvider.toogleEditingPopUp();
         },
         icon: const Icon(Icons.mode_edit_outlined),

@@ -94,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       Provider.of<GoogleSignInProvider>(context, listen: false)
-                          .setUserOnStart();
+                          .setUserOnStart(context);
                       return const LoggedParentWidget();
                     } else {
                       return const LoginPage();

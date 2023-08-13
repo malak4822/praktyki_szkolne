@@ -7,6 +7,7 @@ class MyUser {
   String description;
   int age;
   bool isNormalUser;
+  Map<String, int> skillsSet;
   //
   String email;
   String profilePicture;
@@ -19,6 +20,7 @@ class MyUser {
     required this.age,
     required this.isNormalUser,
     required this.description,
+    required this.skillsSet,
     required this.email,
     required this.profilePicture,
     required this.registeredViaGoogle,
