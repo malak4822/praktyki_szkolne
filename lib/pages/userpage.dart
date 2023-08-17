@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
 import '../main.dart';
+import '../widgets/skillboxes.dart';
 
-class FriendsPage extends StatelessWidget {
-  const FriendsPage({Key? key}) : super(key: key);
+class UserPage extends StatelessWidget {
+  const UserPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var googleProvider = Provider.of<GoogleSignInProvider>(context);
-
+    var editUserProvider = Provider.of<EditUser>(context);
+    var editUserFunction = Provider.of<EditUser>(context, listen: false);
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             onPressed: () {
+              editUserFunction.checkEmptiness(
+                  googleProvider.getCurrentUser.username.isEmpty,
+                  googleProvider.getCurrentUser.description.isEmpty);
+
               Navigator.pushNamed(context, '/editUser');
             },
             backgroundColor: const Color.fromARGB(255, 0, 162, 226),
@@ -63,90 +70,66 @@ class FriendsPage extends StatelessWidget {
                   ),
                 ))
               ])),
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
+          SizedBox(
+              height: 300,
               child: Column(children: [
-                Container(
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(colors: gradient),
-                      borderRadius: BorderRadius.circular(8),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black54,
-                          spreadRadius: 0.3,
-                          blurRadius: 5,
-                        ),
-                      ],
-                    ),
-                    height: 150,
-                    child: Padding(
-                      padding: const EdgeInsets.all(25),
-                      child: ListView(children: [
-                        Text(
-                          googleProvider.getCurrentUser.username,
-                          softWrap: true,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.overpass(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900),
-                        ),
-                        Text(googleProvider.getCurrentUser.description,
-                            style: GoogleFonts.overpass(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold)),
-                      ]),
+                Expanded(
+                    flex: 11,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 25),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(colors: gradient),
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black54,
+                            spreadRadius: 0.3,
+                            blurRadius: 5,
+                          ),
+                        ],
+                      ),
+                      child: ListView(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          children: [
+                            Text(
+                              googleProvider.getCurrentUser.username,
+                              softWrap: true,
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.overpass(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w900),
+                            ),
+                            Text(googleProvider.getCurrentUser.description,
+                                style: GoogleFonts.overpass(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold)),
+                          ]),
                     )),
-                const SizedBox(height: 15),
-                SizedBox(
-                    height: 140,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: 4,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) =>
-                            skillBox('successTxt', 2, context)))
+                Visibility(
+                    visible: editUserProvider.skillBoxes.isNotEmpty,
+                    child: Expanded(
+                        flex: 9,
+                        child: Padding(
+                            padding: EdgeInsets.only(
+                                left: MediaQuery.of(context).size.width / 13,
+                                right: MediaQuery.of(context).size.width / 13,
+                                top: 6),
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: editUserProvider.skillBoxes.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) => skillBox(
+                                    editUserProvider
+                                        .skillBoxes[index].keys.single,
+                                    editUserProvider
+                                        .skillBoxes[index].values.single,
+                                    context,
+                                    false))))),
               ])),
         ]));
   }
 }
-
-Widget skillBox(successTxt, skillLevel, context) => Container(
-      height: 120,
-      margin: const EdgeInsets.all(6),
-      width: MediaQuery.of(context).size.width / 4,
-      decoration: BoxDecoration(
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black54,
-              spreadRadius: 0.3,
-              blurRadius: 5,
-            ),
-          ],
-          gradient: const LinearGradient(colors: gradient),
-          borderRadius: BorderRadius.circular(8)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.star, color: Colors.white, size: 38),
-          const SizedBox(height: 10),
-          Text(successTxt, style: fontSize16),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                  skillLevel,
-                  (index) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 1),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        width: 8,
-                        height: 8,
-                      ))))
-        ],
-      ),
-    );

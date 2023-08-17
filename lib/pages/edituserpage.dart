@@ -6,16 +6,23 @@ import 'package:provider/provider.dart';
 import '../providers/edituser.dart';
 import '../services/database.dart';
 import '../widgets/edituserpopup.dart';
+import '../widgets/skillboxes.dart';
 
 class EditUserPage extends StatelessWidget {
   EditUserPage({super.key});
 
   int widgetIndex = 0;
 
+  void setWidgetIndex(int index) {
+    widgetIndex = index;
+  }
+
   @override
   Widget build(BuildContext context) {
     var editUserProvider = Provider.of<EditUser>(context);
     var googleProvider = Provider.of<GoogleSignInProvider>(context);
+    int chosenBox = 0;
+
     return Scaffold(
         body: Stack(children: [
       ListView(children: [
@@ -62,62 +69,100 @@ class EditUserPage extends StatelessWidget {
                                     'https://assets.codepen.io/1480814/av+1.png'),
                               ),
                             ),
-                            if (googleProvider
-                                    .getCurrentUser.registeredViaGoogle ==
-                                false)
-                              ClipOval(child: blackBox(0, editUserProvider))
+                            ClipOval(child: blackBox(0, false, 0, context))
                           ]))))
             ])),
-        Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32),
+        SizedBox(
+            height: 300,
             child: Column(children: [
-              Container(
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(colors: gradient),
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black54,
-                        spreadRadius: 0.3,
-                        blurRadius: 5,
-                      ),
-                    ],
-                  ),
-                  height: 150,
-                  child: Stack(children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 25, vertical: 10),
-                      child: ListView(children: [
-                        Text(
-                          googleProvider.getCurrentUser.username,
-                          softWrap: true,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.overpass(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900),
-                        ),
-                        Text(googleProvider.getCurrentUser.description,
-                            maxLines: 4,
-                            style: GoogleFonts.overpass(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold)),
-                      ]),
-                    ),
-                    blackBox(1, editUserProvider)
-                  ])),
-              const SizedBox(height: 6),
-              SizedBox(
-                  height: 140,
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: 4,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) => skillEditBox(
-                          'successTxt', 2, context, editUserProvider)))
+              Expanded(
+                  flex: 11,
+                  child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 25),
+                      decoration: BoxDecoration(
+                          gradient: const LinearGradient(colors: gradient),
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black54,
+                              spreadRadius: 0.3,
+                              blurRadius: 5,
+                            )
+                          ]),
+                      child: Stack(children: [
+                        ListView(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 10),
+                            children: [
+                              Text(
+                                googleProvider.getCurrentUser.username,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.overpass(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w900),
+                              ),
+                              Text(googleProvider.getCurrentUser.description,
+                                  maxLines: 4,
+                                  style: GoogleFonts.overpass(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                            ]),
+                        blackBox(
+                            1,
+                            editUserProvider.isDescOrNameEmpty ? true : false,
+                            0,
+                            context)
+                      ]))),
+              Expanded(
+                  flex: 9,
+                  child: Padding(
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width / 13,
+                          right: MediaQuery.of(context).size.width / 13,
+                          top: 6),
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: editUserProvider.skillBoxes.isEmpty
+                              ? 1
+                              : editUserProvider.skillBoxes.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            if (editUserProvider.skillBoxes.isEmpty) {
+                              return Container(
+                                  height: 120,
+                                  margin: const EdgeInsets.all(6),
+                                  width: MediaQuery.of(context).size.width / 4,
+                                  decoration: BoxDecoration(
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.black54,
+                                          spreadRadius: 0.3,
+                                          blurRadius: 5,
+                                        )
+                                      ],
+                                      gradient: const LinearGradient(colors: [
+                                        Color.fromARGB(255, 1, 192, 209),
+                                        Color.fromARGB(255, 0, 82, 156)
+                                      ]),
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: blackBox(2, true, 0, context));
+                              //
+                            } else {
+                              chosenBox = index;
+
+                              return skillEditBox(
+                                  editUserProvider
+                                      .skillBoxes[index].keys.single,
+                                  editUserProvider
+                                      .skillBoxes[index].values.single,
+                                  index,
+                                  context);
+                            }
+                          }))),
             ])),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -165,13 +210,14 @@ class EditUserPage extends StatelessWidget {
       ]),
       Visibility(
           visible: editUserProvider.isEditingSeen,
-          child: EditPopUpParent(
-            openWidgetIndex: widgetIndex,
-          )),
+          child: const EditPopUpParent()),
     ]));
   }
+}
 
-  Widget blackBox(int index, editUserProvider) => Container(
+Widget blackBox(int index, bool isFirstTime, int boxChosen, context) {
+  var editUserFunction = Provider.of<EditUser>(context, listen: false);
+  return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8), color: Colors.black54),
       width: double.infinity,
@@ -179,48 +225,16 @@ class EditUserPage extends StatelessWidget {
       child: IconButton(
         iconSize: 34,
         onPressed: () {
-          widgetIndex = index;
-          editUserProvider.toogleEditingPopUp();
+          if (isFirstTime) {
+            editUserFunction.addSkillBox();
+          }
+          if (index == 2) {
+            Provider.of<EditUser>(context, listen: false)
+                .changeCurrentBox(boxChosen);
+          }
+          editUserFunction.toogleEditingPopUp(index);
         },
-        icon: const Icon(Icons.mode_edit_outlined),
+        icon: Icon(isFirstTime ? Icons.add : Icons.mode_edit_outlined),
         color: Colors.white,
       ));
-
-  Widget skillEditBox(successTxt, skillLevel, context, editUserProvider) =>
-      Container(
-          height: 120,
-          margin: const EdgeInsets.all(6),
-          width: MediaQuery.of(context).size.width / 4,
-          decoration: BoxDecoration(
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black54,
-                  spreadRadius: 0.3,
-                  blurRadius: 5,
-                ),
-              ],
-              gradient: const LinearGradient(colors: gradient),
-              borderRadius: BorderRadius.circular(8)),
-          child: Stack(children: [
-            Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const Icon(Icons.star, color: Colors.white, size: 38),
-              const SizedBox(height: 10),
-              Text(successTxt, style: fontSize16),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                      skillLevel,
-                      (index) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 1),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            width: 8,
-                            height: 8,
-                          ))))
-            ]),
-            blackBox(2, editUserProvider),
-          ]));
 }

@@ -26,7 +26,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       profilePicture: '',
       registeredViaGoogle: false,
       accountCreated: Timestamp(0, 0),
-      skillsSet: {});
+      skillsSet: []);
   MyUser get getCurrentUser => _currentUser;
 
   final List<String> _usersId = [];
@@ -52,7 +52,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           email: '',
           profilePicture: '',
           registeredViaGoogle: false,
-          skillsSet: {},
+          skillsSet: [],
           accountCreated: Timestamp(0, 0));
     } catch (e) {
       debugPrint(e.toString());
@@ -107,7 +107,7 @@ class GoogleSignInProvider extends ChangeNotifier {
   //
   // EMAIL PASS LOGIN EMAIL PASS LOGIN EMAIL PASS LOGIN EMAIL PASS LOGIN
   Future<void> loginViaEmailAndPassword(
-      String email, String pass, BuildContext context) async {
+      String email, String pass, context) async {
     var loginConstrAccess =
         Provider.of<LoginConstrains>(context, listen: false);
     if (await loginConstrAccess.checkInternetConnectivity() == true) {
@@ -133,7 +133,8 @@ class GoogleSignInProvider extends ChangeNotifier {
               break;
           }
         } catch (e) {
-          loginConstrAccess.showErrorBox(e);
+          print(e.toString());
+          // loginConstrAccess.showErrorBox(e.toString());
         }
       }
     }

@@ -7,7 +7,7 @@ class MyUser {
   String description;
   int age;
   bool isNormalUser;
-  Map<String, int> skillsSet;
+  List<Map<String, int>> skillsSet;
   //
   String email;
   String profilePicture;

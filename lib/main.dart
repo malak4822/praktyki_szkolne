@@ -25,16 +25,14 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (c) => GoogleSignInProvider()),
-          ChangeNotifierProvider(create: (c) => LoginConstrains())
+          ChangeNotifierProvider(create: (c) => LoginConstrains()),
+          ChangeNotifierProvider(create: (c) => EditUser())
         ],
         child: MaterialApp(
           initialRoute: '/root',
           routes: {
             '/root': (context) => const MyHomePage(),
-            '/editUser': (context) => ChangeNotifierProvider<EditUser>(
-                  create: (context) => EditUser(),
-                  child: EditUserPage(),
-                )
+            '/editUser': (context) => EditUserPage(),
           },
           debugShowCheckedModeBanner: false,
           title: 'Prakty',
@@ -58,11 +56,15 @@ final fontSize16 = GoogleFonts.overpass(
 final myErrorFont = GoogleFonts.overpass(
     fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
 
-const List<Color> gradient = [
-  Color.fromARGB(255, 103, 242, 255),
-  Color.fromARGB(255, 0, 162, 226)
-];
+// const List<Color> gradient = [
+//   Color.fromARGB(255, 103, 242, 255),
+//   Color.fromARGB(255, 0, 162, 226)
+// ];
 
+const List<Color> gradient = [
+  Color.fromARGB(255, 1, 192, 209),
+  Color.fromARGB(255, 0, 82, 156)
+];
 // const List<Color> gradient = [
 //   Colors.purple,
 //   Colors.blue,

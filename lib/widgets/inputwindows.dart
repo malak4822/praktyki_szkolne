@@ -50,7 +50,6 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength) {
     maxLength: maxLength,
     maxLines: maxLines,
     cursorColor: Colors.white,
-    textInputAction: TextInputAction.next,
     style:
         GoogleFonts.overpass(fontWeight: FontWeight.bold, color: Colors.white),
     controller: myController,

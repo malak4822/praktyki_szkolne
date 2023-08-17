@@ -40,7 +40,7 @@ class MyDb {
       currentUser.email = data?['email'] ?? "";
       currentUser.description = data?['description'] ?? "";
       currentUser.age = data?['age'] ?? 0;
-      currentUser.skillsSet = data?['skillsSet'] ?? {};
+      currentUser.skillsSet = data?['skillsSet'] ?? [];
       currentUser.isNormalUser = data?['isNormalUser'] ?? false;
       currentUser.profilePicture = data?['profilePicture'] ?? "";
       currentUser.userId = data?['userId'] ?? "";

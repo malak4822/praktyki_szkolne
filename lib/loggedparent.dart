@@ -23,7 +23,7 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
     List<Widget> pages = [
       const Center(child: Icon(Icons.abc)),
       const Center(child: Icon(Icons.abc)),
-      const FriendsPage(),
+      const UserPage(),
     ];
     return Scaffold(
       bottomNavigationBar: Container(
