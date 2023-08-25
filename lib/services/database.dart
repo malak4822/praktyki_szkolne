@@ -59,7 +59,21 @@ class MyDb {
         'description': newDescription,
       });
       Provider.of<GoogleSignInProvider>(context, listen: false)
-          .refresh(newUsername, newDescription);
+          .refreshNameAndDesc(newUsername, newDescription);
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> updateSkillBoxes(String userId, String newSkillTxt,
+      int newSkillLvl, int skillBoxIndex, context) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'skillSet.elementAt($skillBoxIndex)': {newSkillTxt: newSkillLvl},
+      });
+
+      // Provider.of<GoogleSignInProvider>(context, listen: false)
+      //     .refreshSkillSet(skillCont.text,  , 0);
     } catch (e) {
       debugPrint(e.toString());
     }

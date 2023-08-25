@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditUser extends ChangeNotifier {
-  int _currentChosenBox = 0;
+  int _currentChosenBox = 1;
   int get currentChosenBox => _currentChosenBox;
 
   bool _isDescOrNameEmpty = false;
@@ -22,14 +23,14 @@ class EditUser extends ChangeNotifier {
 
   void changeCurrentBox(newIndexBox) {
     _currentChosenBox = newIndexBox;
-    print(currentChosenBox);
     notifyListeners();
   }
 
   List<Map<String, int>> skillBoxes = [
-    // {"HTML" : 2},
-    // {"CSS" : 3},
-    // {"Flutter" : 5}
+    {"HTML": 2},
+    {"CSS": 3},
+    {"Flutter": 5},
+    {"Javascript": 2}
   ];
 
   int _tabToOpen = 1;
@@ -37,6 +38,17 @@ class EditUser extends ChangeNotifier {
 
   // int _currentBoxIndex = 1;
   // int get currentBoxIndex => _currentBoxIndex;
+
+  void getSkillLvl() {
+    int dotsNumber = skillBoxes[currentChosenBox].values.single;
+    String key = skillBoxes[currentChosenBox].keys.single;
+    if (dotsNumber == 5) {
+      skillBoxes[currentChosenBox][key] = 1;
+    } else {
+      skillBoxes[currentChosenBox][key] = dotsNumber + 1;
+    }
+    notifyListeners();
+  }
 
   void addSkillBox() {
     skillBoxes.add({'Skill': 1});

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:prakty/providers/edituser.dart';
-import 'package:provider/provider.dart';
 import '../main.dart';
 import '../pages/edituserpage.dart';
 
 Widget skillBox(successTxt, skillLevel, context, bool isChosen) => Container(
-      height: 120,
       margin: const EdgeInsets.all(6),
       width: MediaQuery.of(context).size.width / 4,
       decoration: BoxDecoration(
@@ -21,8 +18,8 @@ Widget skillBox(successTxt, skillLevel, context, bool isChosen) => Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.star, color: Colors.white, size: 38),
-          const SizedBox(height: 10),
+          const Icon(Icons.star, color: Colors.white, size: 32),
+          const SizedBox(height: 4),
           Text(successTxt, style: fontSize16),
           Row(
               mainAxisAlignment: MainAxisAlignment.center,

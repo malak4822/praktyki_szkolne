@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/main.dart';
@@ -9,13 +11,7 @@ import '../widgets/edituserpopup.dart';
 import '../widgets/skillboxes.dart';
 
 class EditUserPage extends StatelessWidget {
-  EditUserPage({super.key});
-
-  int widgetIndex = 0;
-
-  void setWidgetIndex(int index) {
-    widgetIndex = index;
-  }
+  const EditUserPage({super.key});
 
   @override
   Widget build(BuildContext context) {

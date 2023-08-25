@@ -10,9 +10,18 @@ import '../models/user_model.dart';
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  void refresh(newUsername, newDescription) {
+  void refreshNameAndDesc(newUsername, newDescription) {
     _currentUser.username = newUsername;
     _currentUser.description = newDescription;
+    notifyListeners();
+  }
+
+  void refreshSkillSet(newText, newSkillLvl, int skillIndex) {
+    // List<Map<String, int>> <----- that is _currentUser.skillsSet
+
+    Map<String, int> mapElement = _currentUser.skillsSet.elementAt(skillIndex);
+    mapElement = {newText: newSkillLvl};
+    mapElement[newText] = newSkillLvl;
     notifyListeners();
   }
 
