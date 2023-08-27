@@ -222,7 +222,22 @@ Widget blackBox(int index, bool isFirstTime, int boxChosen, context) {
         iconSize: 34,
         onPressed: () {
           if (isFirstTime) {
+            try{
+               MyDb().updateSkillBoxes(
+                Provider.of<GoogleSignInProvider>(context, listen: false)
+                    .getCurrentUser
+                    .userId,
+                [
+                  {'initSkill': 0}
+                ],
+                'initSkill',
+                0, // SKILL LVL
+                1, // BOX INDEX
+                context);
             editUserFunction.addSkillBox();
+
+            }
+           catch (e){debugPrint(e.toString());}
           }
           if (index == 2) {
             Provider.of<EditUser>(context, listen: false)

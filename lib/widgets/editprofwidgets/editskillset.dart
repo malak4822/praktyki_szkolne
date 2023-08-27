@@ -13,13 +13,18 @@ class EditSkillSet extends StatefulWidget {
   State<EditSkillSet> createState() => _EditSkillSetState();
 }
 
-class _EditSkillSetState extends State<EditSkillSet> {
-  FocusNode myfocusNode = FocusNode();
+FocusNode myfocusNode = FocusNode();
 
+class _EditSkillSetState extends State<EditSkillSet> {
   @override
   Widget build(BuildContext context) {
+    int boxIndex = Provider.of<EditUser>(context).currentChosenBox;
     List<Map<String, int>> skillBoxes =
         Provider.of<EditUser>(context).skillBoxes;
+    int currentSkillLvl =
+        skillBoxes[Provider.of<EditUser>(context).currentChosenBox]
+            .values
+            .single;
 
     final TextEditingController skillCont = TextEditingController(
         text: skillBoxes[Provider.of<EditUser>(context).currentChosenBox]
@@ -60,16 +65,11 @@ class _EditSkillSetState extends State<EditSkillSet> {
                       hintText: 'Wpisz Umiejętność')),
               GestureDetector(
                   onTap: () => Provider.of<EditUser>(context, listen: false)
-                      .getSkillLvl(),
+                      .addSkillLvl(),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
-                          skillBoxes.isNotEmpty
-                              ? skillBoxes[Provider.of<EditUser>(context)
-                                      .currentChosenBox]
-                                  .values
-                                  .single
-                              : 0,
+                          skillBoxes.isNotEmpty ? currentSkillLvl : 0,
                           (index) => const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 2),
                               child: CircleAvatar(
@@ -84,9 +84,10 @@ class _EditSkillSetState extends State<EditSkillSet> {
                   Provider.of<GoogleSignInProvider>(context, listen: false)
                       .getCurrentUser
                       .userId,
+                  skillBoxes,
                   skillCont.text,
-                  0,
-                  0,
+                  currentSkillLvl, // SKILL LVL
+                  boxIndex, // BOX INDEX
                   context);
             },
             icon: const Icon(Icons.done, color: Colors.white)),
@@ -131,6 +132,16 @@ class _EditSkillSetState extends State<EditSkillSet> {
                           child: IconButton(
                               iconSize: 38,
                               onPressed: () {
+                                MyDb().updateSkillBoxes(
+                                    Provider.of<GoogleSignInProvider>(context,
+                                            listen: false)
+                                        .getCurrentUser
+                                        .userId,
+                                    skillBoxes,
+                                    'initSkill',
+                                    0, // SKILL LVL
+                                    boxIndex + 1, // BOX INDEX
+                                    context);
                                 Provider.of<EditUser>(context, listen: false)
                                     .addSkillBox();
                               },
