@@ -221,23 +221,21 @@ Widget blackBox(int index, bool isFirstTime, int boxChosen, context) {
       child: IconButton(
         iconSize: 34,
         onPressed: () {
+          editUserFunction.doSkillBoxesBackup = editUserFunction.skillBoxes;
+          print('BACKUP ---> ${editUserFunction.skillBoxesBackup}');
           if (isFirstTime) {
-            try{
-               MyDb().updateSkillBoxes(
-                Provider.of<GoogleSignInProvider>(context, listen: false)
-                    .getCurrentUser
-                    .userId,
-                [
-                  {'initSkill': 0}
-                ],
-                'initSkill',
-                0, // SKILL LVL
-                1, // BOX INDEX
-                context);
-            editUserFunction.addSkillBox();
-
+            try {
+              MyDb().updateSkillBoxes(
+                  Provider.of<GoogleSignInProvider>(context, listen: false)
+                      .getCurrentUser
+                      .userId,
+                  [
+                    {'Skill': 1}
+                  ]);
+              editUserFunction.addSkillBox();
+            } catch (e) {
+              debugPrint(e.toString());
             }
-           catch (e){debugPrint(e.toString());}
           }
           if (index == 2) {
             Provider.of<EditUser>(context, listen: false)

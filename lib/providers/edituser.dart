@@ -25,7 +25,19 @@ class EditUser extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Map<String, int>> skillBoxes = [];
+  List<Map<String, int>> _skillBoxes = [];
+  List<Map<String, int>> get skillBoxes => _skillBoxes;
+
+  List<Map<String, int>> _skillBoxesBackup = [];
+  List<Map<String, int>> get skillBoxesBackup => _skillBoxesBackup;
+
+  set doSkillBoxesBackup(backup) {
+    _skillBoxesBackup = backup;
+  }
+
+  set restoreSkillBoxes(currentBoxes) {
+    _skillBoxesBackup = currentBoxes;
+  }
 
   int _tabToOpen = 1;
   int get tabToOpen => _tabToOpen;
@@ -42,6 +54,12 @@ class EditUser extends ChangeNotifier {
       skillBoxes[currentChosenBox][key] = dotsNumber + 1;
     }
     notifyListeners();
+  }
+
+  void changeSkillTxt() {
+    int key = skillBoxes[currentChosenBox].values.single;
+
+    // skillBoxes[currentChosenBox][key] = '1';
   }
 
   void addSkillBox() {

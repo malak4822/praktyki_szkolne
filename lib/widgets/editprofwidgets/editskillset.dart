@@ -13,36 +13,44 @@ class EditSkillSet extends StatefulWidget {
   State<EditSkillSet> createState() => _EditSkillSetState();
 }
 
-FocusNode myfocusNode = FocusNode();
-
 class _EditSkillSetState extends State<EditSkillSet> {
+  late TextEditingController skillCont;
+
+  @override
+  void didChangeDependencies() {
+    skillCont = TextEditingController(
+        text: Provider.of<EditUser>(context)
+            .skillBoxes[Provider.of<EditUser>(context).currentChosenBox]
+            .keys
+            .single);
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
-    int boxIndex = Provider.of<EditUser>(context).currentChosenBox;
+    FocusNode myfocusNode = FocusNode();
+
     List<Map<String, int>> skillBoxes =
         Provider.of<EditUser>(context).skillBoxes;
+
     int currentSkillLvl =
         skillBoxes[Provider.of<EditUser>(context).currentChosenBox]
             .values
             .single;
+            
+    int chosenBox = Provider.of<EditUser>(context).currentChosenBox;
 
-    final TextEditingController skillCont = TextEditingController(
-        text: skillBoxes[Provider.of<EditUser>(context).currentChosenBox]
-            .keys
-            .single);
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       children: [
-        const Spacer(flex: 3),
+        SizedBox(height: MediaQuery.of(context).size.width * 2 / 9),
         Container(
             height: MediaQuery.of(context).size.width * 5 / 9,
             width: MediaQuery.of(context).size.width * 7 / 15,
             decoration: BoxDecoration(
                 boxShadow: const [
                   BoxShadow(
-                    color: Colors.black54,
-                    spreadRadius: 0.3,
-                    blurRadius: 5,
-                  ),
+                      color: Colors.black54, spreadRadius: 0.3, blurRadius: 5),
                 ],
                 gradient: const LinearGradient(colors: gradient),
                 borderRadius: BorderRadius.circular(8)),
@@ -51,8 +59,10 @@ class _EditSkillSetState extends State<EditSkillSet> {
               const Icon(Icons.star, color: Colors.white, size: 48),
               const SizedBox(height: 10),
               TextField(
-                  onSubmitted: (a) => setState(() {}),
-                  onTap: () => setState(() {}),
+                  // onSubmitted: (newTxt) => setState(() {
+                  //       skillCont.text = newTxt;
+                  //     }),
+                  // onTap: () => setState(() {}),
                   // onTapOutside: (event) => setState(() {}),
                   textAlign: TextAlign.center,
                   controller: skillCont,
@@ -61,8 +71,8 @@ class _EditSkillSetState extends State<EditSkillSet> {
                   maxLines: 1,
                   focusNode: myfocusNode,
                   style: fontSize20,
-                  decoration: const InputDecoration.collapsed(
-                      hintText: 'Wpisz Umiejętność')),
+                  decoration:
+                      const InputDecoration.collapsed(hintText: 'Umiejętność')),
               GestureDetector(
                   onTap: () => Provider.of<EditUser>(context, listen: false)
                       .addSkillLvl(),
@@ -80,80 +90,75 @@ class _EditSkillSetState extends State<EditSkillSet> {
         IconButton(
             iconSize: 32,
             onPressed: () {
-              MyDb().updateSkillBoxes(
-                  Provider.of<GoogleSignInProvider>(context, listen: false)
-                      .getCurrentUser
-                      .userId,
-                  skillBoxes,
-                  skillCont.text,
-                  currentSkillLvl, // SKILL LVL
-                  boxIndex, // BOX INDEX
-                  context);
+              try {
+                MyDb().updateSkillBoxes(
+                    Provider.of<GoogleSignInProvider>(context, listen: false)
+                        .getCurrentUser
+                        .userId,
+                    skillBoxes);
+              } catch (e) {
+                debugPrint(e.toString());
+              }
             },
             icon: const Icon(Icons.done, color: Colors.white)),
-        Spacer(flex: !myfocusNode.hasFocus ? 2 : 1),
-        AnimatedContainer(
-            duration: const Duration(milliseconds: 600),
-            height: !myfocusNode.hasFocus ? 120 : 0,
-            child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                addRepaintBoundaries: true,
-                itemCount: skillBoxes.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return Row(
-                    children: [
-                      InkWell(
-                          onTap: () =>
-                              Provider.of<EditUser>(context, listen: false)
-                                  .changeCurrentBox(index),
-                          child: skillBox(
-                              skillBoxes[index].keys.single,
-                              skillBoxes[index].values.single,
-                              context,
-                              Provider.of<EditUser>(context).currentChosenBox ==
-                                      index
-                                  ? false
-                                  : true)),
-                      if (skillBoxes.length - 1 == index)
-                        Container(
-                          margin: const EdgeInsets.only(left: 4),
-                          height: 110,
-                          width: 95,
-                          decoration: BoxDecoration(
-                              boxShadow: const [
-                                BoxShadow(
-                                    color: Colors.black26,
-                                    spreadRadius: 1,
-                                    blurRadius: 1.5)
-                              ],
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(8)),
-                          child: IconButton(
-                              iconSize: 38,
-                              onPressed: () {
-                                MyDb().updateSkillBoxes(
-                                    Provider.of<GoogleSignInProvider>(context,
+        SizedBox(height: MediaQuery.of(context).size.width * 2 / 9),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: SizedBox(
+                height: 120,
+                child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    addRepaintBoundaries: true,
+                    itemCount: skillBoxes.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return Row(
+                        children: [
+                          InkWell(
+                              onTap: () =>
+                                  Provider.of<EditUser>(context, listen: false)
+                                      .changeCurrentBox(index),
+                              child: skillBox(
+                                  skillBoxes[index].keys.single,
+                                  skillBoxes[index].values.single,
+                                  context,
+                                  chosenBox == index ? false : true)),
+                          if (skillBoxes.length - 1 == index)
+                            Container(
+                              margin: const EdgeInsets.only(left: 4),
+                              height: 110,
+                              width: 95,
+                              decoration: BoxDecoration(
+                                  boxShadow: const [
+                                    BoxShadow(
+                                        color: Colors.black26,
+                                        spreadRadius: 1,
+                                        blurRadius: 1.5)
+                                  ],
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: IconButton(
+                                  iconSize: 38,
+                                  onPressed: () {
+                                    Provider.of<EditUser>(context,
                                             listen: false)
-                                        .getCurrentUser
-                                        .userId,
-                                    skillBoxes,
-                                    'initSkill',
-                                    0, // SKILL LVL
-                                    boxIndex + 1, // BOX INDEX
-                                    context);
-                                Provider.of<EditUser>(context, listen: false)
-                                    .addSkillBox();
-                              },
-                              icon: const Icon(Icons.add, color: Colors.white)),
-                        ),
-                    ],
-                  );
-                }
-                // )
-                )),
+                                        .addSkillBox();
+                                    MyDb().updateSkillBoxes(
+                                        Provider.of<GoogleSignInProvider>(
+                                                context,
+                                                listen: false)
+                                            .getCurrentUser
+                                            .userId,
+                                        skillBoxes);
+                                  },
+                                  icon: const Icon(Icons.add,
+                                      color: Colors.white)),
+                            ),
+                        ],
+                      );
+                    }))),
         const SizedBox(height: 30),
       ],
-    );
+    ));
   }
 }

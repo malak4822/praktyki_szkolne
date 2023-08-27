@@ -16,6 +16,8 @@ class EditPopUpParent extends StatefulWidget {
 class _EditPopUpParentState extends State<EditPopUpParent> {
   @override
   Widget build(BuildContext context) {
+    int tabToOpen = Provider.of<EditUser>(context).tabToOpen;
+    var editUserFunction =  Provider.of<EditUser>(context, listen: false);
     List<Widget> editWidgetTypes = [
       const EditPhoto(),
       const EditNameAndDesc(),
@@ -24,10 +26,10 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
 
     return Column(children: [
       Expanded(child: GestureDetector(onTap: () {
-        // if (Provider.of<EditUser>(context).tabToOpen == 2) {
-        //   print("ZAMYKAM STREONE NR 3 :):):)");
-        // }
-        Provider.of<EditUser>(context, listen: false).toogleEditingPopUp(0);
+        if (tabToOpen == 2) {
+          editUserFunction.restoreSkillBoxes = editUserFunction.skillBoxesBackup;
+        }
+        editUserFunction.toogleEditingPopUp(0);
       })),
       Expanded(
           flex: 3,
@@ -37,8 +39,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
                   gradient: LinearGradient(colors: gradient),
                   borderRadius:
                       BorderRadius.vertical(top: Radius.elliptical(200, 40))),
-              child:
-                  editWidgetTypes[Provider.of<EditUser>(context).tabToOpen])),
+              child: editWidgetTypes[tabToOpen])),
     ]);
   }
 }

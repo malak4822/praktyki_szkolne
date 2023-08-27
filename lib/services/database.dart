@@ -66,15 +66,14 @@ class MyDb {
   }
 
   Future<void> updateSkillBoxes(String userId, List<Map<String, int>> boxSet,
-      String newSkillTxt, int , int skillBoxIndex, context) async {
-        print(boxSet);
+      // int newLvl, String newTxt
+      ) async {
+    print(boxSet);
     try {
+      
       await _firestore.collection('users').doc(userId).update({
         'skillSet': boxSet,
       });
-
-      // Provider.of<GoogleSignInProvider>(context, listen: false)
-      //     .refreshSkillSet(skillCont.text,  , 0);
     } catch (e) {
       debugPrint(e.toString());
     }
