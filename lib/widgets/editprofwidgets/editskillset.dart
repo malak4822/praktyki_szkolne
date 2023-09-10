@@ -14,19 +14,14 @@ class EditSkillSet extends StatefulWidget {
 class _EditSkillSetState extends State<EditSkillSet> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController skillCont = Provider.of<EditUser>(context).skillCont;
+    TextEditingController skillCont = TextEditingController(text: 'Skill');
 
     FocusNode myfocusNode = FocusNode();
 
     List<Map<String, int>> skillBoxes =
         Provider.of<EditUser>(context, listen: false).skillBoxes;
-
-    int currentSkillLvl =
-        skillBoxes[Provider.of<EditUser>(context).currentChosenBox]
-            .values
-            .single;
-
     int chosenBox = Provider.of<EditUser>(context).currentChosenBox;
+    int currentSkillLvl = skillBoxes[chosenBox].values.single;
 
     return SingleChildScrollView(
         child: Column(children: [

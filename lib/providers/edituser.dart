@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
 class EditUser extends ChangeNotifier {
-  final TextEditingController _skillCont = TextEditingController(text: 'Skill');
-  TextEditingController get skillCont => _skillCont;
 
   int _currentChosenBox = 1;
   int get currentChosenBox => _currentChosenBox;
@@ -23,21 +21,19 @@ class EditUser extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setEmptiness(bool newValue) {
-    _isDescOrNameEmpty = newValue;
+  void addSkillLvl() {
+    int dotsNumber = _skillBoxes[currentChosenBox].values.single;
+    String key = _skillBoxes[currentChosenBox].keys.single;
+    if (dotsNumber == 5) {
+      _skillBoxes[currentChosenBox][key] = 1;
+    } else {
+      _skillBoxes[currentChosenBox][key] = dotsNumber + 1;
+    }
     notifyListeners();
   }
 
-  void checkEmptiness(name, description) {
-    if (name || description) {
-      setEmptiness(true);
-    } else {
-      setEmptiness(false);
-    }
-  }
-
-  void changeCurrentBox(newIndexBox) {
-    _currentChosenBox = newIndexBox;
+  void addSkillBox() {
+    _skillBoxes.add({'Skill': 1});
     notifyListeners();
   }
 
@@ -65,24 +61,25 @@ class EditUser extends ChangeNotifier {
     return modifiedMap;
   }
 
-  void addSkillLvl() {
-    int dotsNumber = _skillBoxes[currentChosenBox].values.single;
-    String key = _skillBoxes[currentChosenBox].keys.single;
-    if (dotsNumber == 5) {
-      _skillBoxes[currentChosenBox][key] = 1;
-    } else {
-      _skillBoxes[currentChosenBox][key] = dotsNumber + 1;
-    }
-    notifyListeners();
-  }
-
-  void addSkillBox() {
-    _skillBoxes.add({'Skill': 1});
-    notifyListeners();
-  }
-
   bool _isEditingSeen = false;
   bool get isEditingSeen => _isEditingSeen;
+  void setEmptiness(bool newValue) {
+    _isDescOrNameEmpty = newValue;
+    notifyListeners();
+  }
+
+  void checkEmptiness(name, description) {
+    if (name || description) {
+      setEmptiness(true);
+    } else {
+      setEmptiness(false);
+    }
+  }
+
+  void changeCurrentBox(newIndexBox) {
+    _currentChosenBox = newIndexBox;
+    notifyListeners();
+  }
 
   void toogleEditingPopUp(index) {
     _tabToOpen = index;
