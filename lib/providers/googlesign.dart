@@ -128,8 +128,7 @@ class GoogleSignInProvider extends ChangeNotifier {
               break;
           }
         } catch (e) {
-          print(e.toString());
-          // loginConstrAccess.showErrorBox(e.toString());
+          debugPrint(e.toString());
         }
       }
     }

@@ -56,9 +56,7 @@ class MyDb {
         currentUser.userId = data?['userId'] ?? "";
         currentUser.registeredViaGoogle = data?['registeredViaGoogle'] ?? false;
         currentUser.accountCreated = data?['accountCreated'] ?? Timestamp.now();
-      } else {
-        print("USER ID JEST PUSTE");
-      }
+      } 
     } catch (e) {
       debugPrint(e.toString());
     }
