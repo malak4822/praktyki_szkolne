@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/main.dart';
 import 'package:prakty/pages/userpage.dart';
+import 'package:prakty/providers/googlesign.dart';
+import 'package:provider/provider.dart';
 
 class LoggedParentWidget extends StatefulWidget {
   const LoggedParentWidget({super.key});
@@ -10,6 +12,13 @@ class LoggedParentWidget extends StatefulWidget {
 }
 
 class _LoggedParentWidgetState extends State<LoggedParentWidget> {
+  @override
+  void initState() {
+    Provider.of<GoogleSignInProvider>(context, listen: false)
+        .setUserOnStart(context);
+    super.initState();
+  }
+
   int _currentIndex = 2;
 
   void changePage(int newIndex) {

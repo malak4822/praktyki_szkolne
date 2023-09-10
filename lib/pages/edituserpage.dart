@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/main.dart';
 import 'package:prakty/providers/googlesign.dart';
+import 'package:prakty/widgets/error.dart';
 import 'package:provider/provider.dart';
 import '../providers/edituser.dart';
+import '../providers/loginconstrains.dart';
 import '../services/database.dart';
 import '../widgets/edituserpopup.dart';
 import '../widgets/skillboxes.dart';
@@ -16,7 +18,8 @@ class EditUserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var editUserProvider = Provider.of<EditUser>(context);
-    var googleProvider = Provider.of<GoogleSignInProvider>(context);
+    var currentUser = Provider.of<GoogleSignInProvider>(context, listen: false)
+        .getCurrentUser;
     int chosenBox = 0;
 
     return Scaffold(
@@ -55,14 +58,12 @@ class EditUserPage extends StatelessWidget {
                                 fadeInDuration:
                                     const Duration(milliseconds: 500),
                                 image: NetworkImage(
-                                  googleProvider
-                                          .getCurrentUser.registeredViaGoogle
-                                      ? googleProvider
-                                          .getCurrentUser.profilePicture
+                                  currentUser.registeredViaGoogle
+                                      ? currentUser.profilePicture
                                       : 'https://assets.codepen.io/1480814/av+1.png',
                                 ),
-                                placeholder: const NetworkImage(
-                                    'https://assets.codepen.io/1480814/av+1.png'),
+                                placeholder:
+                                    const AssetImage('images/man/man.png'),
                               ),
                             ),
                             ClipOval(child: blackBox(0, false, 0, context))
@@ -91,7 +92,7 @@ class EditUserPage extends StatelessWidget {
                                 horizontal: 20, vertical: 10),
                             children: [
                               Text(
-                                googleProvider.getCurrentUser.username,
+                                currentUser.username,
                                 softWrap: true,
                                 maxLines: 2,
                                 textAlign: TextAlign.center,
@@ -100,7 +101,7 @@ class EditUserPage extends StatelessWidget {
                                     fontSize: 24,
                                     fontWeight: FontWeight.w900),
                               ),
-                              Text(googleProvider.getCurrentUser.description,
+                              Text(currentUser.description,
                                   maxLines: 4,
                                   style: GoogleFonts.overpass(
                                       color: Colors.white,
@@ -122,12 +123,12 @@ class EditUserPage extends StatelessWidget {
                           top: 6),
                       child: ListView.builder(
                           shrinkWrap: true,
-                          itemCount: editUserProvider.skillBoxes.isEmpty
+                          itemCount: currentUser.skillsSet.isEmpty
                               ? 1
-                              : editUserProvider.skillBoxes.length,
+                              : currentUser.skillsSet.length,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
-                            if (editUserProvider.skillBoxes.isEmpty) {
+                            if (currentUser.skillsSet.isEmpty) {
                               return Container(
                                   height: 120,
                                   margin: const EdgeInsets.all(6),
@@ -151,10 +152,8 @@ class EditUserPage extends StatelessWidget {
                               chosenBox = index;
 
                               return skillEditBox(
-                                  editUserProvider
-                                      .skillBoxes[index].keys.single,
-                                  editUserProvider
-                                      .skillBoxes[index].values.single,
+                                  currentUser.skillsSet[index].keys.single,
+                                  currentUser.skillsSet[index].values.single,
                                   index,
                                   context);
                             }
@@ -183,22 +182,18 @@ class EditUserPage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
                 onPressed: () async {
-                  await MyDb().getUserInfo(
-                      context, googleProvider.getCurrentUser.userId);
-                  debugPrint(googleProvider.getCurrentUser.username);
-                  debugPrint(googleProvider.getCurrentUser.description);
-                  debugPrint(googleProvider.getCurrentUser.email);
-                  debugPrint(
-                      googleProvider.getCurrentUser.skillsSet.toString());
-                  debugPrint(googleProvider.getCurrentUser.age.toString());
-                  debugPrint(
-                      googleProvider.getCurrentUser.isNormalUser.toString());
-                  debugPrint(googleProvider.getCurrentUser.profilePicture);
-                  debugPrint(googleProvider.getCurrentUser.userId);
-                  debugPrint(googleProvider.getCurrentUser.registeredViaGoogle
-                      .toString());
-                  debugPrint(
-                      googleProvider.getCurrentUser.accountCreated.toString());
+                  await MyDb().getUserInfo(context, currentUser.userId);
+                  debugPrint(currentUser.username);
+                  debugPrint(currentUser.description);
+
+                  debugPrint(currentUser.email);
+                  debugPrint(currentUser.skillsSet.toString());
+                  debugPrint(currentUser.age.toString());
+                  debugPrint(currentUser.isNormalUser.toString());
+                  debugPrint(currentUser.profilePicture);
+                  debugPrint(currentUser.userId);
+                  debugPrint(currentUser.registeredViaGoogle.toString());
+                  debugPrint(currentUser.accountCreated.toString());
                 },
                 child: const Icon(Icons.info))
           ],
@@ -207,6 +202,9 @@ class EditUserPage extends StatelessWidget {
       Visibility(
           visible: editUserProvider.isEditingSeen,
           child: const EditPopUpParent()),
+      Visibility(
+          visible: Provider.of<LoginConstrains>(context).showErrorMessage,
+          child: const ErrorMessage()),
     ]));
   }
 }
@@ -220,23 +218,15 @@ Widget blackBox(int index, bool isFirstTime, int boxChosen, context) {
       height: double.infinity,
       child: IconButton(
         iconSize: 34,
-        onPressed: () {
-          editUserFunction.doSkillBoxesBackup = editUserFunction.skillBoxes;
-          print('BACKUP ---> ${editUserFunction.skillBoxesBackup}');
+        onPressed: () async {
           if (isFirstTime) {
             try {
-              MyDb().updateSkillBoxes(
-                  Provider.of<GoogleSignInProvider>(context, listen: false)
-                      .getCurrentUser
-                      .userId,
-                  [
-                    {'Skill': 1}
-                  ]);
               editUserFunction.addSkillBox();
             } catch (e) {
               debugPrint(e.toString());
             }
           }
+          Provider.of<EditUser>(context, listen: false).saveBackup();
           if (index == 2) {
             Provider.of<EditUser>(context, listen: false)
                 .changeCurrentBox(boxChosen);

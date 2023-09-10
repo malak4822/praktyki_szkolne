@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/main.dart';
 import 'package:prakty/providers/edituser.dart';
-import 'package:prakty/providers/googlesign.dart';
-import 'package:prakty/services/database.dart';
 import 'package:prakty/widgets/skillboxes.dart';
 import 'package:provider/provider.dart';
 
@@ -14,30 +12,31 @@ class EditSkillSet extends StatefulWidget {
 }
 
 class _EditSkillSetState extends State<EditSkillSet> {
-  late TextEditingController skillCont;
-
-  @override
-  void didChangeDependencies() {
-    skillCont = TextEditingController(
-        text: Provider.of<EditUser>(context)
-            .skillBoxes[Provider.of<EditUser>(context).currentChosenBox]
-            .keys
-            .single);
-    super.didChangeDependencies();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   skillCont = TextEditingController(
+  //       text: Provider.of<EditUser>(context)
+  //           .skillBoxes[
+  //               Provider.of<EditUser>(context, listen: false).currentChosenBox]
+  //           .keys
+  //           .single);
+  //   super.didChangeDependencies();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController skillCont = Provider.of<EditUser>(context).skillCont;
+
     FocusNode myfocusNode = FocusNode();
 
     List<Map<String, int>> skillBoxes =
-        Provider.of<EditUser>(context).skillBoxes;
+        Provider.of<EditUser>(context, listen: false).skillBoxes;
 
     int currentSkillLvl =
         skillBoxes[Provider.of<EditUser>(context).currentChosenBox]
             .values
             .single;
-            
+
     int chosenBox = Provider.of<EditUser>(context).currentChosenBox;
 
     return SingleChildScrollView(
@@ -59,9 +58,9 @@ class _EditSkillSetState extends State<EditSkillSet> {
               const Icon(Icons.star, color: Colors.white, size: 48),
               const SizedBox(height: 10),
               TextField(
-                  // onSubmitted: (newTxt) => setState(() {
-                  //       skillCont.text = newTxt;
-                  //     }),
+                  onSubmitted: (newTxt) => setState(() {
+                        skillCont.text = newTxt;
+                      }),
                   // onTap: () => setState(() {}),
                   // onTapOutside: (event) => setState(() {}),
                   textAlign: TextAlign.center,
@@ -87,21 +86,32 @@ class _EditSkillSetState extends State<EditSkillSet> {
                                 backgroundColor: Colors.white,
                               )))))
             ])),
-        IconButton(
-            iconSize: 32,
-            onPressed: () {
-              try {
-                MyDb().updateSkillBoxes(
-                    Provider.of<GoogleSignInProvider>(context, listen: false)
-                        .getCurrentUser
-                        .userId,
-                    skillBoxes);
-              } catch (e) {
-                debugPrint(e.toString());
-              }
-            },
-            icon: const Icon(Icons.done, color: Colors.white)),
+        // IconButton(
+        //     iconSize: 32,
+        //     onPressed: () {
+        //       try {
+        //         MyDb().updateSkillBoxes(
+        //             Provider.of<GoogleSignInProvider>(context, listen: false)
+        //                 .getCurrentUser
+        //                 .userId,
+        //             skillBoxes,
+        //             skillCont.text,
+        //             currentSkillLvl);
+        //       } catch (e) {
+        //         debugPrint(e.toString());
+        //       }
+        //     },
+        //     icon: const Icon(Icons.done, color: Colors.white)),
         SizedBox(height: MediaQuery.of(context).size.width * 2 / 9),
+        ElevatedButton(
+            onPressed: () {
+              print("BACKUP :");
+              print(Provider.of<EditUser>(context, listen: false)
+                  .skillBoxesBackup);
+              print("AKTUALNE :");
+              print(Provider.of<EditUser>(context, listen: false).skillBoxes);
+            },
+            child: Text('CHECK IT')),
         Align(
             alignment: Alignment.bottomCenter,
             child: SizedBox(
@@ -140,16 +150,11 @@ class _EditSkillSetState extends State<EditSkillSet> {
                               child: IconButton(
                                   iconSize: 38,
                                   onPressed: () {
-                                    Provider.of<EditUser>(context,
-                                            listen: false)
-                                        .addSkillBox();
-                                    MyDb().updateSkillBoxes(
-                                        Provider.of<GoogleSignInProvider>(
-                                                context,
-                                                listen: false)
-                                            .getCurrentUser
-                                            .userId,
-                                        skillBoxes);
+                                    var prov = Provider.of<EditUser>(context,
+                                        listen: false);
+                                    prov.addSkillBox();
+                                    prov.changeCurrentBox(
+                                        skillBoxes.length - 1);
                                   },
                                   icon: const Icon(Icons.add,
                                       color: Colors.white)),

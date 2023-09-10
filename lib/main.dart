@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
           initialRoute: '/root',
           routes: {
             '/root': (context) => const MyHomePage(),
-            '/editUser': (context) => EditUserPage(),
+            '/editUser': (context) => const EditUserPage(),
           },
           debugShowCheckedModeBanner: false,
           title: 'Prakty',
@@ -95,8 +95,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   stream: FirebaseAuth.instance.authStateChanges(),
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      Provider.of<GoogleSignInProvider>(context, listen: false)
-                          .setUserOnStart(context);
                       return const LoggedParentWidget();
                     } else {
                       return const LoginPage();

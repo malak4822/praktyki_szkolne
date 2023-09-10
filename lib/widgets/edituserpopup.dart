@@ -3,6 +3,8 @@ import 'package:prakty/main.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/widgets/editprofwidgets/editskillset.dart';
 import 'package:provider/provider.dart';
+import '../providers/googlesign.dart';
+import '../services/database.dart';
 import 'editprofwidgets/editnamedesc.dart';
 import 'editprofwidgets/editphotowidget.dart';
 
@@ -17,7 +19,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
   @override
   Widget build(BuildContext context) {
     int tabToOpen = Provider.of<EditUser>(context).tabToOpen;
-    var editUserFunction =  Provider.of<EditUser>(context, listen: false);
+    var editUserFunction = Provider.of<EditUser>(context, listen: false);
     List<Widget> editWidgetTypes = [
       const EditPhoto(),
       const EditNameAndDesc(),
@@ -25,9 +27,18 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     ];
 
     return Column(children: [
-      Expanded(child: GestureDetector(onTap: () {
+      Expanded(child: GestureDetector(onTap: () async {
         if (tabToOpen == 2) {
-          editUserFunction.restoreSkillBoxes = editUserFunction.skillBoxesBackup;
+          try {
+            await MyDb().updateSkillBoxes(
+                Provider.of<GoogleSignInProvider>(context, listen: false)
+                    .getCurrentUser
+                    .userId,
+                editUserFunction.skillBoxes,
+                context);
+          } catch (e) {
+            debugPrint(e.toString());
+          }
         }
         editUserFunction.toogleEditingPopUp(0);
       })),

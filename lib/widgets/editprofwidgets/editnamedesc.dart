@@ -12,6 +12,7 @@ class EditNameAndDesc extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
+    
     final TextEditingController nameCont =
         TextEditingController(text: user.username);
 
@@ -33,6 +34,7 @@ class EditNameAndDesc extends StatelessWidget {
                       .checkInternetConnectivity()) {
                     // ignore: use_build_context_synchronously
                     await MyDb().updateNameAndDescription(user.userId,
+                   
                         nameCont.text, descriptionCont.text, context);
 
                     editUserFunction.toogleEditingPopUp(0);

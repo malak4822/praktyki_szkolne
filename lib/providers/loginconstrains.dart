@@ -6,10 +6,12 @@ class LoginConstrains extends ChangeNotifier {
     final customInstance = InternetConnectionChecker.createInstance(
         checkTimeout: const Duration(seconds: 1));
     if (await customInstance.hasConnection == true) {
+      _showErrorMessage = false;
+      notifyListeners();
       return true;
     } else {
       showErrorBox(
-          "Wygląda Na To, Że Brakuje Ci Internetu. Masz Na To Może Jakiś Plan B? Bo My Ci Go Nie Załatwimy 😉");
+          "Wygląda Na To, Że Brakuje Ci Internetu. Masz Na To Może Jakiś Plan B? 😉");
       return false;
     }
   }

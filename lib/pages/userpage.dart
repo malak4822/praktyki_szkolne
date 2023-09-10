@@ -11,15 +11,13 @@ class UserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var googleProvider = Provider.of<GoogleSignInProvider>(context);
-    var editUserProvider = Provider.of<EditUser>(context);
+    var currentUser = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
     var editUserFunction = Provider.of<EditUser>(context, listen: false);
     return Scaffold(
         floatingActionButton: FloatingActionButton(
             onPressed: () {
-              editUserFunction.checkEmptiness(
-                  googleProvider.getCurrentUser.username.isEmpty,
-                  googleProvider.getCurrentUser.description.isEmpty);
+              editUserFunction.checkEmptiness(currentUser.username.isEmpty,
+                  currentUser.description.isEmpty);
 
               Navigator.pushNamed(context, '/editUser');
             },
@@ -45,30 +43,28 @@ class UserPage extends StatelessWidget {
                         image: AssetImage('images/menuicon.png'), height: 30)),
                 Center(
                     child: CircleAvatar(
-                  radius: 85,
-                  backgroundColor: Colors.white,
-                  child: Container(
-                    height: 160,
-                    width: 160,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(colors: gradient),
-                    ),
-                    child: ClipOval(
-                        child: FadeInImage(
-                      fit: BoxFit.contain,
-                      height: 160,
-                      fadeInDuration: const Duration(milliseconds: 500),
-                      image: NetworkImage(
-                        googleProvider.getCurrentUser.registeredViaGoogle
-                            ? googleProvider.getCurrentUser.profilePicture
-                            : 'https://assets.codepen.io/1480814/av+1.png',
-                      ),
-                      placeholder: const NetworkImage(
-                          'https://assets.codepen.io/1480814/av+1.png'),
-                    )),
-                  ),
-                ))
+                        radius: 85,
+                        backgroundColor: Colors.white,
+                        child: Container(
+                            height: 160,
+                            width: 160,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(colors: gradient),
+                            ),
+                            child: ClipOval(
+                                child: FadeInImage(
+                              fit: BoxFit.contain,
+                              height: 160,
+                              fadeInDuration: const Duration(milliseconds: 500),
+                              image: NetworkImage(
+                                currentUser.registeredViaGoogle
+                                    ? currentUser.profilePicture
+                                    : 'https://assets.codepen.io/1480814/av+1.png',
+                              ),
+                              placeholder:
+                                  const AssetImage('images/man/man.png'),
+                            )))))
               ])),
           SizedBox(
               height: 300,
@@ -93,7 +89,7 @@ class UserPage extends StatelessWidget {
                               horizontal: 20, vertical: 10),
                           children: [
                             Text(
-                              googleProvider.getCurrentUser.username,
+                              currentUser.username,
                               softWrap: true,
                               maxLines: 2,
                               textAlign: TextAlign.center,
@@ -102,7 +98,7 @@ class UserPage extends StatelessWidget {
                                   fontSize: 24,
                                   fontWeight: FontWeight.w900),
                             ),
-                            Text(googleProvider.getCurrentUser.description,
+                            Text(currentUser.description,
                                 style: GoogleFonts.overpass(
                                     color: Colors.white,
                                     fontSize: 16,
@@ -110,7 +106,7 @@ class UserPage extends StatelessWidget {
                           ]),
                     )),
                 Visibility(
-                    visible: editUserProvider.skillBoxes.isNotEmpty,
+                    visible: currentUser.skillsSet.isNotEmpty,
                     child: Expanded(
                         flex: 9,
                         child: Padding(
@@ -120,13 +116,11 @@ class UserPage extends StatelessWidget {
                                 top: 6),
                             child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: editUserProvider.skillBoxes.length,
+                                itemCount: currentUser.skillsSet.length,
                                 scrollDirection: Axis.horizontal,
                                 itemBuilder: (context, index) => skillBox(
-                                    editUserProvider
-                                        .skillBoxes[index].keys.single,
-                                    editUserProvider
-                                        .skillBoxes[index].values.single,
+                                    currentUser.skillsSet[index].keys.single,
+                                    currentUser.skillsSet[index].values.single,
                                     context,
                                     false))))),
               ])),

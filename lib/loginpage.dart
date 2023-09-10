@@ -24,12 +24,6 @@ class _LoginPageState extends State<LoginPage> {
   bool isTextObscured = true;
 
   @override
-  void initState() {
-    Provider.of<GoogleSignInProvider>(context, listen: false).getUsersIds();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final signInProvider =
         Provider.of<GoogleSignInProvider>(context, listen: false);
@@ -193,8 +187,8 @@ class _LoginPageState extends State<LoginPage> {
                   Directionality(
                       textDirection: TextDirection.rtl,
                       child: ElevatedButton.icon(
-                          onPressed: () {
-                            signInProvider.loginViaGoogle(context);
+                          onPressed: () async {
+                           await signInProvider.loginViaGoogle(context);
                           },
                           icon: const FaIcon(FontAwesomeIcons.google,
                               size: 14, color: blackie),

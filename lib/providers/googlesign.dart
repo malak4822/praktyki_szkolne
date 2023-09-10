@@ -16,12 +16,8 @@ class GoogleSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void refreshSkillSet(newText, newSkillLvl, int skillIndex) {
-    // List<Map<String, int>> <----- that is _currentUser.skillsSet
-
-    Map<String, int> mapElement = _currentUser.skillsSet.elementAt(skillIndex);
-    mapElement = {newText: newSkillLvl};
-    mapElement[newText] = newSkillLvl;
+  void refreshSkillSet(newSkillSet) {
+    _currentUser.skillsSet = newSkillSet;
     notifyListeners();
   }
 
@@ -37,16 +33,6 @@ class GoogleSignInProvider extends ChangeNotifier {
       accountCreated: Timestamp(0, 0),
       skillsSet: []);
   MyUser get getCurrentUser => _currentUser;
-
-  final List<String> _usersId = [];
-
-  Future<void> getUsersIds() async {
-    final userCollection =
-        await FirebaseFirestore.instance.collection('users/').get();
-    for (var element in userCollection.docs) {
-      _usersId.add(element.reference.id);
-    }
-  }
 
   // LOG OUT LOG OUT LOG OUT LOG OUT
   Future<void> logout() async {
