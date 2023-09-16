@@ -1,12 +1,32 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditUser extends ChangeNotifier {
-
   int _currentChosenBox = 1;
   int get currentChosenBox => _currentChosenBox;
 
   bool _isDescOrNameEmpty = false;
   bool get isDescOrNameEmpty => _isDescOrNameEmpty;
+
+  set setSkillBoxes(skillBoxes) {
+    _skillBoxes = skillBoxes;
+  }
+
+  File? _imgFile;
+  File? get imgFile => _imgFile;
+
+  // Function to open the image picker dialog
+  Future<void> getImage() async {
+    final imagePicker = ImagePicker();
+    final pickedImage = await imagePicker.pickImage(
+        source: ImageSource
+            .gallery); // or ImageSource.camera for capturing from the camera
+    if (pickedImage != null) {
+      _imgFile = File(pickedImage.path);
+      notifyListeners();
+    }
+  }
 
   void saveBackup() {
     _skillBoxesBackup = _skillBoxes.map((mapElement) {
@@ -18,7 +38,21 @@ class EditUser extends ChangeNotifier {
     _skillBoxes = _skillBoxesBackup.map((mapElement) {
       return Map<String, int>.from(mapElement);
     }).toList();
+    print(_skillBoxes);
     notifyListeners();
+  }
+
+  Future<void> deleteSelectedImage() async {
+    if (_imgFile != null) {
+      try {
+        await _imgFile!.delete();
+        _imgFile = null;
+        notifyListeners();
+        print('Image deleted successfully.');
+      } catch (e) {
+        print('Error deleting image: $e');
+      }
+    }
   }
 
   void addSkillLvl() {
@@ -46,8 +80,7 @@ class EditUser extends ChangeNotifier {
   int _tabToOpen = 1;
   int get tabToOpen => _tabToOpen;
 
-  Map<String, int> modifyMapElement(
-      Map<String, int> inputMap, String newText, int newLvl) {
+  void modifyMapElement(Map<String, int> inputMap, String newText, int newLvl) {
     Map<String, int> modifiedMap = {};
 
     inputMap.forEach((key, newValue) {
@@ -56,9 +89,11 @@ class EditUser extends ChangeNotifier {
 
       // Add the modified key-value pair to the new map
       modifiedMap[modifiedKey] = modifiedValue;
-    });
 
-    return modifiedMap;
+      // JEST ERROR PO WYLACZANIU INTERNETU, NIE BACKAPUJE TRZEBA TO NAPRAWIC
+      _skillBoxes[currentChosenBox] = modifiedMap;
+    });
+    notifyListeners();
   }
 
   bool _isEditingSeen = false;

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/providers/edituser.dart';
@@ -56,7 +57,9 @@ class MyDb {
         currentUser.userId = data?['userId'] ?? "";
         currentUser.registeredViaGoogle = data?['registeredViaGoogle'] ?? false;
         currentUser.accountCreated = data?['accountCreated'] ?? Timestamp.now();
-      } 
+        Provider.of<EditUser>(context, listen: false).setSkillBoxes =
+            currentUser.skillsSet;
+      }
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -91,12 +94,34 @@ class MyDb {
           Provider.of<GoogleSignInProvider>(context, listen: false)
               .refreshSkillSet(actuallSkillSet);
         } else {
-          Provider.of<EditUser>(context, listen: false).restoreSkillBoxData();
+          print('ODNAWIANIE BACKUPu');
+          var prov = Provider.of<EditUser>(context, listen: false);
+          prov.restoreSkillBoxData();
+
+          Provider.of<GoogleSignInProvider>(context, listen: false)
+              .refreshSkillSet(prov.skillBoxes);
         }
       }
     } catch (e) {
       debugPrint(e.toString());
-      Provider.of<EditUser>(context, listen: false).restoreSkillBoxData();
+    }
+  }
+
+  Future<String?> uploadImageToStorage(String userId, imgFile) async {
+    final storage = FirebaseStorage.instance;
+
+    try {
+      final storageReference =
+          storage.ref().child('profile_pictures/$userId.jpg');
+      final uploadTask = storageReference.putFile(imgFile!);
+      await uploadTask.whenComplete(() => null);
+
+      final imageUrl = await storageReference.getDownloadURL();
+      print('URL TO --> $imageUrl');
+      return imageUrl;
+    } catch (e) {
+      print('Error uploading image to Firebase Storage: $e');
+      return null;
     }
   }
 }

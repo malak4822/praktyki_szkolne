@@ -20,6 +20,9 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
   Widget build(BuildContext context) {
     int tabToOpen = Provider.of<EditUser>(context).tabToOpen;
     var editUserFunction = Provider.of<EditUser>(context, listen: false);
+    String userId = Provider.of<GoogleSignInProvider>(context, listen: false)
+        .getCurrentUser
+        .userId;
     List<Widget> editWidgetTypes = [
       const EditPhoto(),
       const EditNameAndDesc(),
@@ -30,15 +33,15 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
       Expanded(child: GestureDetector(onTap: () async {
         if (tabToOpen == 2) {
           try {
-            await MyDb().updateSkillBoxes(
-                Provider.of<GoogleSignInProvider>(context, listen: false)
-                    .getCurrentUser
-                    .userId,
-                editUserFunction.skillBoxes,
-                context);
+            await MyDb()
+                .updateSkillBoxes(userId, editUserFunction.skillBoxes, context);
           } catch (e) {
             debugPrint(e.toString());
           }
+        }
+        if (tabToOpen == 0) {
+          await MyDb().uploadImageToStorage(userId, editUserFunction.imgFile);
+          editUserFunction.deleteSelectedImage();
         }
         editUserFunction.toogleEditingPopUp(0);
       })),

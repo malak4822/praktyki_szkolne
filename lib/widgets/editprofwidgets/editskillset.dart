@@ -14,14 +14,14 @@ class EditSkillSet extends StatefulWidget {
 class _EditSkillSetState extends State<EditSkillSet> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController skillCont = TextEditingController(text: 'Skill');
-
     FocusNode myfocusNode = FocusNode();
 
     List<Map<String, int>> skillBoxes =
-        Provider.of<EditUser>(context, listen: false).skillBoxes;
+        Provider.of<EditUser>(context).skillBoxes;
     int chosenBox = Provider.of<EditUser>(context).currentChosenBox;
     int currentSkillLvl = skillBoxes[chosenBox].values.single;
+    TextEditingController skillCont =
+        TextEditingController(text: skillBoxes[chosenBox].keys.single);
 
     return SingleChildScrollView(
         child: Column(children: [
@@ -40,11 +40,18 @@ class _EditSkillSetState extends State<EditSkillSet> {
             const Icon(Icons.star, color: Colors.white, size: 48),
             const SizedBox(height: 10),
             TextField(
-                onSubmitted: (newTxt) => setState(() {
-                      skillCont.text = newTxt;
-                    }),
+                onSubmitted: (newTxt) {
+                  newTxt =
+                      newTxt.replaceFirst(newTxt[0], newTxt[0].toUpperCase());
+                  Provider.of<EditUser>(context, listen: false)
+                      .modifyMapElement(
+                          skillBoxes[chosenBox], newTxt, currentSkillLvl);
+
+                  print('SKILL BOXES ===> $skillBoxes');
+                },
                 // onTap: () => setState(() {}),
                 // onTapOutside: (event) => setState(() {}),
+
                 textAlign: TextAlign.center,
                 controller: skillCont,
                 keyboardType: TextInputType.text,

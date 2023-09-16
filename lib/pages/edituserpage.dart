@@ -52,20 +52,17 @@ class EditUserPage extends StatelessWidget {
                           ),
                           child: Stack(children: [
                             ClipOval(
-                              child: FadeInImage(
-                                fit: BoxFit.contain,
-                                height: 160,
-                                fadeInDuration:
-                                    const Duration(milliseconds: 500),
-                                image: NetworkImage(
-                                  currentUser.registeredViaGoogle
-                                      ? currentUser.profilePicture
-                                      : 'https://assets.codepen.io/1480814/av+1.png',
-                                ),
-                                placeholder:
-                                    const AssetImage('images/man/man.png'),
-                              ),
-                            ),
+                                child: FadeInImage(
+                              fit: BoxFit.contain,
+                              height: 160,
+                              fadeInDuration: const Duration(milliseconds: 500),
+                              image: currentUser.profilePicture.isNotEmpty
+                                  ? NetworkImage(currentUser.profilePicture)
+                                  : AssetImage('images/man/man.png')
+                                      as ImageProvider<Object>,
+                              placeholder:
+                                  const AssetImage('images/man/man.png'),
+                            )),
                             ClipOval(child: blackBox(0, false, 0, context))
                           ]))))
             ])),
