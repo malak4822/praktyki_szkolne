@@ -113,11 +113,14 @@ class MyDb {
     try {
       final storageReference =
           storage.ref().child('profile_pictures/$userId.jpg');
-      final uploadTask = storageReference.putFile(imgFile!);
-      await uploadTask.whenComplete(() => null);
-
+      await storageReference.putFile(imgFile!);
       final imageUrl = await storageReference.getDownloadURL();
-      print('URL TO --> $imageUrl');
+
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .update({'profilePicture': imageUrl});
+
       return imageUrl;
     } catch (e) {
       print('Error uploading image to Firebase Storage: $e');

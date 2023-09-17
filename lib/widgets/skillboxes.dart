@@ -8,10 +8,9 @@ Widget skillBox(successTxt, skillLevel, context, bool isChosen) => Container(
       decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: isChosen ? Colors.black54 : Colors.white,
-              spreadRadius: 0.3,
-              blurRadius: 4,
-            ),
+                color: isChosen ? Colors.black54 : Colors.white,
+                spreadRadius: 0.3,
+                blurRadius: 4),
           ],
           gradient: const LinearGradient(colors: gradient),
           borderRadius: BorderRadius.circular(8)),
@@ -48,7 +47,7 @@ Widget skillEditBox(String successTxt, int skillLevel, int chosenBox, context) {
       width: MediaQuery.of(context).size.width / 4,
       decoration: BoxDecoration(
           boxShadow: const [
-            BoxShadow(color: Colors.black54, spreadRadius: 0.3, blurRadius: 5),
+            BoxShadow(color: Colors.black54, spreadRadius: 0.3, blurRadius: 5)
           ],
           gradient: const LinearGradient(colors: gradient),
           borderRadius: BorderRadius.circular(8)),

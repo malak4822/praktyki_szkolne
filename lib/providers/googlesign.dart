@@ -21,6 +21,11 @@ class GoogleSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+    void refreshProfilePicture(newPictureUrl) {
+    _currentUser.profilePicture = newPictureUrl;
+    notifyListeners();
+  }
+
   MyUser _currentUser = MyUser(
       userId: '',
       username: '',

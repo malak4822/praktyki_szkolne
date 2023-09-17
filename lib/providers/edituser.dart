@@ -3,6 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditUser extends ChangeNotifier {
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  void changeLoading() {
+    _isLoading = !_isLoading;
+    notifyListeners();
+  }
+
   int _currentChosenBox = 1;
   int get currentChosenBox => _currentChosenBox;
 
@@ -19,9 +27,10 @@ class EditUser extends ChangeNotifier {
   // Function to open the image picker dialog
   Future<void> getImage() async {
     final imagePicker = ImagePicker();
-    final pickedImage = await imagePicker.pickImage(
-        source: ImageSource
-            .gallery); // or ImageSource.camera for capturing from the camera
+
+    final pickedImage =
+        await imagePicker.pickImage(source: ImageSource.gallery);
+
     if (pickedImage != null) {
       _imgFile = File(pickedImage.path);
       notifyListeners();
@@ -39,6 +48,17 @@ class EditUser extends ChangeNotifier {
       return Map<String, int>.from(mapElement);
     }).toList();
     print(_skillBoxes);
+    notifyListeners();
+  }
+
+  void removeSkillBox() {
+    if (_skillBoxes.length != 1) {
+      _skillBoxes.removeAt(_currentChosenBox);
+      _currentChosenBox = 0;
+    } else {
+      print('removed last box');
+      _skillBoxes.removeLast();
+    }
     notifyListeners();
   }
 

@@ -54,12 +54,11 @@ class UserPage extends StatelessWidget {
                             ),
                             child: ClipOval(
                                 child: FadeInImage(
-                              fit: BoxFit.contain,
-                              height: 160,
+                              fit: BoxFit.cover,
                               fadeInDuration: const Duration(milliseconds: 500),
                               image: currentUser.profilePicture.isNotEmpty
                                   ? NetworkImage(currentUser.profilePicture)
-                                  : AssetImage('images/man/man.png')
+                                  : const AssetImage('images/man/man.png')
                                       as ImageProvider<Object>,
                               placeholder:
                                   const AssetImage('images/man/man.png'),

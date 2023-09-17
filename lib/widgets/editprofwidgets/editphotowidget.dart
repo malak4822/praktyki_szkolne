@@ -11,30 +11,25 @@ class EditPhoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var editFunction = Provider.of<EditUser>(context);
+    var editFunction = Provider.of<EditUser>(context, listen: false);
     var user = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
 
     File? imgFile = Provider.of<EditUser>(context, listen: true).imgFile;
 
-    File? compressAndCropImage() {
+    Future<File?> compressAndCropImage(File? imgFile) async {
       try {
         final bytes = imgFile!.readAsBytesSync();
         final image = img.decodeImage(bytes);
 
-        if (image == null) {
-          // Unable to decode the image.
-          return null;
-        }
-
         final croppedImage = img.copyCrop(
-          image,
-          x: (image.width - 1700 / 2).toInt(),
-          y: (image.height - 1700) ~/ 2,
-          width: 300.toInt(),
-          height: 300.toInt(),
+          image!,
+          x: (image.width - 2200) ~/ 2, // Center horizontally
+          y: (image.height - 2200) ~/ 2, // Center vertically
+          width: 2200, // Set width to 2200 pixels
+          height: 2200, // Set height to 2200 pixels
         );
 
-        final compressedImage = img.encodeJpg(croppedImage, quality: 70);
+        final compressedImage = img.encodeJpg(croppedImage, quality: 20);
 
         final compressedCroppedImageFile = File(imgFile.path)
           ..writeAsBytesSync(compressedImage);
@@ -46,9 +41,8 @@ class EditPhoto extends StatelessWidget {
       }
     }
 
-    ImageProvider<Object> showCorrect() {
+    ImageProvider<Object> showCorrect(File? imgFile) {
       if (imgFile != null) {
-        compressAndCropImage();
         return FileImage(imgFile);
       } else if (user.profilePicture.isNotEmpty) {
         return NetworkImage(user.profilePicture);
@@ -62,11 +56,11 @@ class EditPhoto extends StatelessWidget {
       children: [
         const Spacer(),
         CircleAvatar(
-            radius: 105,
+            radius: 125,
             backgroundColor: Colors.white,
             child: Container(
-              height: 200,
-              width: 200,
+              height: 240,
+              width: 240,
               decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(colors: gradient),
@@ -74,20 +68,13 @@ class EditPhoto extends StatelessWidget {
               child: ClipOval(
                   child: FadeInImage(
                 fit: BoxFit.cover,
-                height: 160,
-                fadeInDuration: const Duration(milliseconds: 500),
-                image: showCorrect(), // Use FileImage for a local file
+                image: showCorrect(imgFile),
                 placeholder: const AssetImage('images/man/man.png'),
               )),
             )),
         const Spacer(),
         InkWell(
-            onTap: () async {
-              await editFunction.getImage();
-              if (imgFile != null) {
-                // imgFile = compressAndCropImage();
-              }
-            },
+            onTap: () async => await editFunction.getImage(),
             child: SizedBox(
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height / 5,

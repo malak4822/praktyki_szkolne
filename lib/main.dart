@@ -11,6 +11,8 @@ import 'package:prakty/loginpage.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
 
+import 'loadingscreen.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -32,7 +34,12 @@ class MyApp extends StatelessWidget {
           initialRoute: '/root',
           routes: {
             '/root': (context) => const MyHomePage(),
-            '/editUser': (context) => const EditUserPage(),
+            '/editUser': (context) => Stack(children: [
+                  const EditUserPage(),
+                  Visibility(
+                      visible: Provider.of<EditUser>(context).isLoading,
+                      child: const LoadingWidget()),
+                ]),
           },
           debugShowCheckedModeBanner: false,
           title: 'Prakty',
@@ -61,14 +68,14 @@ final myErrorFont = GoogleFonts.overpass(
 //   Color.fromARGB(255, 0, 162, 226)
 // ];
 
-const List<Color> gradient = [
-  Color.fromARGB(255, 1, 192, 209),
-  Color.fromARGB(255, 0, 82, 156)
-];
 // const List<Color> gradient = [
-//   Colors.purple,
-//   Colors.blue,
+//   Color.fromARGB(255, 1, 192, 209),
+//   Color.fromARGB(255, 0, 82, 156)
 // ];
+const List<Color> gradient = [
+  Colors.purple,
+  Colors.blue,
+];
 
 const Color blackie = Color.fromARGB(255, 0, 79, 110);
 
