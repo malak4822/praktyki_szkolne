@@ -18,6 +18,7 @@ class MyDb {
         'email': myUser.email,
         'description': myUser.description,
         'age': myUser.age,
+        'location': myUser.location,
         'isNormalUser': myUser.isNormalUser,
         'skillsSet': myUser.skillsSet,
         'profilePicture': myUser.profilePicture,
@@ -52,6 +53,7 @@ class MyDb {
                   return skill;
                 }).toList() ??
                 [];
+        currentUser.location = data?['location'] ?? "";
         currentUser.isNormalUser = data?['isNormalUser'] ?? false;
         currentUser.profilePicture = data?['profilePicture'] ?? "";
         currentUser.userId = data?['userId'] ?? "";
@@ -65,17 +67,20 @@ class MyDb {
     }
   }
 
-  Future<void> updateNameAndDescription(
-      String userId, String newUsername, String newDescription, context) async {
+  Future<void> updateNameAndDescription(String userId, String newUsername,
+      String newDescription, String newLocation, int newAge, context) async {
     try {
       if (await Provider.of<LoginConstrains>(context, listen: false)
           .checkInternetConnectivity()) {
         await _firestore.collection('users').doc(userId).update({
           'username': newUsername,
           'description': newDescription,
+          'location': newLocation,
+          'age': newAge,
         });
         Provider.of<GoogleSignInProvider>(context, listen: false)
-            .refreshNameAndDesc(newUsername, newDescription);
+            .refreshNameAndDesc(
+                newUsername, newDescription, newLocation, newAge);
       }
     } catch (e) {
       debugPrint(e.toString());
@@ -94,7 +99,6 @@ class MyDb {
           Provider.of<GoogleSignInProvider>(context, listen: false)
               .refreshSkillSet(actuallSkillSet);
         } else {
-          print('ODNAWIANIE BACKUPu');
           var prov = Provider.of<EditUser>(context, listen: false);
           prov.restoreSkillBoxData();
 

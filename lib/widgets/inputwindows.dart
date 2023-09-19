@@ -3,21 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 Widget logPut(isTextObscured, myEndingIcon, myController, myHintText,
     myPrefixIcon, myKeyboardType, context) {
-  return
-      // ConstrainedBox(
-      // constraints: BoxConstraints(maxWidth: boxWidth),
-      // child:
-      Stack(
+  return Stack(
     children: [
-      // AnimatedContainer(
-      //   duration: const Duration(milliseconds: 800),
-      //   decoration: const BoxDecoration(
-      //     borderRadius: BorderRadius.horizontal(
-      //         right: Radius.circular(50), left: Radius.circular(40)),
-      //     color: Colors.white38,
-      //   ),
-      //   width: fillFieldLvl,
-      // ),
       TextField(
         onChanged: (newValue) {},
         cursorColor: Colors.white,
@@ -32,7 +19,7 @@ Widget logPut(isTextObscured, myEndingIcon, myController, myHintText,
           suffixIcon: myEndingIcon,
           prefixIcon: myPrefixIcon,
           focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(width: 2, color: Colors.white),
+              borderSide: BorderSide(width: 4, color: Colors.white),
               borderRadius: BorderRadius.all(Radius.circular(25))),
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(25)),
@@ -47,6 +34,7 @@ Widget logPut(isTextObscured, myEndingIcon, myController, myHintText,
 
 Widget updateValues(myController, hintTxt, maxLines, maxLength) {
   return TextField(
+    textAlign: TextAlign.center,
     maxLength: maxLength,
     maxLines: maxLines,
     cursorColor: Colors.white,
@@ -54,9 +42,10 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength) {
         GoogleFonts.overpass(fontWeight: FontWeight.bold, color: Colors.white),
     controller: myController,
     decoration: InputDecoration(
+      contentPadding: const EdgeInsets.all(10),
       counterStyle: GoogleFonts.overpass(color: Colors.white),
       focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(width: 3, color: Colors.white),
+          borderSide: BorderSide(width: 4, color: Colors.white),
           borderRadius: BorderRadius.all(Radius.circular(25))),
       enabledBorder: const OutlineInputBorder(
         borderSide: BorderSide(width: 1, color: Colors.white),

@@ -11,7 +11,7 @@ import 'package:prakty/loginpage.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
 
-import 'loadingscreen.dart';
+import 'widgets/loadingscreen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

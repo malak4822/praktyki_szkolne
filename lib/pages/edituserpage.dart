@@ -35,10 +35,6 @@ class EditUserPage extends StatelessWidget {
                     borderRadius: BorderRadius.vertical(
                         bottom: Radius.elliptical(200, 30))),
               ),
-              const Align(
-                  alignment: Alignment(0.9, -0.8),
-                  child: Image(
-                      image: AssetImage('images/menuicon.png'), height: 30)),
               Center(
                   child: CircleAvatar(
                       radius: 85,
@@ -67,105 +63,106 @@ class EditUserPage extends StatelessWidget {
                             ClipOval(child: blackBox(0, false, 0, context))
                           ]))))
             ])),
-        SizedBox(
-            height: 300,
-            child: Column(children: [
-              Expanded(
-                  flex: 11,
-                  child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 25),
-                      decoration: BoxDecoration(
-                          gradient: const LinearGradient(colors: gradient),
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black54,
-                              spreadRadius: 0.3,
-                              blurRadius: 5,
-                            )
-                          ]),
-                      child: Stack(children: [
-                        ListView(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 10),
-                            children: [
-                              Text(
-                                currentUser.username,
-                                softWrap: true,
-                                maxLines: 2,
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.overpass(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w900),
-                              ),
-                              Text(currentUser.description,
-                                  maxLines: 4,
-                                  style: GoogleFonts.overpass(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold)),
-                            ]),
-                        blackBox(
-                            1,
-                            editUserProvider.isDescOrNameEmpty ? true : false,
-                            0,
-                            context)
-                      ]))),
-              Expanded(
-                  flex: 9,
-                  child: Padding(
-                      padding: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width / 13,
-                          right: MediaQuery.of(context).size.width / 13,
-                          top: 6),
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: currentUser.skillsSet.isEmpty
-                              ? 1
-                              : currentUser.skillsSet.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            if (currentUser.skillsSet.isEmpty) {
-                              return Container(
-                                  height: 120,
-                                  margin: const EdgeInsets.all(6),
-                                  width: MediaQuery.of(context).size.width / 4,
-                                  decoration: BoxDecoration(
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.black54,
-                                          spreadRadius: 0.3,
-                                          blurRadius: 5,
-                                        )
-                                      ],
-                                      gradient: const LinearGradient(colors: [
-                                        Color.fromARGB(255, 1, 192, 209),
-                                        Color.fromARGB(255, 0, 82, 156)
-                                      ]),
-                                      borderRadius: BorderRadius.circular(8)),
-                                  child: blackBox(2, true, 0, context));
-                              //
-                            } else {
-                              chosenBox = index;
+        Column(children: [
+          Container(
+              margin: const EdgeInsets.symmetric(horizontal: 25),
+              decoration: BoxDecoration(
+                  gradient: const LinearGradient(colors: gradient),
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black54,
+                      spreadRadius: 0.3,
+                      blurRadius: 5,
+                    )
+                  ]),
+              child: Stack(children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: Column(children: [
+                      Text(currentUser.username,
+                          style: GoogleFonts.overpass(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w900,
+                          )),
+                      Center(
+                          child: Text(
+                        '${currentUser.age.toString()} lat, ${currentUser.location}',
+                        style: GoogleFonts.overpass(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900),
+                      )),
+                      const SizedBox(height: 5),
+                      Text(currentUser.description,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.overpass(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold))
+                    ])),
+                SizedBox(
+                    height: 100,
+                    child: blackBox(
+                        1,
+                        editUserProvider.isDescOrNameEmpty ? true : false,
+                        0,
+                        context))
+              ])),
+          SizedBox(
+              height: 130,
+              child: Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width / 13,
+                      right: MediaQuery.of(context).size.width / 13,
+                      top: 6),
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: currentUser.skillsSet.isEmpty
+                          ? 1
+                          : currentUser.skillsSet.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        if (currentUser.skillsSet.isEmpty) {
+                          return Container(
+                              height: 120,
+                              margin: const EdgeInsets.all(6),
+                              width: MediaQuery.of(context).size.width / 4,
+                              decoration: BoxDecoration(
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black54,
+                                      spreadRadius: 0.3,
+                                      blurRadius: 5,
+                                    )
+                                  ],
+                                  gradient: const LinearGradient(colors: [
+                                    Color.fromARGB(255, 1, 192, 209),
+                                    Color.fromARGB(255, 0, 82, 156)
+                                  ]),
+                                  borderRadius: BorderRadius.circular(8)),
+                              child: blackBox(2, true, 0, context));
+                          //
+                        } else {
+                          chosenBox = index;
 
-                              return skillEditBox(
-                                  currentUser.skillsSet[index].keys.single,
-                                  currentUser.skillsSet[index].values.single,
-                                  index,
-                                  context);
-                            }
-                          }))),
-            ])),
+                          return skillEditBox(
+                              currentUser.skillsSet[index].keys.single,
+                              currentUser.skillsSet[index].values.single,
+                              index,
+                              context);
+                        }
+                      }))),
+        ]),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
                 child: const Icon(Icons.home)),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -183,7 +180,6 @@ class EditUserPage extends StatelessWidget {
                   await MyDb().getUserInfo(context, currentUser.userId);
                   debugPrint(currentUser.username);
                   debugPrint(currentUser.description);
-
                   debugPrint(currentUser.email);
                   debugPrint(currentUser.skillsSet.toString());
                   debugPrint(currentUser.age.toString());
@@ -209,29 +205,27 @@ class EditUserPage extends StatelessWidget {
 
 Widget blackBox(int index, bool isFirstTime, int boxChosen, context) {
   var editUserFunction = Provider.of<EditUser>(context, listen: false);
-  return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8), color: Colors.black54),
-      width: double.infinity,
-      height: double.infinity,
-      child: IconButton(
-        iconSize: 34,
-        onPressed: () async {
-          if (isFirstTime) {
-            try {
-              editUserFunction.addSkillBox();
-            } catch (e) {
-              debugPrint(e.toString());
-            }
-          }
-          Provider.of<EditUser>(context, listen: false).saveBackup();
-          if (index == 2) {
-            Provider.of<EditUser>(context, listen: false)
-                .changeCurrentBox(boxChosen);
-          }
-          editUserFunction.toogleEditingPopUp(index);
-        },
-        icon: Icon(isFirstTime ? Icons.add : Icons.mode_edit_outlined),
-        color: Colors.white,
-      ));
+  return SizedBox.expand(
+      child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8), color: Colors.black54),
+          child: IconButton(
+            iconSize: 34,
+            onPressed: () async {
+              if (isFirstTime) {
+                try {
+                  editUserFunction.addSkillBox();
+                } catch (e) {
+                  debugPrint(e.toString());
+                }
+              }
+              if (index == 2) {
+                editUserFunction.saveSkillBackup();
+                editUserFunction.changeCurrentBox(boxChosen);
+              }
+              editUserFunction.toogleEditingPopUp(index);
+            },
+            icon: Icon(isFirstTime ? Icons.add : Icons.mode_edit_outlined),
+            color: Colors.white,
+          )));
 }

@@ -5,6 +5,7 @@ class MyUser {
   String username;
   //
   String description;
+  String location;
   int age;
   bool isNormalUser;
   List<Map<String, int>> skillsSet;
@@ -18,6 +19,7 @@ class MyUser {
     required this.userId,
     required this.username,
     required this.age,
+    required this.location,
     required this.isNormalUser,
     required this.description,
     required this.skillsSet,

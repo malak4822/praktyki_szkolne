@@ -14,114 +14,117 @@ class UserPage extends StatelessWidget {
     var currentUser = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
     var editUserFunction = Provider.of<EditUser>(context, listen: false);
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              editUserFunction.checkEmptiness(currentUser.username.isEmpty,
-                  currentUser.description.isEmpty);
+        // floatingActionButton: FloatingActionButton(
+        //     onPressed: () {
+        //       editUserFunction.checkEmptiness(currentUser.username.isEmpty,
+        //           currentUser.description.isEmpty);
 
-              Navigator.pushNamed(context, '/editUser');
-            },
-            backgroundColor: const Color.fromARGB(255, 0, 162, 226),
-            child: const Icon(
-              Icons.settings,
-              size: 40,
-            )),
+        //       Navigator.pushNamed(context, '/editUser');
+        //     },
+        //     backgroundColor: const Color.fromARGB(255, 0, 162, 226),
+        //     child: const Icon(Icons.settings, size: 40)),
         body: ListView(children: [
-          SizedBox(
-              height: 200,
-              child: Stack(children: [
-                Container(
-                  height: 140,
-                  decoration: const BoxDecoration(
-                      gradient: LinearGradient(colors: gradient),
-                      borderRadius: BorderRadius.vertical(
-                          bottom: Radius.elliptical(200, 30))),
-                ),
-                const Align(
-                    alignment: Alignment(0.9, -0.8),
-                    child: Image(
-                        image: AssetImage('images/menuicon.png'), height: 30)),
-                Center(
-                    child: CircleAvatar(
-                        radius: 85,
-                        backgroundColor: Colors.white,
-                        child: Container(
-                            height: 160,
-                            width: 160,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(colors: gradient),
-                            ),
-                            child: ClipOval(
-                                child: FadeInImage(
-                              fit: BoxFit.cover,
-                              fadeInDuration: const Duration(milliseconds: 500),
-                              image: currentUser.profilePicture.isNotEmpty
-                                  ? NetworkImage(currentUser.profilePicture)
-                                  : const AssetImage('images/man/man.png')
-                                      as ImageProvider<Object>,
-                              placeholder:
-                                  const AssetImage('images/man/man.png'),
-                            )))))
-              ])),
-          SizedBox(
-              height: 300,
-              child: Column(children: [
-                Expanded(
-                    flex: 11,
+      SizedBox(
+          height: 200,
+          child: Stack(children: [
+            Container(
+              height: 140,
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(colors: gradient),
+                  borderRadius: BorderRadius.vertical(
+                      bottom: Radius.elliptical(200, 30))),
+            ),
+            Align(
+                alignment: const Alignment(0.9, -0.8),
+                child: InkWell(
+                    onTap: () {
+                      editUserFunction.checkEmptiness(
+                          currentUser.username.isEmpty,
+                          currentUser.description.isEmpty);
+
+                      Navigator.pushNamed(context, '/editUser');
+                    },
+                    child: const Image(
+                        image: AssetImage('images/menuicon.png'), height: 30))),
+            Center(
+                child: CircleAvatar(
+                    radius: 85,
+                    backgroundColor: Colors.white,
                     child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 25),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(colors: gradient),
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black54,
-                            spreadRadius: 0.3,
-                            blurRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: ListView(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          children: [
-                            Text(
-                              currentUser.username,
-                              softWrap: true,
-                              maxLines: 2,
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.overpass(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w900),
-                            ),
-                            Text(currentUser.description,
-                                style: GoogleFonts.overpass(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold)),
-                          ]),
-                    )),
-                Visibility(
-                    visible: currentUser.skillsSet.isNotEmpty,
-                    child: Expanded(
-                        flex: 9,
-                        child: Padding(
-                            padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width / 13,
-                                right: MediaQuery.of(context).size.width / 13,
-                                top: 6),
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: currentUser.skillsSet.length,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) => skillBox(
-                                    currentUser.skillsSet[index].keys.single,
-                                    currentUser.skillsSet[index].values.single,
-                                    context,
-                                    false))))),
-              ])),
-        ]));
+                        height: 160,
+                        width: 160,
+                        decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(colors: gradient)),
+                        child: ClipOval(
+                            child: FadeInImage(
+                          fit: BoxFit.cover,
+                          fadeInDuration: const Duration(milliseconds: 500),
+                          image: currentUser.profilePicture.isNotEmpty
+                              ? NetworkImage(currentUser.profilePicture)
+                              : const AssetImage('images/man/man.png')
+                                  as ImageProvider<Object>,
+                          placeholder: const AssetImage('images/man/man.png'),
+                        )))))
+          ])),
+      Container(
+          margin: const EdgeInsets.symmetric(horizontal: 25),
+          decoration: BoxDecoration(
+              gradient: const LinearGradient(colors: gradient),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: const [
+                BoxShadow(
+                    color: Colors.black54, spreadRadius: 0.3, blurRadius: 5)
+              ]),
+          child: Stack(children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Column(children: [
+                Text(currentUser.username,
+                    softWrap: true,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.overpass(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900)),
+                Center(
+                    child: Text(
+                  textAlign: TextAlign.center,
+                  '${currentUser.age.toString()} lat, ${currentUser.location}',
+                  style: GoogleFonts.overpass(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w900),
+                )),
+                const SizedBox(height: 5),
+                Text(currentUser.description,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.overpass(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold)),
+              ]),
+            )
+          ])),
+      Visibility(
+          visible: currentUser.skillsSet.isNotEmpty,
+          child: SizedBox(
+              height: 130,
+              child: Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width / 13,
+                      right: MediaQuery.of(context).size.width / 13,
+                      top: 6),
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: currentUser.skillsSet.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) => skillBox(
+                          currentUser.skillsSet[index].keys.single,
+                          currentUser.skillsSet[index].values.single,
+                          context,
+                          true))))),
+    ]));
   }
 }

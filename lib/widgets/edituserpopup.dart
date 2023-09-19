@@ -36,6 +36,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
 
     return Column(children: [
       Expanded(child: GestureDetector(onTap: () async {
+        // Closing Skillset Widget
         if (tabToOpen == 2) {
           editUserFunction.changeLoading();
           try {
@@ -48,6 +49,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           }
           editUserFunction.changeLoading();
         }
+        // Closing Photo Widget
         if (tabToOpen == 0) {
           editUserFunction.changeLoading();
 
@@ -63,11 +65,10 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
 
           editUserFunction.deleteSelectedImage();
         }
-
         editUserFunction.toogleEditingPopUp(0);
       })),
       Expanded(
-          flex: 3,
+          flex: 4,
           child: Container(
               width: double.infinity,
               decoration: const BoxDecoration(

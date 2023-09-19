@@ -49,52 +49,51 @@ class _EditSkillSetState extends State<EditSkillSet> {
               gradient: const LinearGradient(colors: gradient),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.star, color: Colors.white, size: 48),
-                const SizedBox(height: 10),
-                TextField(
-                  onSubmitted: (newTxt) {
-                    newTxt = newTxt.replaceFirst(
-                      newTxt[0],
-                      newTxt[0].toUpperCase(),
-                    );
-                    Provider.of<EditUser>(context, listen: false)
-                        .modifyMapElement(
-                            skillBoxes[chosenBox], newTxt, currentSkillLvl);
-                  },
-                  textAlign: TextAlign.center,
-                  controller: skillCont,
-                  keyboardType: TextInputType.text,
-                  textInputAction: TextInputAction.done,
-                  maxLines: 1,
-                  focusNode: myfocusNode,
-                  style: fontSize20,
-                  decoration: const InputDecoration.collapsed(
-                    hintText: 'Skill',
-                    hintStyle: TextStyle(color: Colors.white),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => Provider.of<EditUser>(context, listen: false)
-                      .addSkillLvl(),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      skillBoxes.isNotEmpty ? currentSkillLvl : 1,
-                      (index) => const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 2),
-                        child: CircleAvatar(
-                          radius: 5,
-                          backgroundColor: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: GestureDetector(
+                    onTap: () => Provider.of<EditUser>(context, listen: false)
+                        .addSkillLvl(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.star, color: Colors.white, size: 48),
+                        const SizedBox(height: 10),
+                        TextField(
+                            onSubmitted: (newTxt) {
+                              newTxt = newTxt.replaceFirst(
+                                newTxt[0],
+                                newTxt[0].toUpperCase(),
+                              );
+                              Provider.of<EditUser>(context, listen: false)
+                                  .modifyMapElement(skillBoxes[chosenBox],
+                                      newTxt, currentSkillLvl);
+                            },
+                            textAlign: TextAlign.center,
+                            controller: skillCont,
+                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.done,
+                            maxLines: 1,
+                            focusNode: myfocusNode,
+                            style: fontSize20,
+                            decoration: const InputDecoration.collapsed(
+                              hintText: 'Skill',
+                              hintStyle: TextStyle(color: Colors.white),
+                            )),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(
+                              skillBoxes.isNotEmpty ? currentSkillLvl : 1,
+                              (index) => const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 2),
+                                child: CircleAvatar(
+                                  radius: 5,
+                                  backgroundColor: Colors.white,
+                                ),
+                              ),
+                            )),
+                      ],
+                    ))),
           ),
           IconButton(
             iconSize: 38,
@@ -102,28 +101,22 @@ class _EditSkillSetState extends State<EditSkillSet> {
                 Provider.of<EditUser>(context, listen: false).removeSkillBox(),
             icon: const Icon(Icons.delete, color: Colors.white),
           ),
-          SizedBox(height: MediaQuery.of(context).size.width * 2 / 9),
+          SizedBox(height: MediaQuery.of(context).size.width * 1 / 5),
           SizedBox(
-            height: 120,
+            height: 130,
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 25),
               addRepaintBoundaries: true,
-              itemCount: skillBoxes.length + 1, // Add 1 for the "add" button
+              itemCount: skillBoxes.length + 1,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
                 if (index == skillBoxes.length) {
-                  // This is the "add" button
                   return Container(
-                    margin: const EdgeInsets.only(left: 4),
-                    height: 110,
-                    width: 95,
+                    margin: const EdgeInsets.only(left: 4, top: 6, bottom: 6),
+                    width: MediaQuery.of(context).size.width / 4,
                     decoration: BoxDecoration(
                       boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          spreadRadius: 1,
-                          blurRadius: 1.5,
-                        ),
+                        BoxShadow(color: Colors.black26, blurRadius: 0)
                       ],
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(8),
@@ -131,18 +124,15 @@ class _EditSkillSetState extends State<EditSkillSet> {
                     child: IconButton(
                       iconSize: 38,
                       onPressed: () {
-                        var prov = Provider.of<EditUser>(
-                          context,
-                          listen: false,
-                        );
+                        var prov =
+                            Provider.of<EditUser>(context, listen: false);
                         prov.addSkillBox();
-                        prov.changeCurrentBox(skillBoxes.length);
+                        prov.changeCurrentBox(skillBoxes.length -1);
                       },
                       icon: const Icon(Icons.add, color: Colors.white),
                     ),
                   );
                 } else {
-                  // This is a skill box
                   return InkWell(
                     onTap: () => Provider.of<EditUser>(context, listen: false)
                         .changeCurrentBox(index),

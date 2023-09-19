@@ -10,9 +10,11 @@ import '../models/user_model.dart';
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  void refreshNameAndDesc(newUsername, newDescription) {
+  void refreshNameAndDesc(newUsername, newDescription, newLocation, newAge) {
     _currentUser.username = newUsername;
     _currentUser.description = newDescription;
+    _currentUser.location = newLocation;
+    _currentUser.age = newAge;
     notifyListeners();
   }
 
@@ -21,7 +23,7 @@ class GoogleSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-    void refreshProfilePicture(newPictureUrl) {
+  void refreshProfilePicture(newPictureUrl) {
     _currentUser.profilePicture = newPictureUrl;
     notifyListeners();
   }
@@ -33,6 +35,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       age: 0,
       isNormalUser: false,
       email: '',
+      location: '',
       profilePicture: '',
       registeredViaGoogle: false,
       accountCreated: Timestamp(0, 0),
@@ -50,6 +53,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           age: 0,
           isNormalUser: false,
           email: '',
+          location: '',
           profilePicture: '',
           registeredViaGoogle: false,
           skillsSet: [],

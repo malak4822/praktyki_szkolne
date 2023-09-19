@@ -37,7 +37,7 @@ class EditUser extends ChangeNotifier {
     }
   }
 
-  void saveBackup() {
+  void saveSkillBackup() {
     _skillBoxesBackup = _skillBoxes.map((mapElement) {
       return Map<String, int>.from(mapElement);
     }).toList();
@@ -107,10 +107,7 @@ class EditUser extends ChangeNotifier {
       String modifiedKey = newText;
       int modifiedValue = newValue;
 
-      // Add the modified key-value pair to the new map
       modifiedMap[modifiedKey] = modifiedValue;
-
-      // JEST ERROR PO WYLACZANIU INTERNETU, NIE BACKAPUJE TRZEBA TO NAPRAWIC
       _skillBoxes[currentChosenBox] = modifiedMap;
     });
     notifyListeners();
@@ -118,6 +115,7 @@ class EditUser extends ChangeNotifier {
 
   bool _isEditingSeen = false;
   bool get isEditingSeen => _isEditingSeen;
+  
   void setEmptiness(bool newValue) {
     _isDescOrNameEmpty = newValue;
     notifyListeners();
