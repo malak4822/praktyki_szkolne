@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/main.dart';
-import 'package:prakty/pages/userpage.dart';
+import 'package:prakty/view/jobs.dart';
+import 'package:prakty/view/userpage.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,7 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
     super.initState();
   }
 
-  int _currentIndex = 2;
+  int _currentIndex = 1;
 
   void changePage(int newIndex) {
     setState(() {
@@ -31,24 +32,18 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
   Widget build(BuildContext context) {
     List<Widget> pages = [
       const Center(child: Icon(Icons.abc)),
-      const Center(child: Icon(Icons.abc)),
+      const JobNoticesPage(),
       const UserPage(),
     ];
     return Scaffold(
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: gradient,
-              stops: [0.0, 0.8],
-            ),
-            borderRadius: BorderRadius.vertical(
-              top: Radius.elliptical(300, 20),
-            )),
+          borderRadius: BorderRadius.vertical(top: Radius.elliptical(300, 20)),
+          gradient: LinearGradient(colors: gradient, stops: [0.0, 0.8]),
+        ),
         child: BottomNavigationBar(
           currentIndex: _currentIndex,
-          onTap: (newIndex) {
-            changePage(newIndex);
-          },
+          onTap: (newIndex) => changePage(newIndex),
           showUnselectedLabels: false,
           showSelectedLabels: false,
           backgroundColor: Colors.transparent,
@@ -56,9 +51,17 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
           elevation: 0,
           items: const [
             BottomNavigationBarItem(
-                icon: Icon(Icons.messenger_outline_rounded), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.business), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
+              icon: Icon(Icons.messenger_outline_rounded),
+              label: "",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.business),
+              label: "",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "",
+            ),
           ],
         ),
       ),

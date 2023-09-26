@@ -14,33 +14,32 @@ class UserPage extends StatelessWidget {
     var currentUser = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
     var editUserFunction = Provider.of<EditUser>(context, listen: false);
     return Scaffold(
-        // floatingActionButton: FloatingActionButton(
-        //     onPressed: () {
-        //       editUserFunction.checkEmptiness(currentUser.username.isEmpty,
-        //           currentUser.description.isEmpty);
-
-        //       Navigator.pushNamed(context, '/editUser');
-        //     },
-        //     backgroundColor: const Color.fromARGB(255, 0, 162, 226),
-        //     child: const Icon(Icons.settings, size: 40)),
         body: ListView(children: [
       SizedBox(
           height: 200,
           child: Stack(children: [
             Container(
-              height: 140,
-              decoration: const BoxDecoration(
-                  gradient: LinearGradient(colors: gradient),
-                  borderRadius: BorderRadius.vertical(
-                      bottom: Radius.elliptical(200, 30))),
-            ),
+                height: 140,
+                decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black38,
+                          spreadRadius: 0.1,
+                          blurRadius: 12,
+                          offset: Offset(0, 6))
+                    ],
+                    gradient: LinearGradient(colors: gradient),
+                    borderRadius: BorderRadius.vertical(
+                        bottom: Radius.elliptical(200, 30)))),
             Align(
                 alignment: const Alignment(0.9, -0.8),
                 child: InkWell(
                     onTap: () {
                       editUserFunction.checkEmptiness(
-                          currentUser.username.isEmpty,
-                          currentUser.description.isEmpty);
+                          currentUser.username,
+                          currentUser.description,
+                          currentUser.age,
+                          currentUser.location);
 
                       Navigator.pushNamed(context, '/editUser');
                     },
@@ -72,10 +71,7 @@ class UserPage extends StatelessWidget {
           decoration: BoxDecoration(
               gradient: const LinearGradient(colors: gradient),
               borderRadius: BorderRadius.circular(8),
-              boxShadow: const [
-                BoxShadow(
-                    color: Colors.black54, spreadRadius: 0.3, blurRadius: 5)
-              ]),
+              boxShadow: myBoxShadow),
           child: Stack(children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -86,16 +82,14 @@ class UserPage extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: GoogleFonts.overpass(
                         color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900)),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800)),
                 Center(
                     child: Text(
                   textAlign: TextAlign.center,
-                  '${currentUser.age.toString()} lat, ${currentUser.location}',
-                  style: GoogleFonts.overpass(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900),
+                  '${currentUser.age == 0 ? '' : '${currentUser.age.toString()} lat,'}  ${currentUser.location}',
+                  style:
+                      GoogleFonts.overpass(color: Colors.white, fontSize: 16),
                 )),
                 const SizedBox(height: 5),
                 Text(currentUser.description,
@@ -116,15 +110,16 @@ class UserPage extends StatelessWidget {
                       left: MediaQuery.of(context).size.width / 13,
                       right: MediaQuery.of(context).size.width / 13,
                       top: 6),
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: currentUser.skillsSet.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) => skillBox(
-                          currentUser.skillsSet[index].keys.single,
-                          currentUser.skillsSet[index].values.single,
-                          context,
-                          true))))),
+                  child: Center(
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: currentUser.skillsSet.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) => skillBox(
+                              currentUser.skillsSet[index].keys.single,
+                              currentUser.skillsSet[index].values.single,
+                              context,
+                              true)))))),
     ]));
   }
 }

@@ -10,8 +10,39 @@ import 'package:prakty/widgets/error.dart';
 import 'package:prakty/loginpage.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
-
 import 'widgets/loadingscreen.dart';
+
+final fontSize20 = GoogleFonts.overpass(
+    fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white);
+final fontSize16 = GoogleFonts.overpass(
+    fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white);
+final myErrorFont = GoogleFonts.overpass(
+    fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
+
+// const List<Color> gradient = [
+// Color.fromARGB(255, 1, 192, 209),
+// Color.fromARGB(255, 0, 82, 156)
+// ];
+
+const List<Color> gradient = [
+  Colors.amber, // Yellow
+  Colors.purpleAccent, // Purple
+];
+
+const myBoxShadow = [
+  BoxShadow(
+    color: Colors.black54,
+    spreadRadius: 0.3,
+    blurRadius: 5,
+  )
+];
+
+// const List<Color> gradient = [
+//   Colors.purple,
+//   Colors.blue,
+// ];
+
+const Color blackie = Color.fromARGB(255, 0, 79, 110);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,30 +85,6 @@ class MyApp extends StatelessWidget {
         ));
   }
 }
-
-final fontSize20 = GoogleFonts.overpass(
-    fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white);
-final fontSize16 = GoogleFonts.overpass(
-    fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white);
-
-final myErrorFont = GoogleFonts.overpass(
-    fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
-
-// const List<Color> gradient = [
-//   Color.fromARGB(255, 103, 242, 255),
-//   Color.fromARGB(255, 0, 162, 226)
-// ];
-
-// const List<Color> gradient = [
-//   Color.fromARGB(255, 1, 192, 209),
-//   Color.fromARGB(255, 0, 82, 156)
-// ];
-const List<Color> gradient = [
-  Colors.purple,
-  Colors.blue,
-];
-
-const Color blackie = Color.fromARGB(255, 0, 79, 110);
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});

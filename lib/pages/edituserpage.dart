@@ -31,6 +31,13 @@ class EditUserPage extends StatelessWidget {
               Container(
                 height: 140,
                 decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black38,
+                          spreadRadius: 0.1,
+                          blurRadius: 12,
+                          offset: Offset(0, 6))
+                    ],
                     gradient: LinearGradient(colors: gradient),
                     borderRadius: BorderRadius.vertical(
                         bottom: Radius.elliptical(200, 30))),
@@ -69,13 +76,7 @@ class EditUserPage extends StatelessWidget {
               decoration: BoxDecoration(
                   gradient: const LinearGradient(colors: gradient),
                   borderRadius: BorderRadius.circular(8),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black54,
-                      spreadRadius: 0.3,
-                      blurRadius: 5,
-                    )
-                  ]),
+                  boxShadow: myBoxShadow),
               child: Stack(children: [
                 Padding(
                     padding: const EdgeInsets.symmetric(
@@ -84,16 +85,14 @@ class EditUserPage extends StatelessWidget {
                       Text(currentUser.username,
                           style: GoogleFonts.overpass(
                             color: Colors.white,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w900,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800,
                           )),
                       Center(
                           child: Text(
-                        '${currentUser.age.toString()} lat, ${currentUser.location}',
+                        '${currentUser.age == 0 ? '' : '${currentUser.age.toString()} lat,'}  ${currentUser.location}',
                         style: GoogleFonts.overpass(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w900),
+                            color: Colors.white, fontSize: 16),
                       )),
                       const SizedBox(height: 5),
                       Text(currentUser.description,
@@ -107,7 +106,7 @@ class EditUserPage extends StatelessWidget {
                     height: 100,
                     child: blackBox(
                         1,
-                        editUserProvider.isDescOrNameEmpty ? true : false,
+                        editUserProvider.areFieldsEmpty ? true : false,
                         0,
                         context))
               ])),
@@ -131,17 +130,9 @@ class EditUserPage extends StatelessWidget {
                               margin: const EdgeInsets.all(6),
                               width: MediaQuery.of(context).size.width / 4,
                               decoration: BoxDecoration(
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.black54,
-                                      spreadRadius: 0.3,
-                                      blurRadius: 5,
-                                    )
-                                  ],
-                                  gradient: const LinearGradient(colors: [
-                                    Color.fromARGB(255, 1, 192, 209),
-                                    Color.fromARGB(255, 0, 82, 156)
-                                  ]),
+                                  boxShadow: myBoxShadow,
+                                  gradient:
+                                      const LinearGradient(colors: gradient),
                                   borderRadius: BorderRadius.circular(8)),
                               child: blackBox(2, true, 0, context));
                           //
@@ -203,7 +194,7 @@ class EditUserPage extends StatelessWidget {
   }
 }
 
-Widget blackBox(int index, bool isFirstTime, int boxChosen, context) {
+Widget blackBox(int index, bool areFieldsEmpty, int boxChosen, context) {
   var editUserFunction = Provider.of<EditUser>(context, listen: false);
   return SizedBox.expand(
       child: Container(
@@ -212,20 +203,17 @@ Widget blackBox(int index, bool isFirstTime, int boxChosen, context) {
           child: IconButton(
             iconSize: 34,
             onPressed: () async {
-              if (isFirstTime) {
-                try {
-                  editUserFunction.addSkillBox();
-                } catch (e) {
-                  debugPrint(e.toString());
-                }
-              }
               if (index == 2) {
+                if (editUserFunction.skillBoxes.isEmpty) {
+                  editUserFunction.addSkillBox();
+                }
+
                 editUserFunction.saveSkillBackup();
                 editUserFunction.changeCurrentBox(boxChosen);
               }
               editUserFunction.toogleEditingPopUp(index);
             },
-            icon: Icon(isFirstTime ? Icons.add : Icons.mode_edit_outlined),
+            icon: Icon(areFieldsEmpty ? Icons.add : Icons.mode_edit_outlined),
             color: Colors.white,
           )));
 }

@@ -6,8 +6,6 @@ import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/loginconstrains.dart';
-
 class MyDb {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -67,21 +65,17 @@ class MyDb {
     }
   }
 
-  Future<void> updateNameAndDescription(String userId, String newUsername,
+  Future<void> updateInfoFields(String userId, String newUsername,
       String newDescription, String newLocation, int newAge, context) async {
     try {
-      if (await Provider.of<LoginConstrains>(context, listen: false)
-          .checkInternetConnectivity()) {
-        await _firestore.collection('users').doc(userId).update({
-          'username': newUsername,
-          'description': newDescription,
-          'location': newLocation,
-          'age': newAge,
-        });
-        Provider.of<GoogleSignInProvider>(context, listen: false)
-            .refreshNameAndDesc(
-                newUsername, newDescription, newLocation, newAge);
-      }
+      await _firestore.collection('users').doc(userId).update({
+        'username': newUsername,
+        'description': newDescription,
+        'location': newLocation,
+        'age': newAge,
+      });
+      Provider.of<GoogleSignInProvider>(context, listen: false)
+          .refreshNameAndDesc(newUsername, newDescription, newLocation, newAge);
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -91,20 +85,11 @@ class MyDb {
       String userId, List<Map<String, int>> actuallSkillSet, context) async {
     try {
       if (userId.isNotEmpty) {
-        if (await Provider.of<LoginConstrains>(context, listen: false)
-            .checkInternetConnectivity()) {
-          await _firestore.collection('users').doc(userId).update({
-            'skillsSet': actuallSkillSet,
-          });
-          Provider.of<GoogleSignInProvider>(context, listen: false)
-              .refreshSkillSet(actuallSkillSet);
-        } else {
-          var prov = Provider.of<EditUser>(context, listen: false);
-          prov.restoreSkillBoxData();
-
-          Provider.of<GoogleSignInProvider>(context, listen: false)
-              .refreshSkillSet(prov.skillBoxes);
-        }
+        await _firestore.collection('users').doc(userId).update({
+          'skillsSet': actuallSkillSet,
+        });
+        Provider.of<GoogleSignInProvider>(context, listen: false)
+            .refreshSkillSet(actuallSkillSet);
       }
     } catch (e) {
       debugPrint(e.toString());

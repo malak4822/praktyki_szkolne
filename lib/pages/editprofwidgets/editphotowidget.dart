@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
-import 'package:image/image.dart' as img;
 import '../../main.dart';
 
 class EditPhoto extends StatelessWidget {
@@ -14,32 +13,7 @@ class EditPhoto extends StatelessWidget {
     var editFunction = Provider.of<EditUser>(context, listen: false);
     var user = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
 
-    File? imgFile = Provider.of<EditUser>(context, listen: true).imgFile;
-
-    Future<File?> compressAndCropImage(File? imgFile) async {
-      try {
-        final bytes = imgFile!.readAsBytesSync();
-        final image = img.decodeImage(bytes);
-
-        final croppedImage = img.copyCrop(
-          image!,
-          x: (image.width - 2200) ~/ 2, // Center horizontally
-          y: (image.height - 2200) ~/ 2, // Center vertically
-          width: 2200, // Set width to 2200 pixels
-          height: 2200, // Set height to 2200 pixels
-        );
-
-        final compressedImage = img.encodeJpg(croppedImage, quality: 20);
-
-        final compressedCroppedImageFile = File(imgFile.path)
-          ..writeAsBytesSync(compressedImage);
-
-        return compressedCroppedImageFile;
-      } catch (e) {
-        print('Error compressing and cropping image: $e');
-        return null;
-      }
-    }
+    File? imgFile = Provider.of<EditUser>(context).imgFile;
 
     ImageProvider<Object> showCorrect(File? imgFile) {
       if (imgFile != null) {
@@ -73,15 +47,20 @@ class EditPhoto extends StatelessWidget {
               )),
             )),
         const Spacer(),
-        InkWell(
-            onTap: () async => await editFunction.getImage(),
-            child: SizedBox(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height / 5,
-                child: const Center(
-                    child: Icon(Icons.add_a_photo_rounded,
-                        color: Colors.white, size: 54))))
+        Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          changePhoto(context, editFunction.getCameraImage, Icons.camera),
+          changePhoto(context, editFunction.getStorageImage, Icons.photo),
+        ])
       ],
     );
   }
+
+  Widget changePhoto(context, Future<void> Function() function, icon) =>
+      InkWell(
+          onTap: () async {
+            await function();
+          },
+          child: SizedBox(
+              height: MediaQuery.of(context).size.height / 5,
+              child: Center(child: Icon(icon, color: Colors.white, size: 54))));
 }

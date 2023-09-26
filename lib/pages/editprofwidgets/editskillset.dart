@@ -30,6 +30,18 @@ class _EditSkillSetState extends State<EditSkillSet> {
             TextEditingController(text: skillBoxes[chosenBox].keys.single);
       }
     }
+    void saveText() {
+      if (skillCont.text.isNotEmpty) {
+        skillCont.text = skillCont.text.replaceFirst(
+          skillCont.text[0],
+          skillCont.text[0].toUpperCase(),
+        );
+      } else {
+        skillCont.text = 'Skill';
+      }
+      Provider.of<EditUser>(context, listen: false).modifyMapElement(
+          skillBoxes[chosenBox], skillCont.text, currentSkillLvl);
+    }
 
     return SingleChildScrollView(
       child: Column(
@@ -39,19 +51,13 @@ class _EditSkillSetState extends State<EditSkillSet> {
             height: MediaQuery.of(context).size.width * 5 / 9,
             width: MediaQuery.of(context).size.width * 7 / 15,
             decoration: BoxDecoration(
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.white,
-                  spreadRadius: 0.3,
-                  blurRadius: 5,
-                ),
-              ],
+              boxShadow: myBoxShadow,
               gradient: const LinearGradient(colors: gradient),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: GestureDetector(
+            child: Visibility(
+                visible: skillBoxes.isNotEmpty,
+                child: InkWell(
                     onTap: () => Provider.of<EditUser>(context, listen: false)
                         .addSkillLvl(),
                     child: Column(
@@ -60,15 +66,8 @@ class _EditSkillSetState extends State<EditSkillSet> {
                         const Icon(Icons.star, color: Colors.white, size: 48),
                         const SizedBox(height: 10),
                         TextField(
-                            onSubmitted: (newTxt) {
-                              newTxt = newTxt.replaceFirst(
-                                newTxt[0],
-                                newTxt[0].toUpperCase(),
-                              );
-                              Provider.of<EditUser>(context, listen: false)
-                                  .modifyMapElement(skillBoxes[chosenBox],
-                                      newTxt, currentSkillLvl);
-                            },
+                            onTapOutside: (a) => saveText(),
+                            onSubmitted: (newTxt) => saveText(),
                             textAlign: TextAlign.center,
                             controller: skillCont,
                             keyboardType: TextInputType.text,
@@ -101,7 +100,7 @@ class _EditSkillSetState extends State<EditSkillSet> {
                 Provider.of<EditUser>(context, listen: false).removeSkillBox(),
             icon: const Icon(Icons.delete, color: Colors.white),
           ),
-          SizedBox(height: MediaQuery.of(context).size.width * 1 / 5),
+          SizedBox(height: MediaQuery.of(context).size.width * 3 / 11),
           SizedBox(
             height: 130,
             child: ListView.builder(
@@ -115,19 +114,16 @@ class _EditSkillSetState extends State<EditSkillSet> {
                     margin: const EdgeInsets.only(left: 4, top: 6, bottom: 6),
                     width: MediaQuery.of(context).size.width / 4,
                     decoration: BoxDecoration(
-                      boxShadow: const [
-                        BoxShadow(color: Colors.black26, blurRadius: 0)
-                      ],
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                        boxShadow: myBoxShadow,
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(8)),
                     child: IconButton(
                       iconSize: 38,
                       onPressed: () {
                         var prov =
                             Provider.of<EditUser>(context, listen: false);
                         prov.addSkillBox();
-                        prov.changeCurrentBox(skillBoxes.length -1);
+                        prov.changeCurrentBox(skillBoxes.length - 1);
                       },
                       icon: const Icon(Icons.add, color: Colors.white),
                     ),

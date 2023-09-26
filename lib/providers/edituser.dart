@@ -14,8 +14,8 @@ class EditUser extends ChangeNotifier {
   int _currentChosenBox = 1;
   int get currentChosenBox => _currentChosenBox;
 
-  bool _isDescOrNameEmpty = false;
-  bool get isDescOrNameEmpty => _isDescOrNameEmpty;
+  bool _areFieldsEmpty = false;
+  bool get areFieldsEmpty => _areFieldsEmpty;
 
   set setSkillBoxes(skillBoxes) {
     _skillBoxes = skillBoxes;
@@ -24,15 +24,27 @@ class EditUser extends ChangeNotifier {
   File? _imgFile;
   File? get imgFile => _imgFile;
 
-  // Function to open the image picker dialog
-  Future<void> getImage() async {
+  Future<void> getStorageImage() async {
     final imagePicker = ImagePicker();
 
-    final pickedImage =
-        await imagePicker.pickImage(source: ImageSource.gallery);
+    final pickedImage = await imagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 12);
+    if (pickedImage != null) {
+      _imgFile = File(pickedImage.path);
+
+      notifyListeners();
+    }
+  }
+
+  Future<void> getCameraImage() async {
+    final imagePicker = ImagePicker();
+
+    final pickedImage = await imagePicker.pickImage(
+        source: ImageSource.camera, imageQuality: 12);
 
     if (pickedImage != null) {
       _imgFile = File(pickedImage.path);
+
       notifyListeners();
     }
   }
@@ -52,14 +64,15 @@ class EditUser extends ChangeNotifier {
   }
 
   void removeSkillBox() {
-    if (_skillBoxes.length != 1) {
-      _skillBoxes.removeAt(_currentChosenBox);
-      _currentChosenBox = 0;
-    } else {
-      print('removed last box');
-      _skillBoxes.removeLast();
+    if (_skillBoxes.isNotEmpty) {
+      if (_skillBoxes.length != 1) {
+        _skillBoxes.removeAt(_currentChosenBox);
+        _currentChosenBox = 0;
+      } else {
+        _skillBoxes.removeLast();
+      }
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   Future<void> deleteSelectedImage() async {
@@ -68,7 +81,6 @@ class EditUser extends ChangeNotifier {
         await _imgFile!.delete();
         _imgFile = null;
         notifyListeners();
-        print('Image deleted successfully.');
       } catch (e) {
         print('Error deleting image: $e');
       }
@@ -87,7 +99,7 @@ class EditUser extends ChangeNotifier {
   }
 
   void addSkillBox() {
-    _skillBoxes.add({'Skill': 1});
+    _skillBoxes.add({'': 1});
     notifyListeners();
   }
 
@@ -115,18 +127,15 @@ class EditUser extends ChangeNotifier {
 
   bool _isEditingSeen = false;
   bool get isEditingSeen => _isEditingSeen;
-  
-  void setEmptiness(bool newValue) {
-    _isDescOrNameEmpty = newValue;
-    notifyListeners();
-  }
 
-  void checkEmptiness(name, description) {
-    if (name || description) {
-      setEmptiness(true);
+  void checkEmptiness(
+      String name, String description, int age, String location) {
+    if (name.isEmpty || description.isEmpty || age == 0 || location.isEmpty) {
+      _areFieldsEmpty = true;
     } else {
-      setEmptiness(false);
+      _areFieldsEmpty = false;
     }
+    notifyListeners();
   }
 
   void changeCurrentBox(newIndexBox) {
