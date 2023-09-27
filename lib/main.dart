@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/loggedparent.dart';
+import 'package:prakty/pages/addjob.dart';
 import 'package:prakty/pages/edituserpage.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/loginconstrains.dart';
@@ -42,7 +43,6 @@ const myBoxShadow = [
 //   Colors.blue,
 // ];
 
-const Color blackie = Color.fromARGB(255, 0, 79, 110);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,6 +71,7 @@ class MyApp extends StatelessWidget {
                       visible: Provider.of<EditUser>(context).isLoading,
                       child: const LoadingWidget()),
                 ]),
+            '/addJob': (context) =>  AddJob()
           },
           debugShowCheckedModeBanner: false,
           title: 'Prakty',
@@ -79,7 +80,7 @@ class MyApp extends StatelessWidget {
             style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0),
                 backgroundColor: MaterialStateProperty.all<Color>(
-                    Colors.white.withOpacity(0.8))),
+                    Colors.white.withOpacity(0.2))),
           )),
           home: const MyHomePage(),
         ));

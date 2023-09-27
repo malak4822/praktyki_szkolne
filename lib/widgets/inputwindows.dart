@@ -1,36 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-Widget logPut(isTextObscured, myEndingIcon, myController, myHintText,
-    myPrefixIcon, myKeyboardType, context) {
-  return Stack(
-    children: [
-      TextField(
-        onChanged: (newValue) {},
-        cursorColor: Colors.white,
-        obscureText: isTextObscured,
-        textInputAction: TextInputAction.next,
-        style: GoogleFonts.overpass(
-            fontWeight: FontWeight.bold, color: Colors.white),
-        keyboardType: myKeyboardType,
-        controller: myController,
-        decoration: InputDecoration(
-          prefixIconColor: Colors.white,
-          suffixIcon: myEndingIcon,
-          prefixIcon: myPrefixIcon,
-          focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(width: 4, color: Colors.white),
-              borderRadius: BorderRadius.all(Radius.circular(25))),
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25)),
-          ),
-          hintText: myHintText,
-          hintStyle: GoogleFonts.overpass(fontWeight: FontWeight.bold),
+Widget textFormField(isTextObscured, myEndingIcon, myController, myHintText,
+        myPrefixIcon, myKeyboardType, validator) =>
+    TextFormField(
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Wpisz Tekst';
+        }
+        return null;
+      },
+      cursorColor: Colors.white,
+      obscureText: isTextObscured,
+      textInputAction: TextInputAction.next,
+      style: GoogleFonts.overpass(
+          fontWeight: FontWeight.bold, color: Colors.white),
+      keyboardType: myKeyboardType,
+      controller: myController,
+      decoration: InputDecoration(
+        prefixIconColor: Colors.white,
+        suffixIcon: myEndingIcon,
+        prefixIcon: myPrefixIcon,
+        enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(width: 2, color: Colors.white),
+            borderRadius: BorderRadius.all(Radius.circular(15))),
+        focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(width: 4, color: Colors.white),
+            borderRadius: BorderRadius.all(Radius.circular(30))),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(15)),
         ),
-      )
-    ],
-  );
-}
+        hintText: myHintText,
+        hintStyle: GoogleFonts.overpass(
+            fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+    );
 
 Widget updateValues(myController, hintTxt, maxLines, maxLength, icon) {
   return TextField(
