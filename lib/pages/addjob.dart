@@ -5,7 +5,7 @@ import 'package:prakty/main.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 
 class AddJob extends StatefulWidget {
-  AddJob({super.key});
+  const AddJob({super.key});
 
   @override
   State<AddJob> createState() => _AddJobState();
@@ -13,6 +13,12 @@ class AddJob extends StatefulWidget {
 
 class _AddJobState extends State<AddJob> {
   TextEditingController jobName = TextEditingController();
+  TextEditingController companyName = TextEditingController();
+  TextEditingController jobEmail = TextEditingController();
+  TextEditingController jobPhone = TextEditingController();
+  TextEditingController jobLocation = TextEditingController();
+  TextEditingController jobQualification = TextEditingController();
+  TextEditingController jobDescription = TextEditingController();
 
   File? noticePhoto;
 
@@ -39,37 +45,51 @@ class _AddJobState extends State<AddJob> {
                         gradient: const LinearGradient(colors: gradient),
                         boxShadow: myBoxShadow,
                         borderRadius: BorderRadius.circular(20)),
-                    child: Stack(
-                      children: [
-                        Center(
-                            child: ListView(
-                                padding: const EdgeInsets.all(20),
-                                children: [
+                    child: Center(
+                      child: ListView(
+                          padding: const EdgeInsets.all(20),
+                          children: [
+                            Stack(children: [
                               if (noticePhoto != null)
                                 GestureDetector(
-                                    onTap: () async {
-                                      await pickImg();
-                                    },
-                                    child: ClipRRect(
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(80),
-                                            bottomLeft: Radius.circular(20),
-                                            bottomRight: Radius.circular(20),
-                                            topRight: Radius.circular(20)),
-                                        child: SizedBox(
-                                          height: 250,
-                                            child: Image(
-                                          fit: BoxFit.cover,
-                                          image: noticePhoto != null
-                                              ? FileImage(noticePhoto!)
-                                              : const NetworkImage(
-                                                      'https://img.icons8.com/ios7/600w/000000/no-image.png')
-                                                  as ImageProvider<Object>,
-                                        )))),
-                              // if (noticePhoto != null)
-                              // const SizedBox(height: 15),
-                              if (noticePhoto == null)
-                                IconButton(
+                                  onTap: () async {
+                                    await pickImg();
+                                  },
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: SizedBox(
+                                          width: double.infinity,
+                                          height: 220,
+                                          child: Image(
+                                            fit: BoxFit.cover,
+                                            image: noticePhoto != null
+                                                ? FileImage(noticePhoto!)
+                                                : const NetworkImage(
+                                                        'https://clipart-library.com/new_gallery/1-15633_no-sign-png-no-symbol-white-png.png')
+                                                    as ImageProvider<Object>,
+                                          ))),
+                                ),
+                              Container(
+                                width: 40,
+                                height: 52,
+                                decoration: BoxDecoration(
+                                    color: noticePhoto != null
+                                        ? const Color.fromARGB(
+                                            255, 49, 182, 209)
+                                        : Colors.transparent,
+                                    borderRadius: const BorderRadius.only(
+                                      bottomRight: Radius.circular(20),
+                                    )),
+                                child: IconButton(
+                                    alignment: Alignment.topLeft,
+                                    iconSize: 34,
+                                    onPressed: () => Navigator.pop(context),
+                                    icon: const Icon(Icons.arrow_back_ios,
+                                        color: Colors.white)),
+                              ),
+                            ]),
+                            if (noticePhoto == null)
+                              IconButton(
                                   iconSize: 42,
                                   icon: const Icon(
                                     Icons.photo,
@@ -77,26 +97,29 @@ class _AddJobState extends State<AddJob> {
                                   ),
                                   onPressed: () async {
                                     await pickImg();
-                                  },
-                                ),
-                              const SizedBox(height: 15),
-                              updateValues(jobName, 'Nazwa Stanowiska', 1, 30,
-                                  Icons.person),
-                              updateValues(jobName, 'Nazwa Stanowiska', 1, 30,
-                                  Icons.person),
-                              updateValues(jobName, 'Nazwa Stanowiska', 1, 30,
-                                  Icons.person),
-                              updateValues(jobName, 'Nazwa Stanowiska', 1, 30,
-                                  Icons.person),
-                            ])),
-                        IconButton(
-                            iconSize: 38,
-                            onPressed: () => Navigator.pop(context),
-                            icon: const Icon(
-                              Icons.keyboard_backspace_rounded,
-                              color: Colors.white,
-                            ))
-                      ],
+                                  }),
+                            const SizedBox(height: 15),
+                            updateValues(jobName, 'Nazwa Stanowiska', 1, 28,
+                                Icons.person),
+                            const SizedBox(height: 8),
+                            updateValues(companyName, 'Nazwa Firmy', 1, 24,
+                                Icons.business),
+                            const SizedBox(height: 8),
+                            updateValues(jobEmail, 'Email Kontaktowy', 1, 24,
+                                Icons.email),
+                            const SizedBox(height: 8),
+                            updateValues(jobPhone, 'Telefon Kontaktowy', 1, 9,
+                                Icons.phone),
+                            const SizedBox(height: 8),
+                            updateValues(jobLocation, 'Miejsce Praktyk', 1, 28,
+                                Icons.place),
+                            const SizedBox(height: 8),
+                            updateValues(jobQualification, 'Nazwa Kwalifikacji',
+                                1, 28, Icons.text_fields_rounded),
+                            const SizedBox(height: 8),
+                            updateValues(jobDescription, 'Opis Stanowiska', 1,
+                                30, Icons.description_outlined),
+                          ]),
                     )))));
   }
 }

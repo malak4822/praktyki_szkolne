@@ -107,19 +107,6 @@ class LoginConstrains extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isEmailAndPassEmpty(email, password) {
-    clearWarnings();
-    if (email == '') {
-      showEmailIsEmptyError();
-      return true;
-    } else if (password == '') {
-      showPassIsEmptyError();
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   void showErrorBox(errorString) {
     _errorText = errorString;
     _showErrorMessage = true;

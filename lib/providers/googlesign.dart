@@ -108,83 +108,59 @@ class GoogleSignInProvider extends ChangeNotifier {
     }
   }
 
-  //
+  String _errorMessage = '';
+  String get errorMessage => _errorMessage;
+
   // EMAIL PASS LOGIN EMAIL PASS LOGIN EMAIL PASS LOGIN EMAIL PASS LOGIN
-  Future<void> loginViaEmailAndPassword(
-      String email, String pass, context) async {
-    var loginConstrAccess =
-        Provider.of<LoginConstrains>(context, listen: false);
-    if (await loginConstrAccess.checkInternetConnectivity() == true) {
-      if (loginConstrAccess.isEmailAndPassEmpty(email, pass) == false) {
-        try {
-          UserCredential userCredentials = await auth
-              .signInWithEmailAndPassword(email: email, password: pass);
-          await MyDb().getUserInfo(_currentUser, userCredentials.user!.uid);
+  Future<void> loginViaEmailAndPassword(String email, String pass) async {
+    print('WPROWADZONY EMAIL -> $email');
+    try {
+      UserCredential userCredentials =
+          await auth.signInWithEmailAndPassword(email: email, password: pass);
+      await MyDb().getUserInfo(_currentUser, userCredentials.user!.uid);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'invalid-email':
+          _errorMessage = 'invalid-email';
           notifyListeners();
-        } on FirebaseAuthException catch (e) {
-          switch (e.code) {
-            case 'invalid-email':
-              loginConstrAccess.showEmailIsInvalidError();
-              break;
-            case 'wrong-password':
-              loginConstrAccess.showWrongPasswordError();
-              break;
-            case 'user-not-found':
-              loginConstrAccess.showUserNotFoundError();
-              break;
-            case 'weak-password':
-              loginConstrAccess.switchPassErrorVisibility();
-              break;
-          }
-        } catch (e) {
-          debugPrint(e.toString());
-        }
+          break;
+        case 'wrong-password':
+          _errorMessage = 'wrong-password';
+          break;
+        case 'user-not-found':
+          _errorMessage = 'user-not-found';
+          break;
       }
+      notifyListeners();
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
-  //
   // CREATING USERS CREATING USERS CREATING USERS
   Future<void> signUpViaEmail(
-      String email, String password, String username, context) async {
-    var loginConstrAccess =
-        Provider.of<LoginConstrains>(context, listen: false);
+      String email, String password, String username) async {
+    try {
+      UserCredential authResult = await auth.createUserWithEmailAndPassword(
+          email: email, password: password);
 
-    if (await loginConstrAccess.checkInternetConnectivity() == true) {
-      if (username.trim().length < 4) {
-        loginConstrAccess.showUsernameTooShortError();
-      } else if (username.trim().length > 22) {
-        loginConstrAccess.showUsernameTooLongError();
-      } else {
-        if (loginConstrAccess.isEmailAndPassEmpty(email, password) == false) {
-          try {
-            UserCredential authResult =
-                await auth.createUserWithEmailAndPassword(
-                    email: email, password: password);
-
-            _currentUser.username = username;
-            _currentUser.email = email;
-            _currentUser.registeredViaGoogle = false;
-            _currentUser.userId = authResult.user!.uid;
-            _currentUser.accountCreated = Timestamp.now();
-            await MyDb().addFirestoreUser(_currentUser);
-          } on FirebaseAuthException catch (e) {
-            switch (e.code) {
-              case 'email-already-in-use':
-                loginConstrAccess.showEmailExistError();
-                break;
-              case 'invalid-email':
-                loginConstrAccess.showEmailIsInvalidError();
-                break;
-              case 'weak-password':
-                loginConstrAccess.switchPassErrorVisibility();
-                break;
-            }
-          } catch (errorTxt) {
-            loginConstrAccess.showErrorBox(errorTxt);
-          }
-        }
+      _currentUser.username = username;
+      _currentUser.email = email;
+      _currentUser.registeredViaGoogle = false;
+      _currentUser.userId = authResult.user!.uid;
+      _currentUser.accountCreated = Timestamp.now();
+      await MyDb().addFirestoreUser(_currentUser);
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'email-already-in-use':
+          break;
+        case 'invalid-email':
+          break;
+        case 'weak-password':
+          break;
       }
+    } catch (errorTxt) {
+      debugPrint(errorTxt.toString());
     }
   }
 }

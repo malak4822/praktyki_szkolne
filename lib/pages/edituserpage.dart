@@ -96,6 +96,7 @@ class EditUserPage extends StatelessWidget {
                       )),
                       const SizedBox(height: 5),
                       Text(currentUser.description,
+                      textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.overpass(
                               color: Colors.white,
@@ -103,7 +104,7 @@ class EditUserPage extends StatelessWidget {
                               fontWeight: FontWeight.bold))
                     ])),
                 SizedBox(
-                    height: 100,
+                    height: 110,
                     child: blackBox(
                         1,
                         editUserProvider.areFieldsEmpty ? true : false,

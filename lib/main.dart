@@ -20,15 +20,20 @@ final fontSize16 = GoogleFonts.overpass(
 final myErrorFont = GoogleFonts.overpass(
     fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
 
+const List<Color> gradient = [
+Color.fromARGB(255, 1, 192, 209),
+Color.fromARGB(255, 0, 82, 156)
+];
+
 // const List<Color> gradient = [
-// Color.fromARGB(255, 1, 192, 209),
-// Color.fromARGB(255, 0, 82, 156)
+//   Colors.amber, // Yellow
+//   Colors.purpleAccent, // Purple
 // ];
 
-const List<Color> gradient = [
-  Colors.amber, // Yellow
-  Colors.purpleAccent, // Purple
-];
+// const List<Color> gradient = [
+//   Colors.purple,
+//   Colors.blue,
+// ];
 
 const myBoxShadow = [
   BoxShadow(
@@ -38,10 +43,7 @@ const myBoxShadow = [
   )
 ];
 
-// const List<Color> gradient = [
-//   Colors.purple,
-//   Colors.blue,
-// ];
+
 
 
 Future<void> main() async {

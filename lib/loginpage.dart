@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:prakty/main.dart';
 import 'package:prakty/providers/googlesign.dart';
+import 'package:prakty/providers/loginconstrains.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -23,18 +22,16 @@ class _LoginPageState extends State<LoginPage> {
 
   final _formKey = GlobalKey<FormState>();
 
-  double myOpacity() {
-    if (!_isLoginClicked) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final signInProvider =
         Provider.of<GoogleSignInProvider>(context, listen: false);
+
+    final hasInternet = Provider.of<LoginConstrains>(context, listen: false)
+        .checkInternetConnectivity();
+
+    final errorMessage =
+        Provider.of<GoogleSignInProvider>(context).errorMessage;
 
     return Stack(children: [
       wciecia(Alignment.bottomRight, "images/login/login_bottomRight.png"),
@@ -53,11 +50,9 @@ class _LoginPageState extends State<LoginPage> {
                         curve: Curves.ease,
                         duration: const Duration(milliseconds: 300),
                         child: AnimatedOpacity(
-                            opacity: myOpacity(),
+                            opacity: !_isLoginClicked ? 1 : 0,
                             curve: Curves.linearToEaseOut,
                             duration: const Duration(milliseconds: 500),
-                            // width: _isLoginClicked ? 0 : null,
-                            // height: _isLoginClicked ? 0 : null,
                             child: Visibility(
                                 visible: !_isLoginClicked,
                                 child: textFormField(
@@ -67,7 +62,8 @@ class _LoginPageState extends State<LoginPage> {
                                     'Imię I Nazwisko',
                                     const Icon(Icons.person),
                                     TextInputType.name,
-                                    '')))),
+                                    0,
+                                    errorMessage)))),
                     const SizedBox(height: 15),
                     textFormField(
                         false,
@@ -76,7 +72,8 @@ class _LoginPageState extends State<LoginPage> {
                         'Email',
                         const Icon(Icons.email),
                         TextInputType.emailAddress,
-                        ''),
+                        1,
+                        errorMessage),
                     const SizedBox(height: 15),
                     textFormField(
                         isTextObscured,
@@ -90,81 +87,60 @@ class _LoginPageState extends State<LoginPage> {
                                 ? Icons.remove_red_eye_outlined
                                 : Icons.remove_red_eye),
                             color: Colors.white),
-                        // AnimatedIconButton(
-                        //   size: 24,
-                        //   animationDirection: const AnimationDirection.bounce(),
-                        //   onPressed: () async {
-                        //     await Future.delayed(
-                        //         const Duration(milliseconds: 400), () {
-                        //       setState(() {
-                        //         isTextObscured = !isTextObscured;
-                        //       });
-                        //     });
-                        //   },
-                        //   duration: const Duration(milliseconds: 400),
-                        //   icons: const <AnimatedIconItem>[
-                        //     AnimatedIconItem(
-                        //         icon: Icon(Icons.remove_red_eye_outlined,
-                        //             color: Colors.white)),
-                        //     AnimatedIconItem(
-                        //         icon: Icon(Icons.remove_red_eye,
-                        //             color: Colors.white)),
-                        //   ],
-                        // ),
                         passCont,
                         'Hasło',
                         const Icon(Icons.key_rounded),
                         TextInputType.visiblePassword,
-                        ''),
+                        2,
+                        errorMessage),
                     const SizedBox(height: 15),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                  side:
-                                      BorderSide(color: Colors.white, width: 2),
-                                  borderRadius: BorderRadius.horizontal(
+                              shape: RoundedRectangleBorder(
+                                  side: _isLoginClicked
+                                      ? const BorderSide(
+                                          color: Colors.white, width: 2)
+                                      : BorderSide.none,
+                                  borderRadius: const BorderRadius.horizontal(
                                       left: Radius.circular(15))),
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 30, vertical: 15)),
                           onPressed: () async {
                             if (_isLoginClicked) {
-                              if (_formKey.currentState!.validate()) {
-                                signInProvider.loginViaEmailAndPassword(
-                                    mailCont.text, passCont.text, context);
+                              if (await hasInternet) {
+                                _formKey.currentState!.activate();
+                                await signInProvider.loginViaEmailAndPassword(
+                                    mailCont.text, passCont.text);
                               }
                             }
                             setState(() {
                               _isLoginClicked = true;
                             });
                           },
-                          child: _isLoginClicked
-                              ? GradientText(
-                                  'Zaloguj',
-                                  style: fontSize20,
-                                  colors: gradient,
-                                )
-                              : Text(
-                                  "Zaloguj",
-                                  style: GoogleFonts.overpass(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                )),
+                          child: Text("Zaloguj",
+                              style: GoogleFonts.overpass(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600))),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              shape: const RoundedRectangleBorder(
-                                  side:
-                                      BorderSide(color: Colors.white, width: 2),
-                                  borderRadius: BorderRadius.horizontal(
+                              shape: RoundedRectangleBorder(
+                                  side: !_isLoginClicked
+                                      ? const BorderSide(
+                                          color: Colors.white, width: 2)
+                                      : BorderSide.none,
+                                  borderRadius: const BorderRadius.horizontal(
                                       right: Radius.circular(15))),
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 30, vertical: 15)),
-                          onPressed: () {
+                          onPressed: () async {
                             if (!_isLoginClicked) {
-                              if (_formKey.currentState!.validate()) {
-                                signInProvider.signUpViaEmail(mailCont.text,
-                                    passCont.text, nameCont.text, context);
+                              if (await hasInternet) {
+                                await signInProvider.signUpViaEmail(
+                                    mailCont.text,
+                                    passCont.text,
+                                    nameCont.text);
                               }
                             }
 
@@ -172,16 +148,13 @@ class _LoginPageState extends State<LoginPage> {
                               _isLoginClicked = false;
                             });
                           },
-                          child: _isLoginClicked
-                              ? Text(
-                                  "Zarejestruj",
-                                  style: GoogleFonts.overpass(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600),
-                                )
-                              : GradientText('Zarejestruj',
-                                  style: fontSize20, colors: gradient))
+                          child: Text(
+                            "Zarejestruj",
+                            style: GoogleFonts.overpass(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
+                          ))
                     ]),
                     Column(children: [
                       Directionality(
