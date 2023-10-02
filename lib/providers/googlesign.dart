@@ -122,19 +122,13 @@ class GoogleSignInProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
-          print('email jest zły');
           _errorMessage = 'invalid-email';
-          notifyListeners();
           break;
         case 'wrong-password':
-          print('zle haslo');
           _errorMessage = 'wrong-password';
-          notifyListeners();
           break;
         case 'user-not-found':
-          print('nie ma takiego uzytkownika');
           _errorMessage = 'user-not-found';
-        notifyListeners();
           break;
       }
       notifyListeners();

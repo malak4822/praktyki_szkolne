@@ -112,7 +112,7 @@ class MyDb {
 
       return imageUrl;
     } catch (e) {
-      print('Error uploading image to Firebase Storage: $e');
+      debugPrint('Error uploading image to Firebase Storage: $e');
       return null;
     }
   }

@@ -59,7 +59,6 @@ class EditUser extends ChangeNotifier {
     _skillBoxes = _skillBoxesBackup.map((mapElement) {
       return Map<String, int>.from(mapElement);
     }).toList();
-    print(_skillBoxes);
     notifyListeners();
   }
 
@@ -82,7 +81,7 @@ class EditUser extends ChangeNotifier {
         _imgFile = null;
         notifyListeners();
       } catch (e) {
-        print('Error deleting image: $e');
+        debugPrint('Error deleting image: $e');
       }
     }
   }

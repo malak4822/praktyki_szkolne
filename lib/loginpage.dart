@@ -19,7 +19,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passCont = TextEditingController();
   bool _isLoginClicked = true;
   bool isTextObscured = true;
-  String errorMessage = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -29,13 +28,6 @@ class _LoginPageState extends State<LoginPage> {
 
     final hasInternet = Provider.of<LoginConstrains>(context, listen: false)
         .checkInternetConnectivity();
-    String takeMessage() {
-      return errorMessage =
-          Provider.of<GoogleSignInProvider>(context, listen: false)
-              .errorMessage;
-    }
-    // String errorMessage =
-    //     Provider.of<GoogleSignInProvider>(context, listen: true).errorMessage;
 
     return Stack(children: [
       wciecia(Alignment.bottomRight, "images/login/login_bottomRight.png"),
@@ -67,7 +59,6 @@ class _LoginPageState extends State<LoginPage> {
                                   myPrefixIcon: const Icon(Icons.person),
                                   myKeyboardType: TextInputType.name,
                                   fieldNumber: 0,
-                                  errorMessage: errorMessage,
                                 )))),
                     const SizedBox(height: 15),
                     MyTextFormField(
@@ -78,27 +69,26 @@ class _LoginPageState extends State<LoginPage> {
                       myPrefixIcon: const Icon(Icons.email),
                       myKeyboardType: TextInputType.emailAddress,
                       fieldNumber: 1,
-                      errorMessage: errorMessage,
                     ),
                     const SizedBox(height: 15),
                     MyTextFormField(
-                        isTextObscured: isTextObscured,
-                        myEndingIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                isTextObscured = !isTextObscured;
-                              });
-                            },
-                            icon: Icon(isTextObscured
-                                ? Icons.remove_red_eye_outlined
-                                : Icons.remove_red_eye),
-                            color: Colors.white),
-                        myController: passCont,
-                        myHintText: 'Hasło',
-                        myPrefixIcon: const Icon(Icons.key_rounded),
-                        myKeyboardType: TextInputType.visiblePassword,
-                        fieldNumber: 2,
-                        errorMessage: errorMessage),
+                      isTextObscured: isTextObscured,
+                      myEndingIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isTextObscured = !isTextObscured;
+                            });
+                          },
+                          icon: Icon(isTextObscured
+                              ? Icons.remove_red_eye_outlined
+                              : Icons.remove_red_eye),
+                          color: Colors.white),
+                      myController: passCont,
+                      myHintText: 'Hasło',
+                      myPrefixIcon: const Icon(Icons.key_rounded),
+                      myKeyboardType: TextInputType.visiblePassword,
+                      fieldNumber: 2,
+                    ),
                     const SizedBox(height: 15),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       ElevatedButton(
@@ -114,20 +104,12 @@ class _LoginPageState extends State<LoginPage> {
                                   horizontal: 30, vertical: 15)),
                           onPressed: () async {
                             if (_isLoginClicked) {
-                              // if (await hasInternet) {
-                              takeMessage();
-                              print(
-                                  'PRZED USTAWIENIEM ERRORA -> $errorMessage');
-                              await signInProvider.loginViaEmailAndPassword(
-                                  mailCont.text, passCont.text);
-                              takeMessage();
-                              print(
-                                  'PRZED SPRAWDZENIEM FORMULARZA -> $errorMessage');
-                              _formKey.currentState!.validate();
-                              takeMessage();
-                              print(
-                                  'PO SPRAWDZENIU FORMULARZA -> $errorMessage');
-                              // }
+                              if (await hasInternet) {
+                                await signInProvider.loginViaEmailAndPassword(
+                                    mailCont.text, passCont.text);
+
+                                _formKey.currentState!.validate();
+                              }
                             }
                             setState(() {
                               _isLoginClicked = true;
@@ -156,6 +138,8 @@ class _LoginPageState extends State<LoginPage> {
                                     mailCont.text,
                                     passCont.text,
                                     nameCont.text);
+
+                                _formKey.currentState!.validate();
                               }
                             }
 

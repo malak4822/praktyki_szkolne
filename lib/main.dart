@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
                       visible: Provider.of<EditUser>(context).isLoading,
                       child: const LoadingWidget()),
                 ]),
-            '/addJob': (context) =>  AddJob()
+            '/addJob': (context) =>  const AddJob()
           },
           debugShowCheckedModeBanner: false,
           title: 'Prakty',

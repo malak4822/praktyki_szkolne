@@ -4,16 +4,16 @@ import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
 
 class MyTextFormField extends StatelessWidget {
-  MyTextFormField(
-      {super.key,
-      required this.isTextObscured,
-      this.myEndingIcon,
-      required this.myController,
-      required this.myHintText,
-      this.myPrefixIcon,
-      required this.myKeyboardType,
-      required this.fieldNumber,
-      this.errorMessage});
+  const MyTextFormField({
+    super.key,
+    required this.isTextObscured,
+    this.myEndingIcon,
+    required this.myController,
+    required this.myHintText,
+    this.myPrefixIcon,
+    required this.myKeyboardType,
+    required this.fieldNumber,
+  });
 
   final bool isTextObscured;
   final dynamic myEndingIcon;
@@ -22,18 +22,16 @@ class MyTextFormField extends StatelessWidget {
   final Icon? myPrefixIcon;
   final TextInputType myKeyboardType;
   final int fieldNumber;
-  String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       validator: (value) {
+        String errorMessage = '';
         void getMessage() {
-          print(errorMessage);
           errorMessage =
               Provider.of<GoogleSignInProvider>(context, listen: false)
                   .errorMessage;
-          print(errorMessage);
         }
 
         getMessage();
@@ -41,7 +39,6 @@ class MyTextFormField extends StatelessWidget {
           return 'Wpisz Tekst';
         } else if (fieldNumber == 1) {
           if (errorMessage == 'invalid-email') {
-            print('EMAIL JEST ZŁY W FORM FIELD');
             return 'Niepoprawny Email';
           } else if (errorMessage == 'user-not-found') {
             return 'Nie Ma Takiego Użytkownika';
