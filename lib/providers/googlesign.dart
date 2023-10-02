@@ -113,27 +113,33 @@ class GoogleSignInProvider extends ChangeNotifier {
 
   // EMAIL PASS LOGIN EMAIL PASS LOGIN EMAIL PASS LOGIN EMAIL PASS LOGIN
   Future<void> loginViaEmailAndPassword(String email, String pass) async {
-    print('WPROWADZONY EMAIL -> $email');
     try {
+      // _errorMessage = '';
+
       UserCredential userCredentials =
           await auth.signInWithEmailAndPassword(email: email, password: pass);
       await MyDb().getUserInfo(_currentUser, userCredentials.user!.uid);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
+          print('email jest zły');
           _errorMessage = 'invalid-email';
           notifyListeners();
           break;
         case 'wrong-password':
+          print('zle haslo');
           _errorMessage = 'wrong-password';
+          notifyListeners();
           break;
         case 'user-not-found':
+          print('nie ma takiego uzytkownika');
           _errorMessage = 'user-not-found';
+        notifyListeners();
           break;
       }
       notifyListeners();
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('ERROR TO ----> ${e.toString()}');
     }
   }
 

@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passCont = TextEditingController();
   bool _isLoginClicked = true;
   bool isTextObscured = true;
-
+  String errorMessage = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -29,9 +29,13 @@ class _LoginPageState extends State<LoginPage> {
 
     final hasInternet = Provider.of<LoginConstrains>(context, listen: false)
         .checkInternetConnectivity();
-
-    final errorMessage =
-        Provider.of<GoogleSignInProvider>(context).errorMessage;
+    String takeMessage() {
+      return errorMessage =
+          Provider.of<GoogleSignInProvider>(context, listen: false)
+              .errorMessage;
+    }
+    // String errorMessage =
+    //     Provider.of<GoogleSignInProvider>(context, listen: true).errorMessage;
 
     return Stack(children: [
       wciecia(Alignment.bottomRight, "images/login/login_bottomRight.png"),
@@ -55,29 +59,31 @@ class _LoginPageState extends State<LoginPage> {
                             duration: const Duration(milliseconds: 500),
                             child: Visibility(
                                 visible: !_isLoginClicked,
-                                child: textFormField(
-                                    false,
-                                    null,
-                                    nameCont,
-                                    'Imię I Nazwisko',
-                                    const Icon(Icons.person),
-                                    TextInputType.name,
-                                    0,
-                                    errorMessage)))),
+                                child: MyTextFormField(
+                                  isTextObscured: false,
+                                  myEndingIcon: null,
+                                  myController: nameCont,
+                                  myHintText: 'Imię I Nazwisko',
+                                  myPrefixIcon: const Icon(Icons.person),
+                                  myKeyboardType: TextInputType.name,
+                                  fieldNumber: 0,
+                                  errorMessage: errorMessage,
+                                )))),
                     const SizedBox(height: 15),
-                    textFormField(
-                        false,
-                        null,
-                        mailCont,
-                        'Email',
-                        const Icon(Icons.email),
-                        TextInputType.emailAddress,
-                        1,
-                        errorMessage),
+                    MyTextFormField(
+                      isTextObscured: false,
+                      myEndingIcon: null,
+                      myController: mailCont,
+                      myHintText: 'Email',
+                      myPrefixIcon: const Icon(Icons.email),
+                      myKeyboardType: TextInputType.emailAddress,
+                      fieldNumber: 1,
+                      errorMessage: errorMessage,
+                    ),
                     const SizedBox(height: 15),
-                    textFormField(
-                        isTextObscured,
-                        IconButton(
+                    MyTextFormField(
+                        isTextObscured: isTextObscured,
+                        myEndingIcon: IconButton(
                             onPressed: () {
                               setState(() {
                                 isTextObscured = !isTextObscured;
@@ -87,12 +93,12 @@ class _LoginPageState extends State<LoginPage> {
                                 ? Icons.remove_red_eye_outlined
                                 : Icons.remove_red_eye),
                             color: Colors.white),
-                        passCont,
-                        'Hasło',
-                        const Icon(Icons.key_rounded),
-                        TextInputType.visiblePassword,
-                        2,
-                        errorMessage),
+                        myController: passCont,
+                        myHintText: 'Hasło',
+                        myPrefixIcon: const Icon(Icons.key_rounded),
+                        myKeyboardType: TextInputType.visiblePassword,
+                        fieldNumber: 2,
+                        errorMessage: errorMessage),
                     const SizedBox(height: 15),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       ElevatedButton(
@@ -108,11 +114,20 @@ class _LoginPageState extends State<LoginPage> {
                                   horizontal: 30, vertical: 15)),
                           onPressed: () async {
                             if (_isLoginClicked) {
-                              if (await hasInternet) {
-                                _formKey.currentState!.activate();
-                                await signInProvider.loginViaEmailAndPassword(
-                                    mailCont.text, passCont.text);
-                              }
+                              // if (await hasInternet) {
+                              takeMessage();
+                              print(
+                                  'PRZED USTAWIENIEM ERRORA -> $errorMessage');
+                              await signInProvider.loginViaEmailAndPassword(
+                                  mailCont.text, passCont.text);
+                              takeMessage();
+                              print(
+                                  'PRZED SPRAWDZENIEM FORMULARZA -> $errorMessage');
+                              _formKey.currentState!.validate();
+                              takeMessage();
+                              print(
+                                  'PO SPRAWDZENIU FORMULARZA -> $errorMessage');
+                              // }
                             }
                             setState(() {
                               _isLoginClicked = true;
