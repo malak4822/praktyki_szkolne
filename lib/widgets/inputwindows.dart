@@ -76,65 +76,13 @@ class MyTextFormField extends StatelessWidget {
   }
 }
 
-// Widget textFormField(isTextObscured, myEndingIcon, myController, myHintText,
-//     myPrefixIcon, myKeyboardType, fieldNumber, context) {
-//   String errorMessage = '';
-
-//   return TextFormField(
-//     validator: (value) {
-//       void getMessage() {
-//         print(errorMessage);
-//         Provider.of<GoogleSignInProvider>(context, listen: false).errorMessage;
-//         print(errorMessage);
-//       }
-
-//       getMessage();
-//       if (value == null || value.isEmpty) {
-//         return 'Wpisz Tekst';
-//       } else if (fieldNumber == 1) {
-//         if (errorMessage == 'invalid-email') {
-//           print('EMAIL JEST ZŁY W FORM FIELD');
-//           return 'Niepoprawny Email';
-//         } else if (errorMessage == 'user-not-found') {
-//           return 'Nie Ma Takiego Użytkownika';
-//         }
-//       } else if (fieldNumber == 2 && errorMessage == 'wrong-password') {
-//         return 'Niepoprawne Hasło';
-//       }
-//       return null;
-//     },
-//     cursorColor: Colors.white,
-//     obscureText: isTextObscured,
-//     textInputAction: TextInputAction.next,
-//     style:
-//         GoogleFonts.overpass(fontWeight: FontWeight.bold, color: Colors.white),
-//     keyboardType: myKeyboardType,
-//     controller: myController,
-//     decoration: InputDecoration(
-//       prefixIconColor: Colors.white,
-//       suffixIcon: myEndingIcon,
-//       prefixIcon: myPrefixIcon,
-//       enabledBorder: const OutlineInputBorder(
-//           borderSide: BorderSide(width: 2, color: Colors.white),
-//           borderRadius: BorderRadius.all(Radius.circular(15))),
-//       focusedBorder: const OutlineInputBorder(
-//           borderSide: BorderSide(width: 4, color: Colors.white),
-//           borderRadius: BorderRadius.all(Radius.circular(30))),
-//       border: const OutlineInputBorder(
-//         borderRadius: BorderRadius.all(Radius.circular(15)),
-//       ),
-//       hintText: myHintText,
-//       hintStyle: GoogleFonts.overpass(
-//           fontWeight: FontWeight.bold, color: Colors.white),
-//     ),
-//   );
-// }
-
-Widget updateValues(myController, hintTxt, maxLines, maxLength, icon) {
+Widget updateValues(
+    myController, hintTxt, maxLines, maxLength, icon, myKeyboardType) {
   return TextField(
     textAlign: TextAlign.center,
     maxLength: maxLength,
     maxLines: maxLines,
+    keyboardType: myKeyboardType,
     cursorColor: Colors.white,
     style:
         GoogleFonts.overpass(fontWeight: FontWeight.bold, color: Colors.white),
@@ -142,8 +90,8 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon) {
     decoration: InputDecoration(
       icon: Icon(icon),
       iconColor: Colors.white,
-      contentPadding: const EdgeInsets.only(right: 8),
-      counterStyle: GoogleFonts.overpass(color: Colors.white, height: 1),
+      contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      counterStyle: GoogleFonts.overpass(color: Colors.white, height: 0.4),
       focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(width: 4, color: Colors.white),
           borderRadius: BorderRadius.all(Radius.circular(25))),

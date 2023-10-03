@@ -19,13 +19,15 @@ class EditNameAndDesc extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
         child: ListView(children: [
-          updateValues(nameCont, 'Imię I Nazwisko', 1, 24, Icons.face_sharp),
-          const SizedBox(height: 6),
-          updateValues(
-              descriptionCont, 'Opis', 8, 500, Icons.description_rounded),
-          const SizedBox(height: 6),
-          updateValues(
-              locationCont, 'Lokalizacja', 1, 40, Icons.location_on_rounded),
+          updateValues(nameCont, 'Imię I Nazwisko', 1, 24, Icons.face_sharp,
+              TextInputType.name),
+          const SizedBox(height: 10),
+          updateValues(descriptionCont, 'Opis', 8, 500,
+              Icons.description_rounded, TextInputType.text),
+          const SizedBox(height: 10),
+          updateValues(locationCont, 'Lokalizacja', 1, 40,
+              Icons.location_on_rounded, TextInputType.streetAddress),
+          const SizedBox(height: 10),
           Row(children: [
             const Icon(Icons.person, color: Colors.white),
             const SizedBox(width: 15),

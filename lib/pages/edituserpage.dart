@@ -1,5 +1,3 @@
-// ignore_for_file: unused_local_variable
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/main.dart';
@@ -7,7 +5,6 @@ import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/widgets/error.dart';
 import 'package:provider/provider.dart';
 import '../providers/edituser.dart';
-import '../providers/loginconstrains.dart';
 import '../services/database.dart';
 import '../widgets/edituserpopup.dart';
 import '../widgets/skillboxes.dart';
@@ -18,9 +15,9 @@ class EditUserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var editUserProvider = Provider.of<EditUser>(context);
+
     var currentUser = Provider.of<GoogleSignInProvider>(context, listen: false)
         .getCurrentUser;
-    int chosenBox = 0;
 
     return Scaffold(
         body: Stack(children: [
@@ -96,7 +93,7 @@ class EditUserPage extends StatelessWidget {
                       )),
                       const SizedBox(height: 5),
                       Text(currentUser.description,
-                      textAlign: TextAlign.center,
+                          textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.overpass(
                               color: Colors.white,
@@ -136,10 +133,7 @@ class EditUserPage extends StatelessWidget {
                                       const LinearGradient(colors: gradient),
                                   borderRadius: BorderRadius.circular(8)),
                               child: blackBox(2, true, 0, context));
-                          //
                         } else {
-                          chosenBox = index;
-
                           return skillEditBox(
                               currentUser.skillsSet[index].keys.single,
                               currentUser.skillsSet[index].values.single,
@@ -189,7 +183,7 @@ class EditUserPage extends StatelessWidget {
           visible: editUserProvider.isEditingSeen,
           child: const EditPopUpParent()),
       Visibility(
-          visible: Provider.of<LoginConstrains>(context).showErrorMessage,
+          visible: Provider.of<EditUser>(context).showErrorMessage,
           child: const ErrorMessage()),
     ]));
   }

@@ -3,10 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/loggedparent.dart';
-import 'package:prakty/pages/addjob.dart';
+import 'package:prakty/widgets/addjob.dart';
 import 'package:prakty/pages/edituserpage.dart';
 import 'package:prakty/providers/edituser.dart';
-import 'package:prakty/providers/loginconstrains.dart';
 import 'package:prakty/widgets/error.dart';
 import 'package:prakty/loginpage.dart';
 import 'package:prakty/providers/googlesign.dart';
@@ -17,12 +16,10 @@ final fontSize20 = GoogleFonts.overpass(
     fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white);
 final fontSize16 = GoogleFonts.overpass(
     fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white);
-final myErrorFont = GoogleFonts.overpass(
-    fontSize: 14, color: const Color.fromARGB(255, 255, 120, 120));
 
 const List<Color> gradient = [
-Color.fromARGB(255, 1, 192, 209),
-Color.fromARGB(255, 0, 82, 156)
+  Color.fromARGB(255, 1, 192, 209),
+  Color.fromARGB(255, 0, 82, 156)
 ];
 
 // const List<Color> gradient = [
@@ -43,9 +40,6 @@ const myBoxShadow = [
   )
 ];
 
-
-
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -60,7 +54,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (c) => GoogleSignInProvider()),
-          ChangeNotifierProvider(create: (c) => LoginConstrains()),
           ChangeNotifierProvider(create: (c) => EditUser())
         ],
         child: MaterialApp(
@@ -73,7 +66,7 @@ class MyApp extends StatelessWidget {
                       visible: Provider.of<EditUser>(context).isLoading,
                       child: const LoadingWidget()),
                 ]),
-            '/addJob': (context) =>  const AddJob()
+            '/addJob': (context) => const AddJob()
           },
           debugShowCheckedModeBanner: false,
           title: 'Prakty',
@@ -100,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     bool loginConstrAccess =
-        Provider.of<LoginConstrains>(context).showErrorMessage;
+        Provider.of<EditUser>(context).showErrorMessage;
     return Scaffold(
       body: Container(
           decoration: const BoxDecoration(

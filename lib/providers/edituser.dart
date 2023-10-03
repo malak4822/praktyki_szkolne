@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class EditUser extends ChangeNotifier {
   bool _isLoading = false;
@@ -145,6 +146,37 @@ class EditUser extends ChangeNotifier {
   void toogleEditingPopUp(index) {
     _tabToOpen = index;
     _isEditingSeen = !_isEditingSeen;
+    notifyListeners();
+  }
+
+  Future<bool> checkInternetConnectivity() async {
+    final customInstance = InternetConnectionChecker.createInstance(
+        checkTimeout: const Duration(seconds: 1));
+    if (await customInstance.hasConnection == true) {
+      _showErrorMessage = false;
+      notifyListeners();
+      return true;
+    } else {
+      showErrorBox(
+          "Wygląda Na To, Że Brakuje Ci Internetu. Masz Na To Może Jakiś Plan B? 😉");
+      return false;
+    }
+  }
+
+  bool _showErrorMessage = false;
+  bool get showErrorMessage => _showErrorMessage;
+
+  late String _errorText;
+  String get errorText => _errorText;
+
+  void showErrorBox(errorString) {
+    _errorText = errorString;
+    _showErrorMessage = true;
+    notifyListeners();
+  }
+
+  void closeErrorBox() {
+    _showErrorMessage = false;
     notifyListeners();
   }
 }

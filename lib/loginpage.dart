@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
-import 'package:prakty/providers/loginconstrains.dart';
+import 'package:prakty/services/database.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
 
@@ -26,8 +27,10 @@ class _LoginPageState extends State<LoginPage> {
     final signInProvider =
         Provider.of<GoogleSignInProvider>(context, listen: false);
 
-    final hasInternet = Provider.of<LoginConstrains>(context, listen: false)
-        .checkInternetConnectivity();
+    Future<bool> isInternet() async {
+      return await Provider.of<EditUser>(context, listen: false)
+          .checkInternetConnectivity();
+    }
 
     return Stack(children: [
       wciecia(Alignment.bottomRight, "images/login/login_bottomRight.png"),
@@ -104,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                                   horizontal: 30, vertical: 15)),
                           onPressed: () async {
                             if (_isLoginClicked) {
-                              if (await hasInternet) {
+                              if (await isInternet()) {
                                 await signInProvider.loginViaEmailAndPassword(
                                     mailCont.text, passCont.text);
 
@@ -133,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                                   horizontal: 30, vertical: 15)),
                           onPressed: () async {
                             if (!_isLoginClicked) {
-                              if (await hasInternet) {
+                              if (await isInternet()) {
                                 await signInProvider.signUpViaEmail(
                                     mailCont.text,
                                     passCont.text,
@@ -160,7 +163,17 @@ class _LoginPageState extends State<LoginPage> {
                           textDirection: TextDirection.rtl,
                           child: ElevatedButton.icon(
                               onPressed: () async {
-                                await signInProvider.loginViaGoogle(context);
+                                if (await isInternet()) {
+                                  try {
+                                    await signInProvider.loginViaGoogle();
+
+                                    await MyDb().getUserInfo(context,
+                                    signInProvider.getCurrentUser.userId);
+
+                                  } catch (e) {
+                                    debugPrint(e.toString());
+                                  }
+                                }
                               },
                               icon: const FaIcon(FontAwesomeIcons.google,
                                   size: 14, color: Colors.white),

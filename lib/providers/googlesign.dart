@@ -2,9 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:prakty/providers/loginconstrains.dart';
 import 'package:prakty/services/database.dart';
-import 'package:provider/provider.dart';
 import '../models/user_model.dart';
 
 class GoogleSignInProvider extends ChangeNotifier {
@@ -64,36 +62,35 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 
   //GOOGLE LOGIN GOOGLE LOGIN GOOGLE LOGIN GOOGLE LOGIN
-  Future<void> loginViaGoogle(context) async {
+  Future<void> loginViaGoogle(
+      // context
+      ) async {
     GoogleSignIn googleSignIn = GoogleSignIn(
       scopes: ['email', 'https://www.googleapis.com/auth/contacts.readonly'],
     );
-    if (await Provider.of<LoginConstrains>(context, listen: false)
-            .checkInternetConnectivity() ==
-        true) {
-      try {
-        GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-        GoogleSignInAuthentication googleUserAuth =
-            await googleUser!.authentication;
 
-        final AuthCredential credentialTokens = GoogleAuthProvider.credential(
-            accessToken: googleUserAuth.accessToken,
-            idToken: googleUserAuth.idToken);
+    try {
+      GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      GoogleSignInAuthentication googleUserAuth =
+          await googleUser!.authentication;
 
-        var authResult = await auth.signInWithCredential(credentialTokens);
+      final AuthCredential credentialTokens = GoogleAuthProvider.credential(
+          accessToken: googleUserAuth.accessToken,
+          idToken: googleUserAuth.idToken);
 
-        if (authResult.additionalUserInfo!.isNewUser) {
-          _currentUser.username = authResult.user!.displayName!;
-          _currentUser.email = authResult.user!.email!;
-          _currentUser.profilePicture = authResult.user!.photoURL!;
-          _currentUser.userId = authResult.user!.uid;
-          _currentUser.registeredViaGoogle = true;
-          await MyDb().addFirestoreUser(_currentUser);
-        }
-        await MyDb().getUserInfo(context, authResult.user!.uid);
-      } catch (error) {
-        debugPrint(error.toString());
+      var authResult = await auth.signInWithCredential(credentialTokens);
+
+      if (authResult.additionalUserInfo!.isNewUser) {
+        _currentUser.username = authResult.user!.displayName!;
+        _currentUser.email = authResult.user!.email!;
+        _currentUser.profilePicture = authResult.user!.photoURL!;
+        _currentUser.userId = authResult.user!.uid;
+        _currentUser.registeredViaGoogle = true;
+        await MyDb().addFirestoreUser(_currentUser);
       }
+      // await MyDb().getUserInfo(context, authResult.user!.uid);
+    } catch (error) {
+      debugPrint(error.toString());
     }
   }
 
@@ -114,8 +111,6 @@ class GoogleSignInProvider extends ChangeNotifier {
   // EMAIL PASS LOGIN EMAIL PASS LOGIN EMAIL PASS LOGIN EMAIL PASS LOGIN
   Future<void> loginViaEmailAndPassword(String email, String pass) async {
     try {
-      // _errorMessage = '';
-
       UserCredential userCredentials =
           await auth.signInWithEmailAndPassword(email: email, password: pass);
       await MyDb().getUserInfo(_currentUser, userCredentials.user!.uid);

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -114,6 +116,56 @@ class MyDb {
     } catch (e) {
       debugPrint('Error uploading image to Firebase Storage: $e');
       return null;
+    }
+  }
+
+  Future<void> addFirestoreJobAd(
+    userId,
+    noticePhoto,
+    jobName,
+    companyName,
+    jobEmail,
+    jobPhone,
+    jobLocation,
+    jobQualification,
+    jobDescription,
+    canRemotely,
+  ) async {
+    late String code;
+    String generateRandomCode() {
+      const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+      final randomChars = List.generate(22, (index) {
+        final randomIndex = Random().nextInt(characters.length);
+        return characters[randomIndex];
+      });
+      return 'j0bNum${randomChars.join()}';
+    }
+
+    code = generateRandomCode();
+
+    try {
+      String? imageUrl;
+      if (noticePhoto != 'no_image') {
+        final storageReference =
+            FirebaseStorage.instance.ref().child('job_ad_pictures/$code.jpg');
+        await storageReference.putFile(noticePhoto);
+        imageUrl = await storageReference.getDownloadURL();
+      }
+      await _firestore.collection("jobAd").doc(code).set({
+        'belongsToUser': userId,
+        'jobImage': imageUrl,
+        'jobName': jobName,
+        'companyName': companyName,
+        'jobEmail': jobEmail,
+        'jobPhone': jobPhone,
+        'jobLocation': jobLocation,
+        'jobQualification': jobQualification,
+        'jobDescription': jobDescription,
+        'canRemotely': canRemotely
+      });
+    } catch (e) {
+      debugPrint(e.toString());
     }
   }
 }

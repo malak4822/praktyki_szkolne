@@ -1,12 +1,9 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:prakty/main.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/pages/editprofwidgets/editskillset.dart';
 import 'package:provider/provider.dart';
 import '../providers/googlesign.dart';
-import '../providers/loginconstrains.dart';
 import '../services/database.dart';
 import '../pages/editprofwidgets/editnamedesc.dart';
 import '../pages/editprofwidgets/editphotowidget.dart';
@@ -29,9 +26,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     var googleSignFunction =
         Provider.of<GoogleSignInProvider>(context, listen: false);
 
-    Future<bool> internetCheck =
-        Provider.of<LoginConstrains>(context, listen: false)
-            .checkInternetConnectivity();
+    Future<bool> internetCheck = editUserFunction.checkInternetConnectivity();
     var user = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
 
     int ageCont = user.age;

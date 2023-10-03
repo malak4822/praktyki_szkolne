@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prakty/providers/loginconstrains.dart';
+import 'package:prakty/providers/edituser.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
@@ -9,12 +9,11 @@ class ErrorMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var loginConstrAccess =
-        Provider.of<LoginConstrains>(context, listen: false);
+    var hasInternet = Provider.of<EditUser>(context, listen: false).checkInternetConnectivity();
     return Stack(children: [
       InkWell(
           onTap: () async {
-            await loginConstrAccess.checkInternetConnectivity();
+            await hasInternet;
           },
           child: Container(color: Colors.white.withOpacity(0.6))),
       Center(
@@ -29,14 +28,13 @@ class ErrorMessage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                     const SizedBox(height: 20),
-                    Text('Houston, Mamy Problem',
-                        style: fontSize20),
+                    Text('Houston, Mamy Problem', style: fontSize20),
                     const Spacer(),
                     SingleChildScrollView(
                         child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             child: Text(
-                              Provider.of<LoginConstrains>(context).errorText,
+                              Provider.of<EditUser>(context).errorText,
                               textAlign: TextAlign.center,
                               style: fontSize16,
                             ))),
@@ -45,7 +43,7 @@ class ErrorMessage extends StatelessWidget {
                         width: double.infinity,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black26,
+                              backgroundColor: Colors.black26,
                               shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.vertical(
                                       bottom: Radius.circular(30))),
@@ -53,7 +51,7 @@ class ErrorMessage extends StatelessWidget {
                           child: const Icon(Icons.restart_alt,
                               size: 32, color: Colors.white),
                           onPressed: () async {
-                            await loginConstrAccess.checkInternetConnectivity();
+                            await hasInternet;
                           },
                         )),
                   ])))),
