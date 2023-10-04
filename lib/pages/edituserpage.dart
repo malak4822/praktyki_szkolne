@@ -183,7 +183,7 @@ class EditUserPage extends StatelessWidget {
           visible: editUserProvider.isEditingSeen,
           child: const EditPopUpParent()),
       Visibility(
-          visible: Provider.of<EditUser>(context).showErrorMessage,
+          visible: editUserProvider.showErrorMessage,
           child: const ErrorMessage()),
     ]));
   }
@@ -199,11 +199,10 @@ Widget blackBox(int index, bool areFieldsEmpty, int boxChosen, context) {
             iconSize: 34,
             onPressed: () async {
               if (index == 2) {
-                if (editUserFunction.skillBoxes.isEmpty) {
+                editUserFunction.saveSkillBackup();
+                if (areFieldsEmpty) {
                   editUserFunction.addSkillBox();
                 }
-
-                editUserFunction.saveSkillBackup();
                 editUserFunction.changeCurrentBox(boxChosen);
               }
               editUserFunction.toogleEditingPopUp(index);

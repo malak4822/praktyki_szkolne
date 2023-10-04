@@ -3,7 +3,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
-import 'package:prakty/services/database.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +30,8 @@ class _LoginPageState extends State<LoginPage> {
       return await Provider.of<EditUser>(context, listen: false)
           .checkInternetConnectivity();
     }
+
+    bool hasInternet = false;
 
     return Stack(children: [
       wciecia(Alignment.bottomRight, "images/login/login_bottomRight.png"),
@@ -163,13 +164,10 @@ class _LoginPageState extends State<LoginPage> {
                           textDirection: TextDirection.rtl,
                           child: ElevatedButton.icon(
                               onPressed: () async {
-                                if (await isInternet()) {
+                                hasInternet = await isInternet();
+                                if (hasInternet) {
                                   try {
                                     await signInProvider.loginViaGoogle();
-
-                                    await MyDb().getUserInfo(context,
-                                    signInProvider.getCurrentUser.userId);
-
                                   } catch (e) {
                                     debugPrint(e.toString());
                                   }

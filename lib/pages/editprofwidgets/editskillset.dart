@@ -37,7 +37,7 @@ class _EditSkillSetState extends State<EditSkillSet> {
           skillCont.text[0].toUpperCase(),
         );
       } else {
-        skillCont.text = 'Skill';
+        skillCont.text = 'Umiejętność';
       }
       Provider.of<EditUser>(context, listen: false).modifyMapElement(
           skillBoxes[chosenBox], skillCont.text, currentSkillLvl);
@@ -76,9 +76,10 @@ class _EditSkillSetState extends State<EditSkillSet> {
                             focusNode: myfocusNode,
                             style: fontSize20,
                             decoration: const InputDecoration.collapsed(
-                              hintText: 'Skill',
+                              hintText: 'Umiejętność',
                               hintStyle: TextStyle(color: Colors.white),
                             )),
+                        const SizedBox(height: 6),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: List.generate(

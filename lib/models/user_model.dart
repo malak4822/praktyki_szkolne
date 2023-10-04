@@ -3,13 +3,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class MyUser {
   String userId;
   String username;
-  //
   String description;
   String location;
   int age;
   bool isNormalUser;
   List<Map<String, int>> skillsSet;
-  //
   String email;
   String profilePicture;
   late bool registeredViaGoogle;
@@ -31,8 +29,6 @@ class MyUser {
 }
 
 class JobAd {
-  //  jobName, companyName, jobEmail, jobPhone,
-  // jobLocation, jobQualification, jobDescription, canRemotely
   String jobName;
   String companyName;
   String jobEmail;

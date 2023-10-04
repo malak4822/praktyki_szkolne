@@ -86,13 +86,11 @@ class MyDb {
   Future<void> updateSkillBoxes(
       String userId, List<Map<String, int>> actuallSkillSet, context) async {
     try {
-      if (userId.isNotEmpty) {
-        await _firestore.collection('users').doc(userId).update({
-          'skillsSet': actuallSkillSet,
-        });
-        Provider.of<GoogleSignInProvider>(context, listen: false)
-            .refreshSkillSet(actuallSkillSet);
-      }
+      await _firestore.collection('users').doc(userId).update({
+        'skillsSet': actuallSkillSet,
+      });
+      Provider.of<GoogleSignInProvider>(context, listen: false)
+          .refreshSkillSet(actuallSkillSet);
     } catch (e) {
       debugPrint(e.toString());
     }

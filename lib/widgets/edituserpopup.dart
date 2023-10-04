@@ -26,7 +26,6 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     var googleSignFunction =
         Provider.of<GoogleSignInProvider>(context, listen: false);
 
-    Future<bool> internetCheck = editUserFunction.checkInternetConnectivity();
     var user = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
 
     int ageCont = user.age;
@@ -46,50 +45,60 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           (newVal) => ageCont = newVal),
       const EditSkillSet(),
     ];
+    Future<void> savePhoto() async {
+      try {
+        var newUrlString = await MyDb()
+            .uploadImageToStorage(user.userId, editUserFunction.imgFile);
+        if (newUrlString != null) {
+          googleSignFunction.refreshProfilePicture(newUrlString);
+        }
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+      editUserFunction.deleteSelectedImage();
+    }
+
+    Future<void> saveInfo() async {
+      try {
+        await MyDb().updateInfoFields(user.userId, nameCont.text,
+            descriptionCont.text, locationCont.text, ageCont, context);
+        editUserFunction.checkEmptiness(
+            descriptionCont.text, nameCont.text, ageCont, locationCont.text);
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
+
+    Future<void> saveSkillBoxes() async {
+      try {
+        await MyDb().updateSkillBoxes(
+            user.userId, editUserFunction.skillBoxes, context);
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
 
     return Column(children: [
       Expanded(child: GestureDetector(onTap: () async {
+        bool internetCheck = await editUserFunction.checkInternetConnectivity();
         editUserFunction.changeLoading();
-        // Closing Photo Widget
-        if (tabToOpen == 0) {
-          if (await internetCheck) {
-            try {
-              var newUrlString = await MyDb()
-                  .uploadImageToStorage(user.userId, editUserFunction.imgFile);
-              if (newUrlString != null) {
-                googleSignFunction.refreshProfilePicture(newUrlString);
-              }
-            } catch (e) {
-              debugPrint(e.toString());
-            }
+
+        if (internetCheck) {
+          if (tabToOpen == 0) {
+            savePhoto();
           }
-          editUserFunction.deleteSelectedImage();
-        }
-        // Closing Info Widget
-        if (tabToOpen == 1) {
-          if (await internetCheck) {
-            try {
-              await MyDb().updateInfoFields(user.userId, nameCont.text,
-                  descriptionCont.text, locationCont.text, ageCont, context);
-              editUserFunction.checkEmptiness(descriptionCont.text,
-                  nameCont.text, ageCont, locationCont.text);
-            } catch (e) {
-              debugPrint(e.toString());
-            }
+          if (tabToOpen == 1) {
+            saveInfo();
           }
-        }
-        // Closing Skillset Widget
-        if (tabToOpen == 2) {
-          if (await internetCheck) {
-            try {
-              await MyDb().updateSkillBoxes(
-                  user.userId, editUserFunction.skillBoxes, context);
-            } catch (e) {
-              debugPrint(e.toString());
-            }
-          } else {
+          if (tabToOpen == 2) {
+            saveSkillBoxes();
+          }
+        } else {
+          if (tabToOpen == 2) {
+            print("AKTUALNY KOSZYK ---> ${editUserFunction.skillBoxes}");
+            print(" BACKUP ---> ${editUserFunction.skillBoxesBackup}");
             editUserFunction.restoreSkillBoxData();
-            googleSignFunction.refreshSkillSet(editUserFunction.skillBoxes);
+            user.skillsSet = editUserFunction.skillBoxes;
           }
         }
         editUserFunction.changeLoading();
