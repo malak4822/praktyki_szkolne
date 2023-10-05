@@ -89,6 +89,7 @@ class MyDb {
       await _firestore.collection('users').doc(userId).update({
         'skillsSet': actuallSkillSet,
       });
+      if (!context.mounted) return;
       Provider.of<GoogleSignInProvider>(context, listen: false)
           .refreshSkillSet(actuallSkillSet);
     } catch (e) {

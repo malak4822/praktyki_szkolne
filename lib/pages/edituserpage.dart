@@ -199,7 +199,10 @@ Widget blackBox(int index, bool areFieldsEmpty, int boxChosen, context) {
             iconSize: 34,
             onPressed: () async {
               if (index == 2) {
-                editUserFunction.saveSkillBackup();
+                editUserFunction.saveSkillBackup(
+                    Provider.of<GoogleSignInProvider>(context, listen: false)
+                        .getCurrentUser
+                        .skillsSet);
                 if (areFieldsEmpty) {
                   editUserFunction.addSkillBox();
                 }

@@ -71,8 +71,13 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
 
     Future<void> saveSkillBoxes() async {
       try {
-        await MyDb().updateSkillBoxes(
-            user.userId, editUserFunction.skillBoxes, context);
+        print(editUserFunction.skillBoxes);
+        await MyDb().updateSkillBoxes(user.userId, editUserFunction.skillBoxes, context);
+        if (!context.mounted) return;
+        setState(() {
+          print('eesa');
+          user.skillsSet = editUserFunction.skillBoxes;
+        });
       } catch (e) {
         debugPrint(e.toString());
       }
@@ -80,10 +85,9 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
 
     return Column(children: [
       Expanded(child: GestureDetector(onTap: () async {
-        bool internetCheck = await editUserFunction.checkInternetConnectivity();
         editUserFunction.changeLoading();
 
-        if (internetCheck) {
+        if (await editUserFunction.checkInternetConnectivity()) {
           if (tabToOpen == 0) {
             savePhoto();
           }
@@ -91,16 +95,16 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
             saveInfo();
           }
           if (tabToOpen == 2) {
+            if (!context.mounted) return;
             saveSkillBoxes();
           }
         } else {
           if (tabToOpen == 2) {
-            print("AKTUALNY KOSZYK ---> ${editUserFunction.skillBoxes}");
-            print(" BACKUP ---> ${editUserFunction.skillBoxesBackup}");
-            editUserFunction.restoreSkillBoxData();
+            print('RESTORING DATA');
             user.skillsSet = editUserFunction.skillBoxes;
           }
         }
+        // MyDb()
         editUserFunction.changeLoading();
         editUserFunction.toogleEditingPopUp(0);
       })),

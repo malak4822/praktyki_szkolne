@@ -19,7 +19,7 @@ class EditUser extends ChangeNotifier {
   bool get areFieldsEmpty => _areFieldsEmpty;
 
   set setSkillBoxes(skillBoxes) {
-    _skillBoxes = skillBoxes;
+    _skillBoxesBackup = skillBoxes;
   }
 
   File? _imgFile;
@@ -50,26 +50,19 @@ class EditUser extends ChangeNotifier {
     }
   }
 
-  void saveSkillBackup() {
-    _skillBoxesBackup = _skillBoxes.map((mapElement) {
+  void saveSkillBackup(List<Map<String, int>> dbSkillSet) {
+    _skillBoxesBackup = dbSkillSet.map((mapElement) {
       return Map<String, int>.from(mapElement);
     }).toList();
-  }
-
-  void restoreSkillBoxData() {
-    _skillBoxes = _skillBoxesBackup.map((mapElement) {
-      return Map<String, int>.from(mapElement);
-    }).toList();
-    notifyListeners();
   }
 
   void removeSkillBox() {
-    if (_skillBoxes.isNotEmpty) {
-      if (_skillBoxes.length != 1) {
-        _skillBoxes.removeAt(_currentChosenBox);
+    if (_skillBoxesBackup.isNotEmpty) {
+      if (_skillBoxesBackup.length != 1) {
+        _skillBoxesBackup.removeAt(_currentChosenBox);
         _currentChosenBox = 0;
       } else {
-        _skillBoxes.removeLast();
+        _skillBoxesBackup.removeLast();
       }
       notifyListeners();
     }
@@ -88,26 +81,23 @@ class EditUser extends ChangeNotifier {
   }
 
   void addSkillLvl() {
-    int dotsNumber = _skillBoxes[currentChosenBox].values.single;
-    String key = _skillBoxes[currentChosenBox].keys.single;
+    int dotsNumber = _skillBoxesBackup[currentChosenBox].values.single;
+    String key = _skillBoxesBackup[currentChosenBox].keys.single;
     if (dotsNumber == 5) {
-      _skillBoxes[currentChosenBox][key] = 1;
+      _skillBoxesBackup[currentChosenBox][key] = 1;
     } else {
-      _skillBoxes[currentChosenBox][key] = dotsNumber + 1;
+      _skillBoxesBackup[currentChosenBox][key] = dotsNumber + 1;
     }
     notifyListeners();
   }
 
   void addSkillBox() {
-    _skillBoxes.add({'': 1});
+    _skillBoxesBackup.add({'': 1});
     notifyListeners();
   }
 
-  List<Map<String, int>> _skillBoxes = [];
-  List<Map<String, int>> get skillBoxes => _skillBoxes;
-
   List<Map<String, int>> _skillBoxesBackup = [];
-  List<Map<String, int>> get skillBoxesBackup => _skillBoxesBackup;
+  List<Map<String, int>> get skillBoxes => _skillBoxesBackup;
 
   int _tabToOpen = 1;
   int get tabToOpen => _tabToOpen;
@@ -120,7 +110,7 @@ class EditUser extends ChangeNotifier {
       int modifiedValue = newValue;
 
       modifiedMap[modifiedKey] = modifiedValue;
-      _skillBoxes[currentChosenBox] = modifiedMap;
+      _skillBoxesBackup[currentChosenBox] = modifiedMap;
     });
     notifyListeners();
   }

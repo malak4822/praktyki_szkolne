@@ -17,7 +17,6 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 
   void refreshSkillSet(newSkillSet) {
-    print("RESETED");
     _currentUser.skillsSet = newSkillSet;
     notifyListeners();
   }
