@@ -4,10 +4,10 @@ import 'package:prakty/main.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/widgets/error.dart';
 import 'package:provider/provider.dart';
-import '../providers/edituser.dart';
-import '../services/database.dart';
-import '../widgets/edituserpopup.dart';
-import '../widgets/skillboxes.dart';
+import '../../providers/edituser.dart';
+import '../../services/database.dart';
+import '../../widgets/edituserpopup.dart';
+import '../../widgets/skillboxes.dart';
 
 class EditUserPage extends StatelessWidget {
   const EditUserPage({super.key});

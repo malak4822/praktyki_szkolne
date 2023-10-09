@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/main.dart';
 import 'package:prakty/providers/edituser.dart';
-import 'package:prakty/pages/editprofwidgets/editskillset.dart';
+import 'package:prakty/pages/user/editskillset.dart';
 import 'package:provider/provider.dart';
 import '../providers/googlesign.dart';
 import '../services/database.dart';
-import '../pages/editprofwidgets/editnamedesc.dart';
-import '../pages/editprofwidgets/editphotowidget.dart';
+import '../pages/user/editnamedesc.dart';
+import '../pages/user/editphotowidget.dart';
 
 class EditPopUpParent extends StatefulWidget {
   const EditPopUpParent({super.key});
@@ -45,66 +45,46 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           (newVal) => ageCont = newVal),
       const EditSkillSet(),
     ];
-    Future<void> savePhoto() async {
-      try {
-        var newUrlString = await MyDb()
-            .uploadImageToStorage(user.userId, editUserFunction.imgFile);
-        if (newUrlString != null) {
-          googleSignFunction.refreshProfilePicture(newUrlString);
-        }
-      } catch (e) {
-        debugPrint(e.toString());
-      }
-      editUserFunction.deleteSelectedImage();
-    }
-
-    Future<void> saveInfo() async {
-      try {
-        await MyDb().updateInfoFields(user.userId, nameCont.text,
-            descriptionCont.text, locationCont.text, ageCont, context);
-        editUserFunction.checkEmptiness(
-            descriptionCont.text, nameCont.text, ageCont, locationCont.text);
-      } catch (e) {
-        debugPrint(e.toString());
-      }
-    }
-
-    Future<void> saveSkillBoxes() async {
-      try {
-        print(editUserFunction.skillBoxes);
-        await MyDb().updateSkillBoxes(user.userId, editUserFunction.skillBoxes, context);
-        if (!context.mounted) return;
-        setState(() {
-          print('eesa');
-          user.skillsSet = editUserFunction.skillBoxes;
-        });
-      } catch (e) {
-        debugPrint(e.toString());
-      }
-    }
 
     return Column(children: [
       Expanded(child: GestureDetector(onTap: () async {
         editUserFunction.changeLoading();
 
         if (await editUserFunction.checkInternetConnectivity()) {
+          // UPDATING PHOTO UPDATING PHOTO UPDATING PHOTO
           if (tabToOpen == 0) {
-            savePhoto();
+            var newUrlString = await MyDb()
+                .uploadImageToStorage(user.userId, editUserFunction.imgFile);
+            if (newUrlString != null) {
+              googleSignFunction.refreshProfilePicture(newUrlString);
+            }
+            editUserFunction.deleteSelectedImage();
           }
+          // UDPATING USER INFO UDPATING USER INFO UDPATING
           if (tabToOpen == 1) {
-            saveInfo();
+            List<String>? infoFields = await MyDb().updateInfoFields(
+                user.userId,
+                nameCont.text,
+                descriptionCont.text,
+                locationCont.text,
+                ageCont);
+            if (infoFields != null) {
+              googleSignFunction.refreshNameAndDesc(
+                  infoFields[0], infoFields[1], infoFields[2], infoFields[3]);
+            }
+            editUserFunction.checkEmptiness(descriptionCont.text, nameCont.text,
+                ageCont, locationCont.text);
           }
+          // UDPATING SKILL BOXES  UDPATING SKILL BOXES
           if (tabToOpen == 2) {
-            if (!context.mounted) return;
-            saveSkillBoxes();
-          }
-        } else {
-          if (tabToOpen == 2) {
-            print('RESTORING DATA');
-            user.skillsSet = editUserFunction.skillBoxes;
+            List<Map<String, int>>? newBoxes = await MyDb()
+                .updateSkillBoxes(user.userId, editUserFunction.skillBoxes);
+            if (newBoxes != null) {
+              googleSignFunction.refreshSkillSet(editUserFunction.skillBoxes);
+            }
           }
         }
-        // MyDb()
+
         editUserFunction.changeLoading();
         editUserFunction.toogleEditingPopUp(0);
       })),

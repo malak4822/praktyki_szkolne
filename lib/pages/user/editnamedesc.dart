@@ -39,13 +39,13 @@ class EditNameAndDesc extends StatelessWidget {
                       borderRadius: BorderRadius.circular(25),
                     ),
                     child: CupertinoPicker(
-                        itemExtent: 20,
+                        itemExtent: 18,
                         scrollController:
                             FixedExtentScrollController(initialItem: ageCont),
                         onSelectedItemChanged: (int newVal) => callback(newVal),
                         children: List.generate(
-                            27,
-                            (index) => Text('${(index).toString()} lat',
+                            14 + 27,
+                            (index) => Text('${(14 + index).toString()} lat',
                                 style: fontSize16)))))
           ])
         ]));

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/main.dart';
-import 'package:prakty/view/jobs.dart';
+import 'package:prakty/pages/jobs/jobs.dart';
 import 'package:prakty/view/userpage.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';

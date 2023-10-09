@@ -3,8 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/loggedparent.dart';
-import 'package:prakty/widgets/addjob.dart';
-import 'package:prakty/pages/edituserpage.dart';
+import 'package:prakty/pages/jobs/addjob.dart';
+import 'package:prakty/pages/jobs/expandedjob.dart';
+import 'package:prakty/pages/user/edituserpage.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/widgets/error.dart';
 import 'package:prakty/loginpage.dart';
@@ -66,7 +67,8 @@ class MyApp extends StatelessWidget {
                       visible: Provider.of<EditUser>(context).isLoading,
                       child: const LoadingWidget()),
                 ]),
-            '/addJob': (context) => const AddJob()
+            '/addJob': (context) => const AddJob(),
+            '/advertisement': (context) => const JobAdvertisement()
           },
           debugShowCheckedModeBanner: false,
           title: 'Prakty',

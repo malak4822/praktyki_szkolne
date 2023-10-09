@@ -67,8 +67,8 @@ class MyDb {
     }
   }
 
-  Future<void> updateInfoFields(String userId, String newUsername,
-      String newDescription, String newLocation, int newAge, context) async {
+  Future<List<String>?> updateInfoFields(String userId, String newUsername,
+      String newDescription, String newLocation, int newAge) async {
     try {
       await _firestore.collection('users').doc(userId).update({
         'username': newUsername,
@@ -76,24 +76,23 @@ class MyDb {
         'location': newLocation,
         'age': newAge,
       });
-      Provider.of<GoogleSignInProvider>(context, listen: false)
-          .refreshNameAndDesc(newUsername, newDescription, newLocation, newAge);
+      return [newUsername, newDescription, newLocation, newAge.toString()];
     } catch (e) {
       debugPrint(e.toString());
+      return null;
     }
   }
 
-  Future<void> updateSkillBoxes(
-      String userId, List<Map<String, int>> actuallSkillSet, context) async {
+  Future<List<Map<String, int>>?> updateSkillBoxes(
+      String userId, List<Map<String, int>> actuallSkillSet) async {
     try {
       await _firestore.collection('users').doc(userId).update({
         'skillsSet': actuallSkillSet,
       });
-      if (!context.mounted) return;
-      Provider.of<GoogleSignInProvider>(context, listen: false)
-          .refreshSkillSet(actuallSkillSet);
+      return actuallSkillSet;
     } catch (e) {
       debugPrint(e.toString());
+      return null;
     }
   }
 
@@ -115,6 +114,18 @@ class MyDb {
     } catch (e) {
       debugPrint('Error uploading image to Firebase Storage: $e');
       return null;
+    }
+  }
+
+  Future<List> downloadJobAds() async {
+    try {
+      final collection = _firestore.collection('/jobAd');
+      final QuerySnapshot jobCards = await collection.get();
+      final List myJobList = jobCards.docs.map((doc) => doc.data()).toList();
+      return myJobList;
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
     }
   }
 

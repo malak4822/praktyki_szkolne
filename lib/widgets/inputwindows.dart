@@ -78,7 +78,25 @@ class MyTextFormField extends StatelessWidget {
 
 Widget updateValues(
     myController, hintTxt, maxLines, maxLength, icon, myKeyboardType) {
-  return TextField(
+  return TextFormField(
+    validator: (val) {
+      if (val!.isEmpty) {
+        return 'Proszę Uzupełnić Puste Pole';
+      } else if (val.length < 7) {
+        return 'Liczba Znaków Jest Za Mała';
+      }
+      if (hintTxt == 'Email Kontaktowy') {
+        if (!val.contains('@') || val.length < 7) {
+          return 'Email Jest Nie Poprawny';
+        }
+      }
+      if (hintTxt == 'Telefon') {
+        if (val.length != 9) {
+          return 'Telefon Nie Ma 9 Cyfr';
+        }
+      }
+      return null;
+    },
     textAlign: TextAlign.center,
     maxLength: maxLength,
     maxLines: maxLines,
@@ -98,6 +116,9 @@ Widget updateValues(
       enabledBorder: const OutlineInputBorder(
         borderSide: BorderSide(width: 1, color: Colors.white),
         borderRadius: BorderRadius.all(Radius.circular(25)),
+      ),
+      border: const OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(15)),
       ),
       hintText: hintTxt,
       hintStyle: GoogleFonts.overpass(

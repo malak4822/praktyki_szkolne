@@ -12,7 +12,7 @@ class GoogleSignInProvider extends ChangeNotifier {
     _currentUser.username = newUsername;
     _currentUser.description = newDescription;
     _currentUser.location = newLocation;
-    _currentUser.age = newAge;
+    _currentUser.age = int.parse(newAge);
     notifyListeners();
   }
 

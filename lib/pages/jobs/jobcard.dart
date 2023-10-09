@@ -3,12 +3,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/main.dart';
 
 class JobNotice extends StatelessWidget {
-  const JobNotice({super.key});
+  const JobNotice({super.key, required this.jobData, required this.index});
+  final int index;
+  final List jobData;
 
   @override
   Widget build(BuildContext context) {
+    final particularJob = jobData[index];
     return InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, '/advertisement', arguments: particularJob);
+        },
         child: Container(
             decoration: BoxDecoration(
                 boxShadow: myBoxShadow,
@@ -26,13 +31,12 @@ class JobNotice extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  'Firma numer dwdhwduhuwhd duwhduh whd',
+                                  particularJob['companyName'],
                                   style: fontSize20,
                                   maxLines: 1,
                                   textAlign: TextAlign.center,
                                 ),
-                                Text(
-                                    'to jest typowy opis firmy ji djwid jiw  dwd wdwdwdwd dhuwhdu whduwh duhd wuhduhwhduwdh wd uwhdu wduwwdwdwdw dw',
+                                Text(particularJob['jobDescription'],
                                     maxLines: 3,
                                     textAlign: TextAlign.center,
                                     overflow: TextOverflow.ellipsis,
@@ -41,33 +45,37 @@ class JobNotice extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white)),
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Spacer(),
                                     const Icon(Icons.location_city,
                                         size: 18, color: Colors.white),
-                                    Text(' Lokalizacja',
-                                        maxLines: 1,
-                                        style: GoogleFonts.overpass(
-                                            fontSize: 12, color: Colors.white)),
-                                    const Spacer(),
-                                    const Icon(Icons.done,
-                                        size: 18, color: Colors.white),
-                                    Text(' Zdalne',
-                                        maxLines: 1,
+                                    Text(' ${particularJob['jobLocation']}',
                                         overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
                                         style: GoogleFonts.overpass(
                                             fontSize: 12, color: Colors.white)),
-                                    const Spacer(),
+                                    const SizedBox(width: 10),
+                                    if (particularJob['canRemotely'] == true)
+                                      const Icon(Icons.done,
+                                          size: 18, color: Colors.white),
+                                    if (particularJob['canRemotely'] == true)
+                                      Text(' Zdalne',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.overpass(
+                                              fontSize: 12,
+                                              color: Colors.white)),
                                   ],
                                 )
                               ]))),
-                  const CircleAvatar(
+                  CircleAvatar(
                       radius: 52.5,
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
                         radius: 50,
                         foregroundImage: NetworkImage(
-                          'https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp',
+                          particularJob['jobImage'] ??
+                              'https://platinumlist.net/guide/wp-content/uploads/2023/03/IMG-worlds-of-adventure.webp',
                         ),
                       )),
                   const SizedBox(width: 10),
