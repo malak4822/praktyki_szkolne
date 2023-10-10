@@ -12,7 +12,8 @@ class JobNotice extends StatelessWidget {
     final particularJob = jobData[index];
     return InkWell(
         onTap: () {
-          Navigator.pushNamed(context, '/advertisement', arguments: particularJob);
+          Navigator.pushNamed(context, '/advertisement',
+              arguments: particularJob);
         },
         child: Container(
             decoration: BoxDecoration(

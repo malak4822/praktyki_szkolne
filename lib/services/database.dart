@@ -178,4 +178,22 @@ class MyDb {
       debugPrint(e.toString());
     }
   }
+
+  Future<List<String>?> takeAdOwnersData(ownerId) async {
+    try {
+      DocumentSnapshot docSnapshot =
+          await _firestore.collection('users').doc(ownerId).get();
+      Map<String, dynamic> userInfo =
+          docSnapshot.data() as Map<String, dynamic>;
+
+      List<String> userPpAndUsername = [];
+      userPpAndUsername
+          .addAll([userInfo['profilePicture'], userInfo['username']]);
+
+      return userPpAndUsername;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
 }
