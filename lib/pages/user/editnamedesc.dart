@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/main.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 
-class EditNameAndDesc extends StatelessWidget {
+class EditNameAndDesc extends StatefulWidget {
   const EditNameAndDesc(this.nameCont, this.descriptionCont, this.locationCont,
       this.ageCont, this.callback,
       {super.key});
@@ -15,18 +16,49 @@ class EditNameAndDesc extends StatelessWidget {
   final Function callback;
 
   @override
+  State<EditNameAndDesc> createState() => _EditNameAndDescState();
+}
+
+class _EditNameAndDescState extends State<EditNameAndDesc> {
+  List<String> dropdownOptions = [
+    'Option 1',
+    'Option 2',
+    'Option 3',
+    'Option 4',
+  ];
+  String selectedOption = 'Option 1';
+  @override
   Widget build(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
         child: ListView(children: [
-          updateValues(nameCont, 'Imię I Nazwisko', 1, 24, Icons.face_sharp,
-              TextInputType.name),
+          updateValues(widget.nameCont, 'Imię I Nazwisko', 1, 24,
+              Icons.face_sharp, TextInputType.name),
           const SizedBox(height: 10),
-          updateValues(descriptionCont, 'Opis', 8, 500,
+          updateValues(widget.descriptionCont, 'Opis', 8, 500,
               Icons.description_rounded, TextInputType.text),
           const SizedBox(height: 10),
-          updateValues(locationCont, 'Lokalizacja', 1, 40,
-              Icons.location_on_rounded, TextInputType.streetAddress),
+          InkWell(
+              onTap: () {
+                Navigator.pushNamed(context, '/findOnMap');
+                print('ESSSSSSSSSSSSSSSA');
+              },
+              child: TextField(
+                  textAlign: TextAlign.center,
+                  decoration: InputDecoration(
+                    enabled: false,
+                    icon: const Icon(Icons.location_on_rounded),
+                    iconColor: Colors.white,
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                    disabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(width: 1, color: Colors.white),
+                      borderRadius: BorderRadius.all(Radius.circular(25)),
+                    ),
+                    hintText: "Miejscowość",
+                    hintStyle: GoogleFonts.overpass(
+                        fontWeight: FontWeight.bold, color: Colors.white),
+                  ))),
           const SizedBox(height: 10),
           Row(children: [
             const Icon(Icons.person, color: Colors.white),
@@ -40,13 +72,14 @@ class EditNameAndDesc extends StatelessWidget {
                     ),
                     child: CupertinoPicker(
                         itemExtent: 18,
-                        scrollController:
-                            FixedExtentScrollController(initialItem: ageCont),
-                        onSelectedItemChanged: (int newVal) => callback(newVal),
+                        scrollController: FixedExtentScrollController(
+                            initialItem: widget.ageCont),
+                        onSelectedItemChanged: (int newVal) =>
+                            widget.callback(newVal + 14),
                         children: List.generate(
                             14 + 27,
                             (index) => Text('${(14 + index).toString()} lat',
-                                style: fontSize16)))))
+                                style: fontSize16))))),
           ])
         ]));
   }

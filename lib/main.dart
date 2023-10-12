@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/loggedparent.dart';
 import 'package:prakty/pages/jobs/addjob.dart';
 import 'package:prakty/pages/jobs/expandedjob.dart';
+import 'package:prakty/pages/user/choselocation.dart';
 import 'package:prakty/pages/user/edituserpage.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/widgets/error.dart';
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
                       child: const LoadingWidget()),
                 ]),
             '/addJob': (context) => const AddJob(),
+            '/findOnMap' : (context) => const FindOnMap(),
             '/advertisement': (context) => const JobAdvertisement()
           },
           debugShowCheckedModeBanner: false,
