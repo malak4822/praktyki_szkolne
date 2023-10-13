@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prakty/main.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/pages/user/editskillset.dart';
 import 'package:provider/provider.dart';

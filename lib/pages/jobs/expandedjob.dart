@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prakty/main.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/services/database.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -11,13 +11,7 @@ class JobAdvertisement extends StatefulWidget {
 }
 
 class _JobAdvertisementState extends State<JobAdvertisement> {
-  final List<BoxShadow> _myBoxShadow = const [
-    BoxShadow(
-        color: Colors.black54,
-        spreadRadius: 0.3,
-        blurRadius: 5,
-        blurStyle: BlurStyle.outer)
-  ];
+
   late Map arguments;
   List<String>? ownerData;
 
@@ -42,11 +36,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
     }
   }
 
-  Future<void> _launcdhUrl() async {
-    if (!await launchUrl(Uri.parse('mailto:${arguments['jobEmail']}'))) {
-      throw Exception('Could not launch url');
-    }
-  }
+
 
   Future<void> _phoneTo() async {
     if (!await launchUrl(Uri.parse('tel:+48${arguments['jobPhone']}'))) {
@@ -90,7 +80,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                 Container(
                     margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      boxShadow: _myBoxShadow,
+                      boxShadow: myOutlineBoxShadow,
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: ClipRRect(
@@ -103,7 +93,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                       color: Colors.white24,
-                      boxShadow: _myBoxShadow,
+                      boxShadow: myOutlineBoxShadow,
                       borderRadius: BorderRadius.circular(16)),
                   child: Column(
                     children: [
@@ -138,7 +128,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   margin: const EdgeInsets.all(8),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                      boxShadow: _myBoxShadow,
+                      boxShadow: myOutlineBoxShadow,
                       color: Colors.white24,
                       borderRadius: BorderRadius.circular(16)),
                   child: Column(
@@ -198,7 +188,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                       color: Colors.white24,
-                      boxShadow: _myBoxShadow,
+                      boxShadow: myOutlineBoxShadow,
                       borderRadius: BorderRadius.circular(16)),
                   child: Column(children: [
                     if (arguments['canRemotely'] == true)

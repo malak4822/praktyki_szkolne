@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:prakty/main.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/pages/jobs/jobcard.dart';
 

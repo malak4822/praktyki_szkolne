@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:prakty/main.dart';
+import 'package:prakty/constants.dart';
 
 class JobNotice extends StatelessWidget {
   const JobNotice({super.key, required this.jobData, required this.index});

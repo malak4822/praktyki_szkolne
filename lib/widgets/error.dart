@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:provider/provider.dart';
 
-import '../main.dart';
 
 class ErrorMessage extends StatelessWidget {
   const ErrorMessage({super.key});

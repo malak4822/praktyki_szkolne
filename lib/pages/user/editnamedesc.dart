@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:prakty/main.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 
 class EditNameAndDesc extends StatefulWidget {
@@ -41,7 +41,6 @@ class _EditNameAndDescState extends State<EditNameAndDesc> {
           InkWell(
               onTap: () {
                 Navigator.pushNamed(context, '/findOnMap');
-                print('ESSSSSSSSSSSSSSSA');
               },
               child: TextField(
                   textAlign: TextAlign.center,

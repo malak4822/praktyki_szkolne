@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
-import '../../main.dart';
 
 class EditPhoto extends StatelessWidget {
   const EditPhoto({super.key});

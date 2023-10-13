@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
-import '../main.dart';
 import '../widgets/skillboxes.dart';
 
 class UserPage extends StatelessWidget {

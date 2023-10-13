@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prakty/main.dart';
+import 'package:prakty/constants.dart';
 
 class LoadingWidget extends StatelessWidget {
   const LoadingWidget({super.key});

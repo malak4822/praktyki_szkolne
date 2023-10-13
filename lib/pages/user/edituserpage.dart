@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:prakty/main.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/widgets/error.dart';
 import 'package:provider/provider.dart';

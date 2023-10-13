@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prakty/main.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/pages/jobs/jobs.dart';
 import 'package:prakty/view/userpage.dart';
 import 'package:prakty/providers/googlesign.dart';

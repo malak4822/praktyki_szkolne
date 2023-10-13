@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/loggedparent.dart';
 import 'package:prakty/pages/jobs/addjob.dart';
 import 'package:prakty/pages/jobs/expandedjob.dart';
@@ -13,34 +13,6 @@ import 'package:prakty/loginpage.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
 import 'widgets/loadingscreen.dart';
-
-final fontSize20 = GoogleFonts.overpass(
-    fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white);
-final fontSize16 = GoogleFonts.overpass(
-    fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white);
-
-const List<Color> gradient = [
-  Color.fromARGB(255, 1, 192, 209),
-  Color.fromARGB(255, 0, 82, 156)
-];
-
-// const List<Color> gradient = [
-//   Colors.amber, // Yellow
-//   Colors.purpleAccent, // Purple
-// ];
-
-// const List<Color> gradient = [
-//   Colors.purple,
-//   Colors.blue,
-// ];
-
-const myBoxShadow = [
-  BoxShadow(
-    color: Colors.black54,
-    spreadRadius: 0.3,
-    blurRadius: 5,
-  )
-];
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,7 +41,7 @@ class MyApp extends StatelessWidget {
                       child: const LoadingWidget()),
                 ]),
             '/addJob': (context) => const AddJob(),
-            '/findOnMap' : (context) => const FindOnMap(),
+            '/findOnMap': (context) => const FindOnMap(),
             '/advertisement': (context) => const JobAdvertisement()
           },
           debugShowCheckedModeBanner: false,

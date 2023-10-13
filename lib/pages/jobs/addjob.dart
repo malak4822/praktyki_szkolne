@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:prakty/main.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
