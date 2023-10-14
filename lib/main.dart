@@ -41,7 +41,6 @@ class MyApp extends StatelessWidget {
                       child: const LoadingWidget()),
                 ]),
             '/addJob': (context) => const AddJob(),
-            '/findOnMap': (context) => const FindOnMap(),
             '/advertisement': (context) => const JobAdvertisement()
           },
           debugShowCheckedModeBanner: false,

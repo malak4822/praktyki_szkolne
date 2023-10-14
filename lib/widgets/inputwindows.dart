@@ -76,9 +76,15 @@ class MyTextFormField extends StatelessWidget {
   }
 }
 
-Widget updateValues(
-    myController, hintTxt, maxLines, maxLength, icon, myKeyboardType) {
+Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
+    myKeyboardType, callBack) {
   return TextFormField(
+    onTap: () {
+      if (hintTxt == 'Miejsce') {
+        callBack();
+      }
+    },
+    focusNode: hintTxt != 'Miejsce' ? FocusNode(canRequestFocus: true) : FocusScopeNode(),
     validator: (val) {
       if (val!.isEmpty) {
         return 'Proszę Uzupełnić Puste Pole';
@@ -112,13 +118,13 @@ Widget updateValues(
       counterStyle: GoogleFonts.overpass(color: Colors.white, height: 0.4),
       focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(width: 4, color: Colors.white),
-          borderRadius: BorderRadius.all(Radius.circular(25))),
+          borderRadius: BorderRadius.all(Radius.circular(28))),
       enabledBorder: const OutlineInputBorder(
         borderSide: BorderSide(width: 1, color: Colors.white),
-        borderRadius: BorderRadius.all(Radius.circular(25)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       border: const OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(15)),
+        borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       hintText: hintTxt,
       hintStyle: GoogleFonts.overpass(

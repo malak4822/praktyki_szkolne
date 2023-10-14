@@ -48,13 +48,14 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
 
     return Column(children: [
       Expanded(child: GestureDetector(onTap: () async {
+        MyDb myDb = MyDb();
         editUserFunction.changeLoading();
 
         if (await editUserFunction.checkInternetConnectivity()) {
           // UPDATING PHOTO UPDATING PHOTO UPDATING PHOTO
           if (tabToOpen == 0) {
-            var newUrlString = await MyDb()
-                .uploadImageToStorage(user.userId, editUserFunction.imgFile);
+            var newUrlString = await myDb.uploadImageToStorage(
+                user.userId, editUserFunction.imgFile);
             if (newUrlString != null) {
               googleSignFunction.refreshProfilePicture(newUrlString);
             }
@@ -62,7 +63,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           }
           // UDPATING USER INFO UDPATING USER INFO UDPATING
           if (tabToOpen == 1) {
-            List<String>? infoFields = await MyDb().updateInfoFields(
+            List<String>? infoFields = await myDb.updateInfoFields(
                 user.userId,
                 nameCont.text,
                 descriptionCont.text,
@@ -77,8 +78,8 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           }
           // UDPATING SKILL BOXES  UDPATING SKILL BOXES
           if (tabToOpen == 2) {
-            List<Map<String, int>>? newBoxes = await MyDb()
-                .updateSkillBoxes(user.userId, editUserFunction.skillBoxes);
+            List<Map<String, int>>? newBoxes = await myDb.updateSkillBoxes(
+                user.userId, editUserFunction.skillBoxes);
             if (newBoxes != null) {
               googleSignFunction.refreshSkillSet(editUserFunction.skillBoxes);
             }

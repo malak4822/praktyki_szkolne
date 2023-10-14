@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
-import '../main.dart';
 import '../pages/user/edituserpage.dart';
 
 Widget skillBox(skillTxt, skillLevel, context, bool isChosen) => Container(

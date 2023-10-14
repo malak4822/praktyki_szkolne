@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/pages/user/choselocation.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
@@ -96,34 +97,41 @@ class _AddJobState extends State<AddJob> {
                     if (noticePhoto == null)
                       IconButton(
                           iconSize: 42,
-                          icon: const Icon(
-                            Icons.photo,
-                            color: Colors.white,
-                          ),
+                          icon: const Icon(Icons.photo, color: Colors.white),
                           onPressed: () async {
                             await pickImg();
                           }),
-                    const SizedBox(height: 15),
-                    updateValues(jobName, 'Nazwa Stanowiska', 1, 28,
-                        Icons.person, TextInputType.name),
-                    const SizedBox(height: 16),
-                    updateValues(companyName, 'Nazwa Firmy', 1, 24,
-                        Icons.business, TextInputType.text),
-                    const SizedBox(height: 16),
-                    updateValues(jobEmail, 'Email Kontaktowy', 1, 24,
-                        Icons.email, TextInputType.emailAddress),
-                    const SizedBox(height: 16),
-                    updateValues(jobPhone, 'Telefon', 1, 9, Icons.phone,
-                        TextInputType.phone),
                     const SizedBox(height: 12),
-                    updateValues(jobLocation, 'Miejsce Praktyk', 1, 28,
-                        Icons.place, TextInputType.streetAddress),
-                    const SizedBox(height: 16),
+                    updateValues(jobName, 'Nazwa Stanowiska', 1, 28,
+                        Icons.person, TextInputType.name, null),
+                    const SizedBox(height: 12),
+                    updateValues(companyName, 'Nazwa Firmy', 1, 24,
+                        Icons.business, TextInputType.text, null),
+                    const SizedBox(height: 12),
+                    updateValues(jobEmail, 'Email Kontaktowy', 1, 24,
+                        Icons.email, TextInputType.emailAddress, null),
+                    const SizedBox(height: 12),
+                    updateValues(jobPhone, 'Telefon', 1, 9, Icons.phone,
+                        TextInputType.phone, null),
+                    const SizedBox(height: 12),
                     updateValues(jobQualification, 'Nazwa Kwalifikacji', 1, 28,
-                        Icons.text_fields_rounded, TextInputType.text),
-                    const SizedBox(height: 16),
+                        Icons.text_fields_rounded, TextInputType.text, null),
+                    const SizedBox(height: 12),
+                    updateValues(jobLocation, 'Miejsce', null, null,
+                        Icons.location_on_rounded, null, () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  FindOnMap(callBack: (String val) {
+                                    setState(() {
+                                      jobLocation.text = val;
+                                    });
+                                  })));
+                    }),
+                    const SizedBox(height: 20),
                     updateValues(jobDescription, 'Opis Stanowiska', 10, 600,
-                        Icons.description_outlined, TextInputType.text),
+                        Icons.description_outlined, TextInputType.text, null),
                     CheckboxListTile(
                         contentPadding: EdgeInsets.only(
                             left: MediaQuery.of(context).size.width / 5),
@@ -151,13 +159,15 @@ class _AddJobState extends State<AddJob> {
                             elevation: 20),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            if (await Provider.of<EditUser>(context,
-                                    listen: false)
-                                .checkInternetConnectivity()) {
-                              await addJobAd();
+                            if (jobLocation.text != '') {
+                              if (await Provider.of<EditUser>(context,
+                                      listen: false)
+                                  .checkInternetConnectivity()) {
+                                await addJobAd();
+                              }
+                              if (!mounted) return;
+                              Navigator.pop(context);
                             }
-                            if (!mounted) return;
-                            Navigator.pop(context);
                           }
                         },
                         child: const Icon(

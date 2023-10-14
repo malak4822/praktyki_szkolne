@@ -87,6 +87,7 @@ class EditUserPage extends StatelessWidget {
                           )),
                       Center(
                           child: Text(
+                        textAlign: TextAlign.center,
                         '${currentUser.age == 0 ? '' : '${currentUser.age.toString()} lat,'}  ${currentUser.location}',
                         style: GoogleFonts.overpass(
                             color: Colors.white, fontSize: 16),
@@ -165,6 +166,7 @@ class EditUserPage extends StatelessWidget {
                 onPressed: () async {
                   await MyDb().getUserInfo(context, currentUser.userId);
                   debugPrint(currentUser.username);
+                  debugPrint(currentUser.location);
                   debugPrint(currentUser.description);
                   debugPrint(currentUser.email);
                   debugPrint(currentUser.skillsSet.toString());

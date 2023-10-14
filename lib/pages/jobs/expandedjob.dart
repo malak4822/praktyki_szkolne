@@ -11,7 +11,6 @@ class JobAdvertisement extends StatefulWidget {
 }
 
 class _JobAdvertisementState extends State<JobAdvertisement> {
-
   late Map arguments;
   List<String>? ownerData;
 
@@ -22,26 +21,6 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
     ownerData = await MyDb().takeAdOwnersData(arguments['belongsToUser']);
     setState(() {});
     super.didChangeDependencies();
-  }
-
-  Future<void> _launchUrl() async {
-    if (!await launchUrl(Uri.parse('mailto:${arguments['jobEmail']}'))) {
-      throw Exception('Could not launch url');
-    }
-  }
-
-  Future<void> _launchSms() async {
-    if (!await launchUrl(Uri.parse('sms:+48${arguments['jobPhone']}'))) {
-      throw Exception('Could not launch url');
-    }
-  }
-
-
-
-  Future<void> _phoneTo() async {
-    if (!await launchUrl(Uri.parse('tel:+48${arguments['jobPhone']}'))) {
-      throw Exception('Could not launch url');
-    }
   }
 
   @override
@@ -110,16 +89,23 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   spacing: 16,
                   runSpacing: 16,
                   children: [
-                    interactionBox(Icons.email_rounded, () {
-                      _launchUrl();
+                    interactionBox(Icons.email_rounded, () async {
+                      !await launchUrl(
+                          Uri.parse('mailto:${arguments['jobEmail']}'));
                     }),
-                    interactionBox(Icons.phone, () {
-                      _phoneTo();
+                    interactionBox(Icons.phone, () async {
+                      !await launchUrl(
+                          Uri.parse('tel:+48${arguments['jobPhone']}'));
                     }),
-                    interactionBox(Icons.sms, () {
-                      _launchSms();
+                    interactionBox(Icons.sms, () async {
+                      !await launchUrl(
+                          Uri.parse('sms:+48${arguments['jobPhone']}'));
                     }),
-                    interactionBox(Icons.pin_drop_rounded, () {}),
+                    // if (arguments['jobLocation'] != '')
+                    interactionBox(Icons.pin_drop_rounded, () async {
+                      !await launchUrl(Uri.parse(
+                          'https://www.google.com/maps/search/?api=1&query=${arguments['jobLocation']}'));
+                    }),
                   ]),
               const SizedBox(height: 16),
               // COMPANY NAME

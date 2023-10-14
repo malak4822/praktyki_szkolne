@@ -17,7 +17,6 @@ class NetworkUtility {
   }
 }
 
-var ee = Map<String, String>;
 
 class PlaceAutoCompleteResponse {
   final String? status;
