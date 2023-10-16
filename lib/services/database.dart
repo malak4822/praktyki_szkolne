@@ -129,18 +129,17 @@ class MyDb {
     }
   }
 
-  Future<void> addFirestoreJobAd(
-    userId,
-    noticePhoto,
-    jobName,
-    companyName,
-    jobEmail,
-    jobPhone,
-    jobLocation,
-    jobQualification,
-    jobDescription,
-    canRemotely,
-  ) async {
+  Future<List?> addFirestoreJobAd(
+      userId,
+      noticePhoto,
+      jobName,
+      companyName,
+      jobEmail,
+      jobPhone,
+      jobLocation,
+      jobQualification,
+      jobDescription,
+      canRemotely) async {
     late String code;
     String generateRandomCode() {
       const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -174,8 +173,19 @@ class MyDb {
         'jobDescription': jobDescription,
         'canRemotely': canRemotely
       });
+      return [
+        jobName,
+        companyName,
+        jobEmail,
+        jobPhone,
+        companyName,
+        jobLocation,
+        jobDescription,
+        canRemotely
+      ];
     } catch (e) {
       debugPrint(e.toString());
+      return null;
     }
   }
 
@@ -187,8 +197,10 @@ class MyDb {
           docSnapshot.data() as Map<String, dynamic>;
 
       List<String> userPpAndUsername = [];
-      userPpAndUsername
-          .addAll([userInfo['profilePicture'], userInfo['username']]);
+      userPpAndUsername.addAll([
+        userInfo['profilePicture'],
+        userInfo['username'],
+      ]);
 
       return userPpAndUsername;
     } catch (e) {

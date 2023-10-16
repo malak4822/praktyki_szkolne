@@ -52,9 +52,7 @@ class JobNoticesPage extends StatelessWidget {
                             shrinkWrap: true,
                             itemBuilder: (BuildContext context, int index) {
                               return JobNotice(
-                                jobData: myJobList,
-                                index: index,
-                              );
+                                  jobData: myJobList, index: index);
                             }));
                   }
                 })));

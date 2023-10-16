@@ -33,7 +33,7 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
     List<Widget> pages = [
       const Center(child: Icon(Icons.abc)),
       const JobNoticesPage(),
-      const UserPage(),
+      UserPage(isOwnProfile: true),
     ];
     return Scaffold(
       bottomNavigationBar: Container(

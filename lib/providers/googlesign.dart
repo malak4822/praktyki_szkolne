@@ -26,6 +26,11 @@ class GoogleSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void refreshJobAd(List jobInfo) {
+    
+    notifyListeners();
+  }
+
   MyUser _currentUser = MyUser(
       userId: '',
       username: '',

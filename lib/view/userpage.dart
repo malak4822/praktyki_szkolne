@@ -7,12 +7,17 @@ import 'package:provider/provider.dart';
 import '../widgets/skillboxes.dart';
 
 class UserPage extends StatelessWidget {
-  const UserPage({Key? key}) : super(key: key);
+  UserPage({Key? key, this.shownUser, required this.isOwnProfile})
+      : super(key: key);
+  dynamic shownUser;
+  bool isOwnProfile;
 
   @override
   Widget build(BuildContext context) {
-    var currentUser = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
-    var editUserFunction = Provider.of<EditUser>(context, listen: false);
+    print(shownUser);
+    if (isOwnProfile) {
+      shownUser = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
+    }
     return Scaffold(
         body: ListView(children: [
       SizedBox(
@@ -31,20 +36,23 @@ class UserPage extends StatelessWidget {
                     gradient: LinearGradient(colors: gradient),
                     borderRadius: BorderRadius.vertical(
                         bottom: Radius.elliptical(200, 30)))),
-            Align(
-                alignment: const Alignment(0.9, -0.8),
-                child: InkWell(
-                    onTap: () {
-                      editUserFunction.checkEmptiness(
-                          currentUser.username,
-                          currentUser.description,
-                          currentUser.age,
-                          currentUser.location);
+            if (isOwnProfile)
+              Align(
+                  alignment: const Alignment(0.9, -0.8),
+                  child: InkWell(
+                      onTap: () {
+                        Provider.of<EditUser>(context, listen: false)
+                            .checkEmptiness(
+                                shownUser.username,
+                                shownUser.description,
+                                shownUser.age,
+                                shownUser.location);
 
-                      Navigator.pushNamed(context, '/editUser');
-                    },
-                    child: const Image(
-                        image: AssetImage('images/menuicon.png'), height: 30))),
+                        Navigator.pushNamed(context, '/editUser');
+                      },
+                      child: const Image(
+                          image: AssetImage('images/menuicon.png'),
+                          height: 30))),
             Center(
                 child: CircleAvatar(
                     radius: 85,
@@ -59,10 +67,12 @@ class UserPage extends StatelessWidget {
                             child: FadeInImage(
                           fit: BoxFit.cover,
                           fadeInDuration: const Duration(milliseconds: 500),
-                          image: currentUser.profilePicture.isNotEmpty
-                              ? NetworkImage(currentUser.profilePicture)
-                              : const AssetImage('images/man/man.png')
-                                  as ImageProvider<Object>,
+                          image: isOwnProfile
+                              ? shownUser.profilePicture.isNotEmpty
+                                  ? NetworkImage(shownUser.profilePicture)
+                                  : const AssetImage('images/man/man.png')
+                                      as ImageProvider<Object>
+                              : NetworkImage(shownUser[0]),
                           placeholder: const AssetImage('images/man/man.png'),
                         )))))
           ])),
@@ -76,50 +86,55 @@ class UserPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Column(children: [
-                Text(currentUser.username,
-                    softWrap: true,
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.overpass(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800)),
                 Center(
                     child: Text(
-                  textAlign: TextAlign.center,
-                  '${currentUser.age == 0 ? '' : '${currentUser.age.toString()} lat,'}  ${currentUser.location}',
-                  style:
-                      GoogleFonts.overpass(color: Colors.white, fontSize: 16),
-                )),
-                const SizedBox(height: 5),
-                Text(currentUser.description,
+                        isOwnProfile ? shownUser.username : shownUser[1],
+                        softWrap: true,
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.overpass(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w800))),
+                if (isOwnProfile)
+                  Center(
+                      child: Text(
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.overpass(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
+                    '${shownUser.age == 0 ? '' : '${shownUser.age.toString()} lat,'}  ${shownUser.location}',
+                    style:
+                        GoogleFonts.overpass(color: Colors.white, fontSize: 16),
+                  )),
+                const SizedBox(height: 5),
+                if (isOwnProfile)
+                  Text(shownUser.description,
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.overpass(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
               ]),
             )
           ])),
-      Visibility(
-          visible: currentUser.skillsSet.isNotEmpty,
-          child: SizedBox(
-              height: 130,
-              child: Padding(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width / 13,
-                      right: MediaQuery.of(context).size.width / 13,
-                      top: 6),
-                  child: Center(
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: currentUser.skillsSet.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) => skillBox(
-                              currentUser.skillsSet[index].keys.single,
-                              currentUser.skillsSet[index].values.single,
-                              context,
-                              true)))))),
+      if (isOwnProfile)
+        Visibility(
+            visible: shownUser.skillsSet.isNotEmpty,
+            child: SizedBox(
+                height: 130,
+                child: Padding(
+                    padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width / 13,
+                        right: MediaQuery.of(context).size.width / 13,
+                        top: 6),
+                    child: Center(
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: shownUser.skillsSet.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) => skillBox(
+                                shownUser.skillsSet[index].keys.single,
+                                shownUser.skillsSet[index].values.single,
+                                context,
+                                true)))))),
     ]));
   }
 }

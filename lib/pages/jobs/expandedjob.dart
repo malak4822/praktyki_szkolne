@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/services/database.dart';
+import 'package:prakty/view/userpage.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class JobAdvertisement extends StatefulWidget {
@@ -13,6 +14,7 @@ class JobAdvertisement extends StatefulWidget {
 class _JobAdvertisementState extends State<JobAdvertisement> {
   late Map arguments;
   List<String>? ownerData;
+  bool isOwnerVisible = false;
 
   @override
   void didChangeDependencies() async {
@@ -104,7 +106,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                     // if (arguments['jobLocation'] != '')
                     interactionBox(Icons.pin_drop_rounded, () async {
                       !await launchUrl(Uri.parse(
-                          'https://www.google.com/maps/search/?api=1&query=${arguments['jobLocation']}'));
+                          "https://www.google.com/maps/search/?api=1&query=${arguments['jobLocation']}"));
                     }),
                   ]),
               const SizedBox(height: 16),
@@ -126,44 +128,48 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       const Divider(color: Colors.white, thickness: 2),
                       const SizedBox(height: 8),
                       if (ownerData != null)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Expanded(
-                                child: Container(
+                        GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isOwnerVisible = true;
+                              });
+                            },
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    child: Container(
+                                        height: 90,
+                                        decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                                colors: gradient),
+                                            border: Border.all(
+                                                width: 2, color: Colors.white),
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        child: Center(
+                                            child: Text(
+                                          'Dodane Przez \n ${ownerData![1]}',
+                                          style: fontSize16,
+                                          textAlign: TextAlign.center,
+                                        )))),
+                                const SizedBox(width: 8),
+                                Container(
+                                    width: 90,
                                     height: 90,
                                     decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                            colors: gradient),
-                                        border: Border.all(
-                                            width: 2, color: Colors.white),
-                                        borderRadius:
-                                            BorderRadius.circular(16)),
-                                    child: Center(
-                                        child: Text(
-                                      'Dodane Przez \n ${ownerData![1]}',
-                                      style: fontSize16,
-                                      textAlign: TextAlign.center,
-                                    )))),
-                            const SizedBox(width: 8),
-                            Container(
-                                width: 90,
-                                height: 90,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  border:
-                                      Border.all(color: Colors.white, width: 2),
-                                ),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
-                                    child: Image.network(
-                                        ownerData![0] != ''
-                                            ? ownerData![0]
-                                            : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
-                                        fit: BoxFit.cover))),
-                          ],
-                        )
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                          color: Colors.white, width: 2),
+                                    ),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Image.network(
+                                            ownerData![0] != ''
+                                                ? ownerData![0]
+                                                : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
+                                            fit: BoxFit.cover))),
+                              ],
+                            ))
                     ],
                   )),
 
@@ -204,6 +210,20 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
               icon: const Icon(Icons.arrow_back_ios_rounded,
                   color: Colors.white)),
         ),
+        Visibility(
+            visible: isOwnerVisible,
+            child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    isOwnerVisible = false;
+                  });
+                },
+                child: Container(
+                    padding: const EdgeInsets.all(40),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                        child: UserPage(
+                            isOwnProfile: false, shownUser: ownerData)))))
       ])),
     );
   }

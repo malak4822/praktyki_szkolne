@@ -40,26 +40,6 @@ class _AddJobState extends State<AddJob> {
     }
   }
 
-  Future<void> addJobAd() async {
-    try {
-      await MyDb().addFirestoreJobAd(
-          Provider.of<GoogleSignInProvider>(context, listen: false)
-              .getCurrentUser
-              .userId,
-          noticePhoto ?? 'no_image',
-          jobName.text,
-          companyName.text,
-          jobEmail.text,
-          jobPhone.text,
-          jobLocation.text,
-          jobQualification.text,
-          jobDescription.text,
-          canRemotely);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,7 +143,28 @@ class _AddJobState extends State<AddJob> {
                               if (await Provider.of<EditUser>(context,
                                       listen: false)
                                   .checkInternetConnectivity()) {
-                                await addJobAd();
+                                if (!mounted) return;
+                                List? eee = await MyDb().addFirestoreJobAd(
+                                    Provider.of<GoogleSignInProvider>(context,
+                                            listen: false)
+                                        .getCurrentUser
+                                        .userId,
+                                    noticePhoto ?? 'no_image',
+                                    jobName.text,
+                                    companyName.text,
+                                    jobEmail.text,
+                                    jobPhone.text,
+                                    jobLocation.text,
+                                    jobQualification.text,
+                                    jobDescription.text,
+                                    canRemotely);
+                                if (eee != null) {
+                                  print(eee);
+                                  if (!mounted) return;
+                                  Provider.of<GoogleSignInProvider>(context,
+                                          listen: false)
+                                      .refreshJobAd(eee);
+                                }
                               }
                               if (!mounted) return;
                               Navigator.pop(context);

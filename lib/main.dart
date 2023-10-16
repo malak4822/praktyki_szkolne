@@ -5,7 +5,6 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/loggedparent.dart';
 import 'package:prakty/pages/jobs/addjob.dart';
 import 'package:prakty/pages/jobs/expandedjob.dart';
-import 'package:prakty/pages/user/choselocation.dart';
 import 'package:prakty/pages/user/edituserpage.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/widgets/error.dart';

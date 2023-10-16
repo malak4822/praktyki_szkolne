@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/pages/user/choselocation.dart';
 import 'package:prakty/widgets/inputwindows.dart';
