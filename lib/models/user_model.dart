@@ -10,7 +10,7 @@ class MyUser {
   List<Map<String, int>> skillsSet;
   String email;
   String profilePicture;
-  late bool registeredViaGoogle;
+  late bool jobVacancy;
   late Timestamp accountCreated;
 
   MyUser({
@@ -23,7 +23,7 @@ class MyUser {
     required this.skillsSet,
     required this.email,
     required this.profilePicture,
-    required this.registeredViaGoogle,
+    required this.jobVacancy,
     required this.accountCreated,
   });
 }

@@ -142,6 +142,42 @@ class EditUserPage extends StatelessWidget {
                               context);
                         }
                       }))),
+          Container(
+              padding: const EdgeInsets.all(8),
+              margin: const EdgeInsets.symmetric(vertical: 16),
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(colors: gradient),
+                  boxShadow: myBoxShadow),
+              child: CheckboxListTile(
+                  checkboxShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  activeColor: Colors.white,
+                  side: MaterialStateBorderSide.resolveWith((states) =>
+                      const BorderSide(width: 2, color: Colors.white)),
+                  title: Text(
+                    "Ogłaszaj Mnie Jako Szukającego Pracy",
+                    style: fontSize16,
+                    textAlign: TextAlign.center,
+                  ),
+                  value: Provider.of<GoogleSignInProvider>(context)
+                      .getCurrentUser
+                      .jobVacancy,
+                  dense: true,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  onChanged: (newValue) async {
+                    try {
+                      var hasVacancy = await MyDb()
+                          .addUserJobNotice(currentUser.userId, newValue);
+                      if (hasVacancy == false) {
+                        if (!context.mounted) return;
+                        Provider.of<GoogleSignInProvider>(context,
+                                listen: false)
+                            .userSearchingToogle(newValue);
+                      }
+                    } catch (e) {
+                      debugPrint(e.toString());
+                    }
+                  })),
         ]),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -174,7 +210,7 @@ class EditUserPage extends StatelessWidget {
                   debugPrint(currentUser.isNormalUser.toString());
                   debugPrint(currentUser.profilePicture);
                   debugPrint(currentUser.userId);
-                  debugPrint(currentUser.registeredViaGoogle.toString());
+                  debugPrint(currentUser.jobVacancy.toString());
                   debugPrint(currentUser.accountCreated.toString());
                 },
                 child: const Icon(Icons.info))

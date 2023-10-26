@@ -8,6 +8,11 @@ import '../models/user_model.dart';
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  void userSearchingToogle(newValue) {
+    _currentUser.jobVacancy = newValue;
+    notifyListeners();
+  }
+
   void refreshNameAndDesc(newUsername, newDescription, newLocation, newAge) {
     _currentUser.username = newUsername;
     _currentUser.description = newDescription;
@@ -27,7 +32,6 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 
   void refreshJobAd(List jobInfo) {
-    
     notifyListeners();
   }
 
@@ -40,7 +44,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       email: '',
       location: '',
       profilePicture: '',
-      registeredViaGoogle: false,
+      jobVacancy: true,
       accountCreated: Timestamp(0, 0),
       skillsSet: []);
   MyUser get getCurrentUser => _currentUser;
@@ -58,7 +62,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           email: '',
           location: '',
           profilePicture: '',
-          registeredViaGoogle: false,
+          jobVacancy: true,
           skillsSet: [],
           accountCreated: Timestamp(0, 0));
     } catch (e) {
@@ -67,9 +71,7 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 
   //GOOGLE LOGIN GOOGLE LOGIN GOOGLE LOGIN GOOGLE LOGIN
-  Future<void> loginViaGoogle(
-      // context
-      ) async {
+  Future<void> loginViaGoogle() async {
     GoogleSignIn googleSignIn = GoogleSignIn(
       scopes: ['email', 'https://www.googleapis.com/auth/contacts.readonly'],
     );
@@ -90,7 +92,7 @@ class GoogleSignInProvider extends ChangeNotifier {
         _currentUser.email = authResult.user!.email!;
         _currentUser.profilePicture = authResult.user!.photoURL!;
         _currentUser.userId = authResult.user!.uid;
-        _currentUser.registeredViaGoogle = true;
+
         await MyDb().addFirestoreUser(_currentUser);
       }
       // await MyDb().getUserInfo(context, authResult.user!.uid);
@@ -146,7 +148,6 @@ class GoogleSignInProvider extends ChangeNotifier {
 
       _currentUser.username = username;
       _currentUser.email = email;
-      _currentUser.registeredViaGoogle = false;
       _currentUser.userId = authResult.user!.uid;
       _currentUser.accountCreated = Timestamp.now();
       await MyDb().addFirestoreUser(_currentUser);

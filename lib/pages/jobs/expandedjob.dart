@@ -219,11 +219,27 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   });
                 },
                 child: Container(
-                    padding: const EdgeInsets.all(40),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                        child: UserPage(
-                            isOwnProfile: false, shownUser: ownerData)))))
+                    color: Colors.white54,
+                    child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isOwnerVisible = true;
+                          });
+                        },
+                        child: Center(
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    boxShadow: myBoxShadow,
+                                    borderRadius: BorderRadius.circular(16)),
+                                width:
+                                    MediaQuery.of(context).size.width * 2 / 3,
+                                height:
+                                    MediaQuery.of(context).size.height * 4 / 11,
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: UserPage(
+                                        isOwnProfile: false,
+                                        shownUser: ownerData))))))))
       ])),
     );
   }

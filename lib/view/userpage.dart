@@ -14,7 +14,6 @@ class UserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(shownUser);
     if (isOwnProfile) {
       shownUser = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
     }

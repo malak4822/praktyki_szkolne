@@ -23,7 +23,7 @@ class MyDb {
         'skillsSet': myUser.skillsSet,
         'profilePicture': myUser.profilePicture,
         'userId': myUser.userId,
-        'registeredViaGoogle': myUser.registeredViaGoogle,
+        'jobVacancy': myUser.jobVacancy,
         'accountCreated': Timestamp.now()
       });
     } catch (e) {
@@ -57,7 +57,7 @@ class MyDb {
         currentUser.isNormalUser = data?['isNormalUser'] ?? false;
         currentUser.profilePicture = data?['profilePicture'] ?? "";
         currentUser.userId = data?['userId'] ?? "";
-        currentUser.registeredViaGoogle = data?['registeredViaGoogle'] ?? false;
+        currentUser.jobVacancy = data?['jobVacancy'] ?? false;
         currentUser.accountCreated = data?['accountCreated'] ?? Timestamp.now();
         Provider.of<EditUser>(context, listen: false).setSkillBoxes =
             currentUser.skillsSet;
@@ -126,6 +126,40 @@ class MyDb {
     } catch (e) {
       debugPrint(e.toString());
       return [];
+    }
+  }
+
+  Future<List<int>> downloadNoticeNumbers() async {
+    try {
+      List<int> usrsWithNotices = [];
+      final collection = _firestore.collection('/users');
+      final QuerySnapshot usersCollection = await collection.get();
+      final List myUsersList =
+          usersCollection.docs.map((doc) => doc.data()).toList();
+      for (int i = 0; i < myUsersList.length; i++) {
+        var isVacan = myUsersList[i]['jobVacancy'];
+        if (isVacan == true) {
+          usrsWithNotices.add(i);
+        }
+      }
+
+      return usrsWithNotices;
+    } catch (e) {
+      debugPrint(e.toString());
+      return [];
+    }
+  }
+
+  Future<bool> addUserJobNotice(userId, newValue) async {
+    try {
+      await _firestore
+          .collection('/users')
+          .doc(userId)
+          .update({'jobVacancy': newValue});
+      return false;
+    } catch (e) {
+      debugPrint(e.toString());
+      return true;
     }
   }
 

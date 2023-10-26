@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
-import 'package:prakty/pages/jobs/jobs.dart';
+import 'package:prakty/view/jobs.dart';
 import 'package:prakty/view/userpage.dart';
 import 'package:prakty/providers/googlesign.dart';
+import 'package:prakty/view/usersnotices.dart';
 import 'package:provider/provider.dart';
 
 class LoggedParentWidget extends StatefulWidget {
@@ -31,7 +32,7 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
   @override
   Widget build(BuildContext context) {
     List<Widget> pages = [
-      const Center(child: Icon(Icons.abc)),
+      const UsersNoticesPage(),
       const JobNoticesPage(),
       UserPage(isOwnProfile: true),
     ];
