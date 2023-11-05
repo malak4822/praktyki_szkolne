@@ -14,6 +14,7 @@ class NetworkUtility {
       debugPrint(e.toString());
       return null;
     }
+    return null;
   }
 }
 

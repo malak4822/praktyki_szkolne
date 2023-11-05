@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:prakty/constants.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/widgets/inputwindows.dart';
@@ -23,6 +24,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool selectedAccountType = Provider.of<GoogleSignInProvider>(context)
+        .getCurrentUser
+        .isAccountTypeUser;
+
     final signInProvider =
         Provider.of<GoogleSignInProvider>(context, listen: false);
 
@@ -93,7 +98,57 @@ class _LoginPageState extends State<LoginPage> {
                       myKeyboardType: TextInputType.visiblePassword,
                       fieldNumber: 2,
                     ),
-                    const SizedBox(height: 15),
+
+                    /// HERE
+                    const SizedBox(height: 12),
+                    Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2, color: Colors.white),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 12),
+                        child: DropdownButton<bool>(
+                            dropdownColor:
+                                const Color.fromARGB(255, 1, 192, 209),
+                            isExpanded: true,
+                            borderRadius: BorderRadius.circular(16),
+                            icon: const Icon(Icons.arrow_drop_down,
+                                color: Colors.white),
+                            underline: const SizedBox(),
+                            value:
+                                selectedAccountType, // Use the selected value from the variable
+                            onChanged: (newValue) {
+                              setState(() {
+                                signInProvider.toogleAccountType(newValue);
+                                if (newValue == "employer") {
+                                  // Logic for selecting Employer account
+                                  // For example: Provider.of<GoogleSignInProvider>(context, listen: false).setJobVacancy(true);
+                                } else {
+                                  // Logic for selecting Student account
+                                  // For example: Provider.of<GoogleSignInProvider>(context, listen: false).setJobVacancy(false);
+                                }
+                              });
+                            },
+                            items: <bool>[true, false].map((bool value) {
+                              return DropdownMenuItem<bool>(
+                                  value: value,
+                                  child: Row(children: [
+                                    Icon(
+                                        value == false
+                                            ? Icons.business
+                                            : Icons.school,
+                                        color: Colors.white),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                        value
+                                            ? 'Konto Ucznia'
+                                            : 'Konto Pracodawcy',
+                                        style: fontSize16),
+                                  ]));
+                            }).toList())),
+
+                    const SizedBox(height: 12),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -119,11 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                               _isLoginClicked = true;
                             });
                           },
-                          child: Text("Zaloguj",
-                              style: GoogleFonts.overpass(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600))),
+                          child: Text("Zaloguj", style: fontSize20)),
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
@@ -153,10 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           child: Text(
                             "Zarejestruj",
-                            style: GoogleFonts.overpass(
-                                fontSize: 20,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600),
+                            style: fontSize20,
                           ))
                     ]),
                     Column(children: [
@@ -184,8 +232,6 @@ class _LoginPageState extends State<LoginPage> {
                                     const EdgeInsets.fromLTRB(30, 10, 35, 10),
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 shape: const RoundedRectangleBorder(
-                                    // side: BorderSide(
-                                    //     width: 2, color: Colors.white),
                                     borderRadius: BorderRadius.vertical(
                                         bottom: Radius.circular(15))),
                               )))

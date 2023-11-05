@@ -8,6 +8,11 @@ import '../models/user_model.dart';
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  void toogleAccountType(newType) {
+    _currentUser.isAccountTypeUser = newType;
+    notifyListeners();
+  }
+
   void userSearchingToogle(newValue) {
     _currentUser.jobVacancy = newValue;
     notifyListeners();
@@ -40,7 +45,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       username: '',
       description: '',
       age: 0,
-      isNormalUser: false,
+      isAccountTypeUser: false,
       email: '',
       location: '',
       profilePicture: '',
@@ -58,7 +63,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           username: '',
           description: '',
           age: 0,
-          isNormalUser: false,
+          isAccountTypeUser: false,
           email: '',
           location: '',
           profilePicture: '',

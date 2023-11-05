@@ -6,7 +6,7 @@ class MyUser {
   String description;
   String location;
   int age;
-  bool isNormalUser;
+  bool isAccountTypeUser;
   List<Map<String, int>> skillsSet;
   String email;
   String profilePicture;
@@ -18,7 +18,7 @@ class MyUser {
     required this.username,
     required this.age,
     required this.location,
-    required this.isNormalUser,
+    required this.isAccountTypeUser,
     required this.description,
     required this.skillsSet,
     required this.email,

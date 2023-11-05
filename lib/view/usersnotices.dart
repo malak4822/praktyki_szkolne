@@ -59,7 +59,6 @@ class UserNotice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(userNumber);
     return InkWell(
         onTap: () {
           // Navigator.pushNamed(context, '/advertisement',
@@ -117,9 +116,10 @@ class UserNotice extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 50,
                         foregroundImage: NetworkImage(
-                          "particularJob['jobImage']" ??
-                              'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fcompany_icon.png?alt=media&token=7c9796bf-2b8b-40d4-bc71-b85aeb82c269&_gl=1*1jkb7r2*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5NzMyMjExOC45NC4xLjE2OTczMjIzNTEuNjAuMC4w',
-                        ),
+                            "particularJob['jobImage']"
+                            //  ??
+                            // 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fcompany_icon.png?alt=media&token=7c9796bf-2b8b-40d4-bc71-b85aeb82c269&_gl=1*1jkb7r2*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5NzMyMjExOC45NC4xLjE2OTczMjIzNTEuNjAuMC4w',
+                            ),
                       )),
                   const SizedBox(width: 10),
                 ]))));

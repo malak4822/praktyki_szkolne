@@ -39,6 +39,8 @@ class EditUserPage extends StatelessWidget {
                     borderRadius: BorderRadius.vertical(
                         bottom: Radius.elliptical(200, 30))),
               ),
+
+              //BLAD, NIE PODKRESLA PRZY LOGOWANIU JAK EMAIL JEST ZLE SFORMATOWANY
               Center(
                   child: CircleAvatar(
                       radius: 85,
@@ -207,7 +209,7 @@ class EditUserPage extends StatelessWidget {
                   debugPrint(currentUser.email);
                   debugPrint(currentUser.skillsSet.toString());
                   debugPrint(currentUser.age.toString());
-                  debugPrint(currentUser.isNormalUser.toString());
+                  debugPrint(currentUser.isAccountTypeUser.toString());
                   debugPrint(currentUser.profilePicture);
                   debugPrint(currentUser.userId);
                   debugPrint(currentUser.jobVacancy.toString());

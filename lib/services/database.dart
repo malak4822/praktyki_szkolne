@@ -19,7 +19,7 @@ class MyDb {
         'description': myUser.description,
         'age': myUser.age,
         'location': myUser.location,
-        'isNormalUser': myUser.isNormalUser,
+        'isAccountTypeUser': myUser.isAccountTypeUser,
         'skillsSet': myUser.skillsSet,
         'profilePicture': myUser.profilePicture,
         'userId': myUser.userId,
@@ -54,7 +54,7 @@ class MyDb {
                 }).toList() ??
                 [];
         currentUser.location = data?['location'] ?? "";
-        currentUser.isNormalUser = data?['isNormalUser'] ?? false;
+        currentUser.isAccountTypeUser = data?['isAccountTypeUser'] ?? false;
         currentUser.profilePicture = data?['profilePicture'] ?? "";
         currentUser.userId = data?['userId'] ?? "";
         currentUser.jobVacancy = data?['jobVacancy'] ?? false;

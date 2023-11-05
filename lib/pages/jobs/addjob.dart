@@ -159,7 +159,7 @@ class _AddJobState extends State<AddJob> {
                                     jobDescription.text,
                                     canRemotely);
                                 if (eee != null) {
-                                  print(eee);
+                             
                                   if (!mounted) return;
                                   Provider.of<GoogleSignInProvider>(context,
                                           listen: false)
