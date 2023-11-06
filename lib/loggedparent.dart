@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/models/user_model.dart';
 import 'package:prakty/view/jobs.dart';
 import 'package:prakty/view/userpage.dart';
 import 'package:prakty/providers/googlesign.dart';
@@ -33,7 +34,11 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
   Widget build(BuildContext context) {
     List<Widget> pages = [
       const UsersNoticesPage(),
-      const JobNoticesPage(),
+      JobNoticesPage(
+          isAccountTypeUser:
+              Provider.of<GoogleSignInProvider>(context, listen: false)
+                  .getCurrentUser
+                  .isAccountTypeUser),
       UserPage(isOwnProfile: true),
     ];
     return Scaffold(

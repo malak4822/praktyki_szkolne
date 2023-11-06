@@ -5,16 +5,19 @@ import 'package:prakty/services/database.dart';
 import 'package:prakty/pages/jobs/jobcard.dart';
 
 class JobNoticesPage extends StatelessWidget {
-  const JobNoticesPage({super.key});
+  JobNoticesPage({super.key, required this.isAccountTypeUser});
+
+  bool isAccountTypeUser;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.pushNamed(context, '/addJob'),
-          child: const Icon(Icons.add),
-        ),
+        floatingActionButton: isAccountTypeUser == false
+            ? FloatingActionButton(
+                onPressed: () => Navigator.pushNamed(context, '/addJob'),
+                child: const Icon(Icons.add))
+            : null,
         body: SafeArea(
             child: FutureBuilder(
                 future: MyDb().downloadJobAds(),

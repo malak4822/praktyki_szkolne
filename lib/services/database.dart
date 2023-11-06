@@ -54,7 +54,7 @@ class MyDb {
                 }).toList() ??
                 [];
         currentUser.location = data?['location'] ?? "";
-        currentUser.isAccountTypeUser = data?['isAccountTypeUser'] ?? false;
+        currentUser.isAccountTypeUser = data?['isAccountTypeUser'] ?? true;
         currentUser.profilePicture = data?['profilePicture'] ?? "";
         currentUser.userId = data?['userId'] ?? "";
         currentUser.jobVacancy = data?['jobVacancy'] ?? false;
@@ -129,9 +129,9 @@ class MyDb {
     }
   }
 
-  Future<List<int>> downloadNoticeNumbers() async {
+  Future<List<Map>> downloadUsersStates() async {
     try {
-      List<int> usrsWithNotices = [];
+      List<Map> usrsWithNotices = [];
       final collection = _firestore.collection('/users');
       final QuerySnapshot usersCollection = await collection.get();
       final List myUsersList =
@@ -139,10 +139,9 @@ class MyDb {
       for (int i = 0; i < myUsersList.length; i++) {
         var isVacan = myUsersList[i]['jobVacancy'];
         if (isVacan == true) {
-          usrsWithNotices.add(i);
+          usrsWithNotices.add(myUsersList[i]);
         }
       }
-
       return usrsWithNotices;
     } catch (e) {
       debugPrint(e.toString());

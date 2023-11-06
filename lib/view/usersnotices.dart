@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/models/user_model.dart';
 import 'package:prakty/services/database.dart';
+import 'package:prakty/view/userpage.dart';
 
 class UsersNoticesPage extends StatelessWidget {
   const UsersNoticesPage({super.key});
@@ -11,7 +13,7 @@ class UsersNoticesPage extends StatelessWidget {
     return Scaffold(
         body: SafeArea(
             child: FutureBuilder(
-                future: MyDb().downloadNoticeNumbers(),
+                future: MyDb().downloadUsersStates(),
                 builder: (context, AsyncSnapshot<List> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
@@ -45,7 +47,7 @@ class UsersNoticesPage extends StatelessWidget {
                             itemCount: myUsersList!.length,
                             shrinkWrap: true,
                             itemBuilder: (BuildContext context, int index) {
-                              return UserNotice(userNumber: myUsersList[index]);
+                              return UserNotice(userInfo: myUsersList[index]);
                             }));
                   }
                 })));
@@ -53,16 +55,33 @@ class UsersNoticesPage extends StatelessWidget {
 }
 
 class UserNotice extends StatelessWidget {
-  const UserNotice({super.key, required this.userNumber});
+  const UserNotice({super.key, required this.userInfo});
 
-  final int userNumber;
+  final Map userInfo;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          // Navigator.pushNamed(context, '/advertisement',
-          //     arguments: userNumber);
+          var myUser = MyUser(
+              userId: userInfo['userId'],
+              username: userInfo['username'],
+              age: userInfo['age'],
+              location: userInfo['location'],
+              isAccountTypeUser: userInfo['isAccountTypeUser'],
+              description: userInfo['description'],
+              skillsSet: userInfo['skillsSet'],
+              email: userInfo['email'],
+              profilePicture: userInfo['profilePicture'],
+              jobVacancy: userInfo['jobVacancy'],
+              accountCreated: userInfo['accountCreated']);
+          print(myUser);
+          // Navigator.pushNamed(context, '/userPage', arguments: userInfo);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      UserPage(isOwnProfile: false, shownUser: myUser)));
         },
         child: Container(
             decoration: BoxDecoration(
@@ -81,13 +100,13 @@ class UserNotice extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  "userNumber['companyName']",
+                                  userInfo['username'],
                                   style: fontSize20,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                 ),
-                                Text("userNumber['jobDescription']",
+                                Text(userInfo['description'],
                                     maxLines: 3,
                                     textAlign: TextAlign.center,
                                     overflow: TextOverflow.ellipsis,
@@ -101,7 +120,7 @@ class UserNotice extends StatelessWidget {
                                     const Icon(Icons.location_city,
                                         size: 18, color: Colors.white),
                                     Expanded(
-                                        child: Text("  ' {userNumber[']}'",
+                                        child: Text(userInfo['location'],
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
                                             style: GoogleFonts.overpass(
@@ -110,16 +129,15 @@ class UserNotice extends StatelessWidget {
                                   ],
                                 )
                               ]))),
-                  const CircleAvatar(
+                  CircleAvatar(
                       radius: 52.5,
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
                         radius: 50,
-                        foregroundImage: NetworkImage(
-                            "particularJob['jobImage']"
-                            //  ??
-                            // 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fcompany_icon.png?alt=media&token=7c9796bf-2b8b-40d4-bc71-b85aeb82c269&_gl=1*1jkb7r2*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5NzMyMjExOC45NC4xLjE2OTczMjIzNTEuNjAuMC4w',
-                            ),
+                        foregroundImage: NetworkImage(userInfo['profilePicture']
+                                .isNotEmpty
+                            ? userInfo['profilePicture']
+                            : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*4wskaw*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA'),
                       )),
                   const SizedBox(width: 10),
                 ]))));

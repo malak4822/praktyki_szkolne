@@ -45,7 +45,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       username: '',
       description: '',
       age: 0,
-      isAccountTypeUser: false,
+      isAccountTypeUser: true,
       email: '',
       location: '',
       profilePicture: '',
@@ -63,7 +63,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           username: '',
           description: '',
           age: 0,
-          isAccountTypeUser: false,
+          isAccountTypeUser: true,
           email: '',
           location: '',
           profilePicture: '',
@@ -83,9 +83,9 @@ class GoogleSignInProvider extends ChangeNotifier {
 
     try {
       GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
       GoogleSignInAuthentication googleUserAuth =
           await googleUser!.authentication;
-
       final AuthCredential credentialTokens = GoogleAuthProvider.credential(
           accessToken: googleUserAuth.accessToken,
           idToken: googleUserAuth.idToken);
@@ -100,7 +100,6 @@ class GoogleSignInProvider extends ChangeNotifier {
 
         await MyDb().addFirestoreUser(_currentUser);
       }
-      // await MyDb().getUserInfo(context, authResult.user!.uid);
     } catch (error) {
       debugPrint(error.toString());
     }

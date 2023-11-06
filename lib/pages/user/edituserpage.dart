@@ -209,7 +209,7 @@ class EditUserPage extends StatelessWidget {
                   debugPrint(currentUser.email);
                   debugPrint(currentUser.skillsSet.toString());
                   debugPrint(currentUser.age.toString());
-                  debugPrint(currentUser.isAccountTypeUser.toString());
+                  debugPrint( 'IS STUDENT TYPE ACCOUNT -> ${currentUser.isAccountTypeUser.toString()}');
                   debugPrint(currentUser.profilePicture);
                   debugPrint(currentUser.userId);
                   debugPrint(currentUser.jobVacancy.toString());

@@ -234,7 +234,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                                 width:
                                     MediaQuery.of(context).size.width * 2 / 3,
                                 height:
-                                    MediaQuery.of(context).size.height * 4 / 11,
+                                    MediaQuery.of(context).size.height * 5 / 11,
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(16),
                                     child: UserPage(

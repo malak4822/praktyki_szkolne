@@ -24,10 +24,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool selectedAccountType = Provider.of<GoogleSignInProvider>(context)
-        .getCurrentUser
-        .isAccountTypeUser;
-
     final signInProvider =
         Provider.of<GoogleSignInProvider>(context, listen: false);
 
@@ -98,14 +94,11 @@ class _LoginPageState extends State<LoginPage> {
                       myKeyboardType: TextInputType.visiblePassword,
                       fieldNumber: 2,
                     ),
-
-                    /// HERE
                     const SizedBox(height: 12),
                     Container(
                         decoration: BoxDecoration(
-                          border: Border.all(width: 2, color: Colors.white),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
+                            border: Border.all(width: 2, color: Colors.white),
+                            borderRadius: BorderRadius.circular(16)),
                         padding: const EdgeInsets.symmetric(
                             vertical: 4, horizontal: 12),
                         child: DropdownButton<bool>(
@@ -116,20 +109,14 @@ class _LoginPageState extends State<LoginPage> {
                             icon: const Icon(Icons.arrow_drop_down,
                                 color: Colors.white),
                             underline: const SizedBox(),
-                            value:
-                                selectedAccountType, // Use the selected value from the variable
-                            onChanged: (newValue) {
-                              setState(() {
-                                signInProvider.toogleAccountType(newValue);
-                                if (newValue == "employer") {
-                                  // Logic for selecting Employer account
-                                  // For example: Provider.of<GoogleSignInProvider>(context, listen: false).setJobVacancy(true);
-                                } else {
-                                  // Logic for selecting Student account
-                                  // For example: Provider.of<GoogleSignInProvider>(context, listen: false).setJobVacancy(false);
-                                }
-                              });
-                            },
+                            value: Provider.of<GoogleSignInProvider>(context,
+                                    listen: false)
+                                .getCurrentUser
+                                .isAccountTypeUser,
+                            onChanged: (newValue) => setState(() {
+                                  signInProvider.toogleAccountType(newValue);
+                                  
+                                }),
                             items: <bool>[true, false].map((bool value) {
                               return DropdownMenuItem<bool>(
                                   value: value,
@@ -147,7 +134,6 @@ class _LoginPageState extends State<LoginPage> {
                                         style: fontSize16),
                                   ]));
                             }).toList())),
-
                     const SizedBox(height: 12),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       ElevatedButton(
