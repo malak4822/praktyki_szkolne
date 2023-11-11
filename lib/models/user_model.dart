@@ -26,5 +26,20 @@ class MyUser {
     required this.jobVacancy,
     required this.accountCreated,
   });
-}
 
+  Map<String, dynamic> toMap() {
+    return {
+      'userId': userId,
+      'username': username,
+      'description': description,
+      'location': location,
+      'age': age,
+      'isAccountTypeUser': isAccountTypeUser,
+      'skillsSet': skillsSet,
+      'email': email,
+      'profilePicture': profilePicture,
+      'jobVacancy': jobVacancy,
+      'accountCreated': accountCreated,
+    };
+  }
+}

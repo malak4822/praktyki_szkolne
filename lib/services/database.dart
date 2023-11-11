@@ -222,20 +222,15 @@ class MyDb {
     }
   }
 
-  Future<List<String>?> takeAdOwnersData(ownerId) async {
+  Future<Map?> takeAdOwnersData(ownerId) async {
     try {
       DocumentSnapshot docSnapshot =
           await _firestore.collection('users').doc(ownerId).get();
-      Map<String, dynamic> userInfo =
+      Map<String, dynamic> ownerInfo =
           docSnapshot.data() as Map<String, dynamic>;
+      print('OWNER INFO --> $ownerInfo');
 
-      List<String> userPpAndUsername = [];
-      userPpAndUsername.addAll([
-        userInfo['profilePicture'],
-        userInfo['username'],
-      ]);
-
-      return userPpAndUsername;
+      return ownerInfo;
     } catch (e) {
       debugPrint(e.toString());
       return null;

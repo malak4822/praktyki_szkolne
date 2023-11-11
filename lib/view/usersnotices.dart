@@ -63,25 +63,14 @@ class UserNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          var myUser = MyUser(
-              userId: userInfo['userId'],
-              username: userInfo['username'],
-              age: userInfo['age'],
-              location: userInfo['location'],
-              isAccountTypeUser: userInfo['isAccountTypeUser'],
-              description: userInfo['description'],
-              skillsSet: userInfo['skillsSet'],
-              email: userInfo['email'],
-              profilePicture: userInfo['profilePicture'],
-              jobVacancy: userInfo['jobVacancy'],
-              accountCreated: userInfo['accountCreated']);
-          print(myUser);
+          print(userInfo['username']);
+
           // Navigator.pushNamed(context, '/userPage', arguments: userInfo);
           Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      UserPage(isOwnProfile: false, shownUser: myUser)));
+                      UserPage(isOwnProfile: false, shownUser: userInfo)));
         },
         child: Container(
             decoration: BoxDecoration(

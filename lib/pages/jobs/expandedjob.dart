@@ -12,15 +12,15 @@ class JobAdvertisement extends StatefulWidget {
 }
 
 class _JobAdvertisementState extends State<JobAdvertisement> {
-  late Map arguments;
-  List<String>? ownerData;
+  late Map userInfo;
+  Map? ownerData;
   bool isOwnerVisible = false;
 
   @override
   void didChangeDependencies() async {
-    arguments =
+    userInfo =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    ownerData = await MyDb().takeAdOwnersData(arguments['belongsToUser']);
+    ownerData = await MyDb().takeAdOwnersData(userInfo['belongsToUser']);
     setState(() {});
     super.didChangeDependencies();
   }
@@ -57,7 +57,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                 gradient: const LinearGradient(colors: gradient),
                 borderRadius: BorderRadius.circular(16)),
             child: ListView(children: [
-              if (arguments['jobImage'] != null)
+              if (userInfo['jobImage'] != null)
                 Container(
                     margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
@@ -66,7 +66,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                     ),
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
-                        child: Image.network(arguments['jobImage'],
+                        child: Image.network(userInfo['jobImage'],
                             height: 220, fit: BoxFit.cover))),
               const SizedBox(height: 16),
               Container(
@@ -78,10 +78,10 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       borderRadius: BorderRadius.circular(16)),
                   child: Column(
                     children: [
-                      Text(arguments['jobName'],
+                      Text(userInfo['jobName'],
                           style: fontSize20, textAlign: TextAlign.center),
                       const Divider(color: Colors.white, thickness: 2),
-                      Text(arguments['jobDescription'],
+                      Text(userInfo['jobDescription'],
                           style: fontSize16, textAlign: TextAlign.center),
                     ],
                   )),
@@ -93,20 +93,20 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   children: [
                     interactionBox(Icons.email_rounded, () async {
                       !await launchUrl(
-                          Uri.parse('mailto:${arguments['jobEmail']}'));
+                          Uri.parse('mailto:${userInfo['jobEmail']}'));
                     }),
                     interactionBox(Icons.phone, () async {
                       !await launchUrl(
-                          Uri.parse('tel:+48${arguments['jobPhone']}'));
+                          Uri.parse('tel:+48${userInfo['jobPhone']}'));
                     }),
                     interactionBox(Icons.sms, () async {
                       !await launchUrl(
-                          Uri.parse('sms:+48${arguments['jobPhone']}'));
+                          Uri.parse('sms:+48${userInfo['jobPhone']}'));
                     }),
-                    // if (arguments['jobLocation'] != '')
+                    // if (userInfo['jobLocation'] != '')
                     interactionBox(Icons.pin_drop_rounded, () async {
                       !await launchUrl(Uri.parse(
-                          "https://www.google.com/maps/search/?api=1&query=${arguments['jobLocation']}"));
+                          "https://www.google.com/maps/search/?api=1&query=${userInfo['jobLocation']}"));
                     }),
                   ]),
               const SizedBox(height: 16),
@@ -121,7 +121,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       borderRadius: BorderRadius.circular(16)),
                   child: Column(
                     children: [
-                      Text(arguments['companyName'],
+                      Text(userInfo['companyName'],
                           style: fontSize20,
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis),
@@ -148,7 +148,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                                                 BorderRadius.circular(16)),
                                         child: Center(
                                             child: Text(
-                                          'Dodane Przez \n ${ownerData![1]}',
+                                          'Dodane Przez \n ${ownerData!['username']}',
                                           style: fontSize16,
                                           textAlign: TextAlign.center,
                                         )))),
@@ -164,8 +164,8 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(16),
                                         child: Image.network(
-                                            ownerData![0] != ''
-                                                ? ownerData![0]
+                                            ownerData!['profilePicture'] != ''
+                                                ? ownerData!['profilePicture']
                                                 : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
                                             fit: BoxFit.cover))),
                               ],
@@ -183,10 +183,10 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       boxShadow: myOutlineBoxShadow,
                       borderRadius: BorderRadius.circular(16)),
                   child: Column(children: [
-                    if (arguments['canRemotely'] == true)
-                      Text(arguments['jobQualification'],
+                    if (userInfo['canRemotely'] == true)
+                      Text(userInfo['jobQualification'],
                           style: fontSize16, textAlign: TextAlign.center),
-                    if (arguments['canRemotely'] == true)
+                    if (userInfo['canRemotely'] == true)
                       const Divider(color: Colors.white, thickness: 2),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       const Icon((Icons.done_outline_rounded),
@@ -220,26 +220,19 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                 },
                 child: Container(
                     color: Colors.white54,
-                    child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isOwnerVisible = true;
-                          });
-                        },
-                        child: Center(
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    boxShadow: myBoxShadow,
-                                    borderRadius: BorderRadius.circular(16)),
-                                width:
-                                    MediaQuery.of(context).size.width * 2 / 3,
-                                height:
-                                    MediaQuery.of(context).size.height * 5 / 11,
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(16),
-                                    child: UserPage(
-                                        isOwnProfile: false,
-                                        shownUser: ownerData))))))))
+                    child: Center(
+                        child: Container(
+                            decoration: BoxDecoration(
+                                boxShadow: myBoxShadow,
+                                borderRadius: BorderRadius.circular(16)),
+                            width: MediaQuery.of(context).size.width * 2 / 3,
+                            height: MediaQuery.of(context).size.height * 5 / 11,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: UserPage(
+                                  isOwnProfile: false,
+                                  shownUser: ownerData,
+                                )))))))
       ])),
     );
   }
