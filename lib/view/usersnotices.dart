@@ -4,6 +4,7 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/view/userpage.dart';
+import 'package:prakty/widgets/backbutton.dart';
 
 class UsersNoticesPage extends StatelessWidget {
   const UsersNoticesPage({super.key});
@@ -69,8 +70,12 @@ class UserNotice extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      UserPage(isOwnProfile: false, shownUser: userInfo)));
+                  builder: (context) => Card(
+                          child: SafeArea(
+                              child: Stack(children: [
+                        UserPage(isOwnProfile: false, shownUser: userInfo),
+                        backButton(context),
+                      ])))));
         },
         child: Container(
             decoration: BoxDecoration(

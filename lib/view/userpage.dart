@@ -16,9 +16,8 @@ class UserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (isOwnProfile) {
-      MyUser shownUser =
-          Provider.of<GoogleSignInProvider>(context).getCurrentUser;
-      shownUser.toMap();
+      MyUser myUser = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
+      shownUser = myUser.toMap();
     }
     return Scaffold(
         body: ListView(children: [
@@ -96,45 +95,42 @@ class UserPage extends StatelessWidget {
                             color: Colors.white,
                             fontSize: 20,
                             fontWeight: FontWeight.w800))),
-                if (isOwnProfile)
-                  Center(
-                      child: Text(
-                    textAlign: TextAlign.center,
-                    '${shownUser['age'] == 0 ? '' : '${shownUser['age'].toString()} lat,'}  ${shownUser['location']}',
-                    style:
-                        GoogleFonts.overpass(color: Colors.white, fontSize: 16),
-                  )),
+                Center(
+                    child: Text(
+                  textAlign: TextAlign.center,
+                  '${shownUser['age'] == 0 ? '' : '${shownUser['age'].toString()} lat,'}  ${shownUser['location']}',
+                  style:
+                      GoogleFonts.overpass(color: Colors.white, fontSize: 16),
+                )),
                 const SizedBox(height: 5),
-                if (isOwnProfile)
-                  Text(shownUser['description'],
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.overpass(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
+                Text(shownUser['description'],
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.overpass(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold)),
               ]),
             )
           ])),
-      if (isOwnProfile)
-        Visibility(
-            visible: shownUser['skillsSet'].isNotEmpty,
-            child: SizedBox(
-                height: 130,
-                child: Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width / 13,
-                        right: MediaQuery.of(context).size.width / 13,
-                        top: 6),
-                    child: Center(
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: shownUser['skillsSet'].length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) => skillBox(
-                                shownUser['skillsSet'][index].keys.single,
-                                shownUser['skillsSet'][index].values.single,
-                                context,
-                                true)))))),
+      Visibility(
+          visible: shownUser['skillsSet'].isNotEmpty,
+          child: SizedBox(
+              height: 130,
+              child: Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width / 13,
+                      right: MediaQuery.of(context).size.width / 13,
+                      top: 6),
+                  child: Center(
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: shownUser['skillsSet'].length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) => skillBox(
+                              shownUser['skillsSet'][index].keys.single,
+                              shownUser['skillsSet'][index].values.single,
+                              context,
+                              true)))))),
     ]));
   }
 }

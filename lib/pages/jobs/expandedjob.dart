@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/view/userpage.dart';
+import 'package:prakty/widgets/backbutton.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class JobAdvertisement extends StatefulWidget {
@@ -196,20 +197,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                     ])
                   ]))
             ])),
-        Container(
-          width: 52,
-          height: 52,
-          decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 49, 182, 209),
-              borderRadius:
-                  BorderRadius.only(bottomRight: Radius.circular(50))),
-          child: IconButton(
-              alignment: Alignment.topLeft,
-              iconSize: 28,
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.arrow_back_ios_rounded,
-                  color: Colors.white)),
-        ),
+        backButton(context),
         Visibility(
             visible: isOwnerVisible,
             child: GestureDetector(

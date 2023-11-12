@@ -6,6 +6,7 @@ import 'package:prakty/pages/user/choselocation.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
+import 'package:prakty/widgets/backbutton.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
 
@@ -177,19 +178,7 @@ class _AddJobState extends State<AddJob> {
                           size: 28,
                         )),
                   ])))),
-      Container(
-        width: 52,
-        height: 52,
-        decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 49, 182, 209),
-            borderRadius: BorderRadius.only(bottomRight: Radius.circular(50))),
-        child: IconButton(
-            alignment: Alignment.topLeft,
-            iconSize: 28,
-            onPressed: () => Navigator.pop(context),
-            icon:
-                const Icon(Icons.arrow_back_ios_rounded, color: Colors.white)),
-      ),
+      backButton(context),
     ])));
   }
 }

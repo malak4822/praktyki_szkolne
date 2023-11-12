@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/services/gmapfetchingurl.dart';
+import 'package:prakty/widgets/backbutton.dart';
 
 class FindOnMap extends StatefulWidget {
   const FindOnMap({Key? key, required this.callBack}) : super(key: key);
@@ -116,24 +117,7 @@ class _FindOnMapState extends State<FindOnMap> {
                 ],
               ),
             ),
-            Container(
-              width: 52,
-              height: 52,
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 49, 182, 209),
-                borderRadius:
-                    BorderRadius.only(bottomRight: Radius.circular(50)),
-              ),
-              child: IconButton(
-                alignment: Alignment.topLeft,
-                iconSize: 28,
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(
-                  Icons.arrow_back_ios_rounded,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            backButton(context),
           ],
         ),
       ),
