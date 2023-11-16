@@ -188,7 +188,10 @@ class EditUserPage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
                 onPressed: () => Navigator.pop(context),
-                child: const Icon(Icons.home)),
+                child: const Icon(
+                  Icons.home,
+                  color: Colors.white,
+                )),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
@@ -197,7 +200,10 @@ class EditUserPage extends StatelessWidget {
                   Provider.of<GoogleSignInProvider>(context, listen: false)
                       .logout();
                 },
-                child: const Icon(Icons.exit_to_app)),
+                child: const Icon(
+                  Icons.exit_to_app,
+                  color: Colors.white,
+                )),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
@@ -209,13 +215,17 @@ class EditUserPage extends StatelessWidget {
                   debugPrint(currentUser.email);
                   debugPrint(currentUser.skillsSet.toString());
                   debugPrint(currentUser.age.toString());
-                  debugPrint( 'IS STUDENT TYPE ACCOUNT -> ${currentUser.isAccountTypeUser.toString()}');
+                  debugPrint(
+                      'IS STUDENT TYPE ACCOUNT -> ${currentUser.isAccountTypeUser.toString()}');
                   debugPrint(currentUser.profilePicture);
                   debugPrint(currentUser.userId);
                   debugPrint(currentUser.jobVacancy.toString());
                   debugPrint(currentUser.accountCreated.toString());
                 },
-                child: const Icon(Icons.info))
+                child: const Icon(
+                  Icons.info,
+                  color: Colors.white,
+                ))
           ],
         )
       ]),

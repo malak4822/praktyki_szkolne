@@ -38,14 +38,15 @@ class JobNotice extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                 ),
-                                Text(particularJob['jobDescription'],
-                                    maxLines: 3,
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.overpass(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
+                                Expanded(
+                                    child: Text(particularJob['jobDescription'],
+                                        maxLines: 3,
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.overpass(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white))),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [

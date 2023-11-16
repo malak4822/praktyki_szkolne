@@ -35,15 +35,16 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
               gradient: const LinearGradient(colors: gradient),
               borderRadius: BorderRadius.circular(16),
               boxShadow: myBoxShadow),
-          child: ElevatedButton(
+          child: ElevatedButton.icon(
+            label: const SizedBox(),
             onPressed: () => function(),
             style: ElevatedButton.styleFrom(
-              fixedSize: Size(aBox, aBox),
-              backgroundColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16)),
-            ),
-            child: Icon(icon, size: 32),
+                padding: const EdgeInsets.only(left: 8),
+                fixedSize: Size(aBox, aBox),
+                backgroundColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16))),
+            icon: Icon(icon, size: 32, color: Colors.white),
           ),
         );
 
@@ -113,7 +114,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
               const SizedBox(height: 16),
               // COMPANY NAME
               Container(
-                  height: 174,
+                  height: 180,
                   margin: const EdgeInsets.all(8),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -128,49 +129,49 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                           overflow: TextOverflow.ellipsis),
                       const Divider(color: Colors.white, thickness: 2),
                       const SizedBox(height: 8),
-                      if (ownerData != null)
-                        GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isOwnerVisible = true;
-                              });
-                            },
-                            child: Row(
-                              children: [
-                                Expanded(
-                                    child: Container(
-                                        height: 90,
-                                        decoration: BoxDecoration(
-                                            gradient: const LinearGradient(
-                                                colors: gradient),
-                                            border: Border.all(
-                                                width: 2, color: Colors.white),
-                                            borderRadius:
-                                                BorderRadius.circular(16)),
-                                        child: Center(
-                                            child: Text(
-                                          'Dodane Przez \n ${ownerData!['username']}',
-                                          style: fontSize16,
-                                          textAlign: TextAlign.center,
-                                        )))),
-                                const SizedBox(width: 8),
-                                Container(
-                                    width: 90,
-                                    height: 90,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                          color: Colors.white, width: 2),
-                                    ),
-                                    child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: Image.network(
-                                            ownerData!['profilePicture'] != ''
-                                                ? ownerData!['profilePicture']
-                                                : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
-                                            fit: BoxFit.cover))),
-                              ],
-                            ))
+                      GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isOwnerVisible = true;
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child: Container(
+                                      height: 90,
+                                      decoration: BoxDecoration(
+                                          gradient: const LinearGradient(
+                                              colors: gradient),
+                                          border: Border.all(
+                                              width: 2, color: Colors.white),
+                                          borderRadius:
+                                              BorderRadius.circular(16)),
+                                      child: Center(
+                                          child: Text(
+                                        'Dodane Przez \n ${ownerData!['username']}',
+                                        style: fontSize16,
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.clip,
+                                      )))),
+                              const SizedBox(width: 8),
+                              Container(
+                                  width: 90,
+                                  height: 90,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                        color: Colors.white, width: 2),
+                                  ),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: Image.network(
+                                          ownerData!['profilePicture'] != ''
+                                              ? ownerData!['profilePicture']
+                                              : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
+                                          fit: BoxFit.cover))),
+                            ],
+                          ))
                     ],
                   )),
 

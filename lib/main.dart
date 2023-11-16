@@ -7,7 +7,6 @@ import 'package:prakty/pages/jobs/addjob.dart';
 import 'package:prakty/pages/jobs/expandedjob.dart';
 import 'package:prakty/pages/user/edituserpage.dart';
 import 'package:prakty/providers/edituser.dart';
-import 'package:prakty/view/userpage.dart';
 import 'package:prakty/widgets/error.dart';
 import 'package:prakty/loginpage.dart';
 import 'package:prakty/providers/googlesign.dart';
@@ -25,7 +24,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dynamic val = '';
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (c) => GoogleSignInProvider()),
