@@ -20,7 +20,6 @@ class JobNotice extends StatelessWidget {
                 boxShadow: myBoxShadow,
                 gradient: const LinearGradient(colors: gradient),
                 borderRadius: BorderRadius.circular(10)),
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: SizedBox(
                 height: 120,
                 child: Row(children: [

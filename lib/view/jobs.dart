@@ -15,6 +15,9 @@ class JobNoticesPage extends StatelessWidget {
         floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
         floatingActionButton: isAccountTypeUser == false
             ? FloatingActionButton(
+                backgroundColor: gradient[1],
+                foregroundColor: Colors.white,
+                splashColor: gradient[0],
                 onPressed: () => Navigator.pushNamed(context, '/addJob'),
                 child: const Icon(Icons.add))
             : null,
@@ -48,16 +51,56 @@ class JobNoticesPage extends StatelessWidget {
                   } else {
                     final myJobList = snapshot.data;
                     return Container(
-                        padding: const EdgeInsets.only(bottom: 10, top: 4),
-                        child: ListView.builder(
-                            clipBehavior: Clip.none,
-                            itemCount: myJobList!.length,
-                            shrinkWrap: true,
-                            itemBuilder: (BuildContext context, int index) {
-                              return JobNotice(
-                                  jobData: myJobList, index: index);
-                            }));
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          children: [
+                            Container(
+                                decoration:
+                                    const BoxDecoration(boxShadow: myBoxShadow),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    twoButton(context, 'Sortuj', Icons.sort, 0),
+                                    twoButton(context, 'Filtruj',
+                                        Icons.filter_alt, 1),
+                                  ],
+                                )),
+                            const SizedBox(height: 10),
+                            // JOB LIST
+                            ListView.builder(
+                                clipBehavior: Clip.none,
+                                itemCount: myJobList!.length,
+                                shrinkWrap: true,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return JobNotice(
+                                      jobData: myJobList, index: index);
+                                })
+                          ],
+                        ));
                   }
                 })));
   }
+
+  Widget twoButton(context, txt, icon, num) => ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          fixedSize: Size((MediaQuery.of(context).size.width / 2) - 12, 50),
+          backgroundColor: gradient[num],
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.horizontal(
+              left: num == 0
+                  ? const Radius.circular(10)
+                  : const Radius.circular(0),
+              right: num == 0
+                  ? const Radius.circular(0)
+                  : const Radius.circular(10),
+            ),
+          ),
+        ),
+        onPressed: () {},
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(txt, style: fontSize16), Icon(icon)]),
+      );
 }

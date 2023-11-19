@@ -36,13 +36,16 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     final TextEditingController descriptionCont =
         TextEditingController(text: user.description);
 
+    final TextEditingController emailCont =
+        TextEditingController(text: user.description);
+
     final TextEditingController locationCont =
         TextEditingController(text: user.location);
 
     List<Widget> editWidgetTypes = [
       const EditPhoto(),
       EditNameAndDesc(nameCont, descriptionCont, locationCont, ageCont,
-          (newVal) => ageCont = newVal),
+          emailCont, (newVal) => ageCont = newVal),
       const EditSkillSet(),
     ];
 

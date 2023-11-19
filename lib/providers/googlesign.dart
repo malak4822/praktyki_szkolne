@@ -49,7 +49,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       email: '',
       location: '',
       profilePicture: '',
-      jobVacancy: true,
+      jobVacancy: false,
       accountCreated: Timestamp(0, 0),
       skillsSet: []);
   MyUser get getCurrentUser => _currentUser;
@@ -67,7 +67,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           email: '',
           location: '',
           profilePicture: '',
-          jobVacancy: true,
+          jobVacancy: false,
           skillsSet: [],
           accountCreated: Timestamp(0, 0));
     } catch (e) {

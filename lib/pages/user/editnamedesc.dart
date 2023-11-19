@@ -6,12 +6,13 @@ import 'package:prakty/widgets/inputwindows.dart';
 
 class EditNameAndDesc extends StatefulWidget {
   EditNameAndDesc(this.nameCont, this.descriptionCont, this.locationCont,
-      this.ageCont, this.callback,
+      this.ageCont, this.emailCont, this.callback,
       {super.key});
 
   final TextEditingController nameCont;
   final TextEditingController descriptionCont;
   TextEditingController locationCont;
+  final TextEditingController emailCont;
   final int ageCont;
   final Function callback;
 
@@ -64,7 +65,9 @@ class _EditNameAndDescState extends State<EditNameAndDesc> {
                             14 + 27,
                             (index) => Text('${(14 + index).toString()} lat',
                                 style: fontSize16))))),
-          ])
+          ]),
+          updateValues(widget.emailCont, 'Adres Email', 1, 24, Icons.email,
+              TextInputType.emailAddress, null),
         ]));
   }
 }

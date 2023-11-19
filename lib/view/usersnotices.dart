@@ -64,9 +64,6 @@ class UserNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          print(userInfo['username']);
-
-          // Navigator.pushNamed(context, '/userPage', arguments: userInfo);
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -74,7 +71,12 @@ class UserNotice extends StatelessWidget {
                           child: SafeArea(
                               child: Stack(children: [
                         UserPage(isOwnProfile: false, shownUser: userInfo),
-                        backButton(context),
+                        IconButton(
+                            alignment: Alignment.topLeft,
+                            iconSize: 28,
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(Icons.arrow_back_ios_rounded,
+                                color: Colors.white)),
                       ])))));
         },
         child: Container(
@@ -101,7 +103,7 @@ class UserNotice extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                 ),
                                 Text(userInfo['description'],
-                                    maxLines: 3,
+                                    maxLines: 2,
                                     textAlign: TextAlign.center,
                                     overflow: TextOverflow.ellipsis,
                                     style: GoogleFonts.overpass(
@@ -114,7 +116,7 @@ class UserNotice extends StatelessWidget {
                                     const Icon(Icons.location_city,
                                         size: 18, color: Colors.white),
                                     Expanded(
-                                        child: Text(userInfo['location'],
+                                        child: Text(' ${userInfo['location']}',
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
                                             style: GoogleFonts.overpass(

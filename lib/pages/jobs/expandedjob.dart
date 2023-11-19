@@ -30,14 +30,16 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
   Widget build(BuildContext context) {
     var aBox = MediaQuery.sizeOf(context).width * 2 / 13;
 
-    Widget interactionBox(icon, function) => Container(
+    Widget interactionBox(icon, String command) => Container(
           decoration: BoxDecoration(
               gradient: const LinearGradient(colors: gradient),
               borderRadius: BorderRadius.circular(16),
               boxShadow: myBoxShadow),
           child: ElevatedButton.icon(
             label: const SizedBox(),
-            onPressed: () => function(),
+            onPressed: () async {
+              !await launchUrl(Uri.parse(command));
+            },
             style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(left: 8),
                 fixedSize: Size(aBox, aBox),
@@ -93,23 +95,13 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   spacing: 16,
                   runSpacing: 16,
                   children: [
-                    interactionBox(Icons.email_rounded, () async {
-                      !await launchUrl(
-                          Uri.parse('mailto:${userInfo['jobEmail']}'));
-                    }),
-                    interactionBox(Icons.phone, () async {
-                      !await launchUrl(
-                          Uri.parse('tel:+48${userInfo['jobPhone']}'));
-                    }),
-                    interactionBox(Icons.sms, () async {
-                      !await launchUrl(
-                          Uri.parse('sms:+48${userInfo['jobPhone']}'));
-                    }),
-                    // if (userInfo['jobLocation'] != '')
-                    interactionBox(Icons.pin_drop_rounded, () async {
-                      !await launchUrl(Uri.parse(
-                          "https://www.google.com/maps/search/?api=1&query=${userInfo['jobLocation']}"));
-                    }),
+                    interactionBox(
+                        Icons.email_rounded, 'mailto:${userInfo['jobEmail']}'),
+                    interactionBox(
+                        Icons.phone, 'tel:+48${userInfo['jobPhone']}'),
+                    interactionBox(Icons.sms, 'sms:+48${userInfo['jobPhone']}'),
+                    interactionBox(Icons.pin_drop_rounded,
+                        "https://www.google.com/maps/search/?api=1&query=${userInfo['jobLocation']}"),
                   ]),
               const SizedBox(height: 16),
               // COMPANY NAME
@@ -121,59 +113,63 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       boxShadow: myOutlineBoxShadow,
                       color: Colors.white24,
                       borderRadius: BorderRadius.circular(16)),
-                  child: Column(
-                    children: [
-                      Text(userInfo['companyName'],
-                          style: fontSize20,
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis),
-                      const Divider(color: Colors.white, thickness: 2),
-                      const SizedBox(height: 8),
-                      GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              isOwnerVisible = true;
-                            });
-                          },
-                          child: Row(
-                            children: [
-                              Expanded(
-                                  child: Container(
+                  child: Visibility(
+                      visible: ownerData != null,
+                      child: Column(
+                        children: [
+                          Text(userInfo['companyName'],
+                              style: fontSize20,
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis),
+                          const Divider(color: Colors.white, thickness: 2),
+                          const SizedBox(height: 8),
+                          GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isOwnerVisible = true;
+                                });
+                              },
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                          height: 90,
+                                          decoration: BoxDecoration(
+                                              gradient: const LinearGradient(
+                                                  colors: gradient),
+                                              border: Border.all(
+                                                  width: 2,
+                                                  color: Colors.white),
+                                              borderRadius:
+                                                  BorderRadius.circular(16)),
+                                          child: Center(
+                                              child: Text(
+                                            'Dodane Przez \n ${ownerData!['username']}',
+                                            style: fontSize16,
+                                            textAlign: TextAlign.center,
+                                            overflow: TextOverflow.clip,
+                                          )))),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                      width: 90,
                                       height: 90,
                                       decoration: BoxDecoration(
-                                          gradient: const LinearGradient(
-                                              colors: gradient),
-                                          border: Border.all(
-                                              width: 2, color: Colors.white),
+                                        borderRadius: BorderRadius.circular(20),
+                                        border: Border.all(
+                                            color: Colors.white, width: 2),
+                                      ),
+                                      child: ClipRRect(
                                           borderRadius:
-                                              BorderRadius.circular(16)),
-                                      child: Center(
-                                          child: Text(
-                                        'Dodane Przez \n ${ownerData!['username']}',
-                                        style: fontSize16,
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.clip,
-                                      )))),
-                              const SizedBox(width: 8),
-                              Container(
-                                  width: 90,
-                                  height: 90,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                        color: Colors.white, width: 2),
-                                  ),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(16),
-                                      child: Image.network(
-                                          ownerData!['profilePicture'] != ''
-                                              ? ownerData!['profilePicture']
-                                              : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
-                                          fit: BoxFit.cover))),
-                            ],
-                          ))
-                    ],
-                  )),
+                                              BorderRadius.circular(16),
+                                          child: Image.network(
+                                              ownerData!['profilePicture'] != ''
+                                                  ? ownerData!['profilePicture']
+                                                  : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
+                                              fit: BoxFit.cover))),
+                                ],
+                              ))
+                        ],
+                      ))),
 
               // ZAWÓD
               const SizedBox(height: 8),
@@ -220,7 +216,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                                 borderRadius: BorderRadius.circular(16),
                                 child: UserPage(
                                   isOwnProfile: false,
-                                  shownUser: ownerData,
+                                  shownUser: ownerData ?? '',
                                 )))))))
       ])),
     );

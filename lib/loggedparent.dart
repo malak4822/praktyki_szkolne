@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
-import 'package:prakty/models/user_model.dart';
 import 'package:prakty/view/jobs.dart';
 import 'package:prakty/view/userpage.dart';
 import 'package:prakty/providers/googlesign.dart';
@@ -57,7 +56,7 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
           elevation: 0,
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.messenger_outline_rounded),
+              icon: Icon(Icons.people),
               label: "",
             ),
             BottomNavigationBarItem(

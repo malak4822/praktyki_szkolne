@@ -26,6 +26,7 @@ class EditUserPage extends StatelessWidget {
             height: 200,
             child: Stack(children: [
               Container(
+                width: MediaQuery.of(context).size.width,
                 height: 140,
                 decoration: const BoxDecoration(
                     boxShadow: [
@@ -38,6 +39,12 @@ class EditUserPage extends StatelessWidget {
                     gradient: LinearGradient(colors: gradient),
                     borderRadius: BorderRadius.vertical(
                         bottom: Radius.elliptical(200, 30))),
+                child: IconButton(
+                    alignment: Alignment.topLeft,
+                    iconSize: 28,
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back_ios_rounded,
+                        color: Colors.white)),
               ),
 
               //BLAD, NIE PODKRESLA PRZY LOGOWANIU JAK EMAIL JEST ZLE SFORMATOWANY
@@ -93,6 +100,7 @@ class EditUserPage extends StatelessWidget {
                         '${currentUser.age == 0 ? '' : '${currentUser.age.toString()} lat,'}  ${currentUser.location}',
                         style: GoogleFonts.overpass(
                             color: Colors.white, fontSize: 16),
+                            maxLines: 1,
                       )),
                       const SizedBox(height: 5),
                       Text(currentUser.description,
@@ -130,11 +138,10 @@ class EditUserPage extends StatelessWidget {
                               height: 120,
                               margin: const EdgeInsets.all(6),
                               width: MediaQuery.of(context).size.width / 4,
-                              decoration: BoxDecoration(
-                                  boxShadow: myBoxShadow,
-                                  gradient:
-                                      const LinearGradient(colors: gradient),
-                                  borderRadius: BorderRadius.circular(8)),
+                              decoration: const BoxDecoration(
+                                boxShadow: myBoxShadow,
+                                gradient: LinearGradient(colors: gradient),
+                              ),
                               child: blackBox(2, true, 0, context));
                         } else {
                           return skillEditBox(
@@ -156,11 +163,8 @@ class EditUserPage extends StatelessWidget {
                   activeColor: Colors.white,
                   side: MaterialStateBorderSide.resolveWith((states) =>
                       const BorderSide(width: 2, color: Colors.white)),
-                  title: Text(
-                    "Ogłaszaj Mnie Jako Szukającego Pracy",
-                    style: fontSize16,
-                    textAlign: TextAlign.center,
-                  ),
+                  title: Text("Ogłaszaj Mnie Jako Szukającego Pracy",
+                      style: fontSize16, textAlign: TextAlign.center),
                   value: Provider.of<GoogleSignInProvider>(context)
                       .getCurrentUser
                       .jobVacancy,
@@ -187,45 +191,12 @@ class EditUserPage extends StatelessWidget {
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
-                onPressed: () => Navigator.pop(context),
-                child: const Icon(
-                  Icons.home,
-                  color: Colors.white,
-                )),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
                 onPressed: () {
                   Navigator.pop(context);
                   Provider.of<GoogleSignInProvider>(context, listen: false)
                       .logout();
                 },
-                child: const Icon(
-                  Icons.exit_to_app,
-                  color: Colors.white,
-                )),
-            ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 0, 162, 226)),
-                onPressed: () async {
-                  await MyDb().getUserInfo(context, currentUser.userId);
-                  debugPrint(currentUser.username);
-                  debugPrint(currentUser.location);
-                  debugPrint(currentUser.description);
-                  debugPrint(currentUser.email);
-                  debugPrint(currentUser.skillsSet.toString());
-                  debugPrint(currentUser.age.toString());
-                  debugPrint(
-                      'IS STUDENT TYPE ACCOUNT -> ${currentUser.isAccountTypeUser.toString()}');
-                  debugPrint(currentUser.profilePicture);
-                  debugPrint(currentUser.userId);
-                  debugPrint(currentUser.jobVacancy.toString());
-                  debugPrint(currentUser.accountCreated.toString());
-                },
-                child: const Icon(
-                  Icons.info,
-                  color: Colors.white,
-                ))
+                child: const Icon(Icons.exit_to_app, color: Colors.white))
           ],
         )
       ]),
