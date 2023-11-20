@@ -1,64 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
-import 'package:prakty/models/user_model.dart';
-import 'package:prakty/services/database.dart';
 import 'package:prakty/view/userpage.dart';
-import 'package:prakty/widgets/backbutton.dart';
 
-class UsersNoticesPage extends StatelessWidget {
-  const UsersNoticesPage({super.key});
+class NoticeCard extends StatelessWidget {
+  const NoticeCard({super.key, required this.noticeCardName, this.info});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: SafeArea(
-            child: FutureBuilder(
-                future: MyDb().downloadUsersStates(),
-                builder: (context, AsyncSnapshot<List> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(
-                      child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.location_searching_outlined,
-                                    color: gradient[0], size: 52),
-                                const SizedBox(height: 30),
-                                Text(
-                                    'Narazie Niestety Nie Ma Ogłoszeń W Twojej Okolicy',
-                                    style: GoogleFonts.overpass(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w900,
-                                        color: gradient[0]),
-                                    textAlign: TextAlign.center)
-                              ])),
-                    );
-                  } else {
-                    final myUsersList = snapshot.data;
-                    return Container(
-                        padding: const EdgeInsets.only(bottom: 10, top: 4),
-                        child: ListView.builder(
-                            clipBehavior: Clip.none,
-                            itemCount: myUsersList!.length,
-                            shrinkWrap: true,
-                            itemBuilder: (BuildContext context, int index) {
-                              return UserNotice(userInfo: myUsersList[index]);
-                            }));
-                  }
-                })));
-  }
-}
-
-class UserNotice extends StatelessWidget {
-  const UserNotice({super.key, required this.userInfo});
-
-  final Map userInfo;
+  final dynamic info;
+  final String noticeCardName;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +19,7 @@ class UserNotice extends StatelessWidget {
                   builder: (context) => Card(
                           child: SafeArea(
                               child: Stack(children: [
-                        UserPage(isOwnProfile: false, shownUser: userInfo),
+                        UserPage(isOwnProfile: false, shownUser: info),
                         IconButton(
                             alignment: Alignment.topLeft,
                             iconSize: 28,
@@ -96,13 +45,18 @@ class UserNotice extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  userInfo['username'],
+                                  info[noticeCardName == 'UserCard'
+                                      ? 'username'
+                                      : 'companyName'],
                                   style: fontSize20,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                 ),
-                                Text(userInfo['description'],
+                                Text(
+                                    info[noticeCardName == 'UserCard'
+                                        ? 'description'
+                                        : 'jobDescription'],
                                     maxLines: 2,
                                     textAlign: TextAlign.center,
                                     overflow: TextOverflow.ellipsis,
@@ -116,12 +70,24 @@ class UserNotice extends StatelessWidget {
                                     const Icon(Icons.location_city,
                                         size: 18, color: Colors.white),
                                     Expanded(
-                                        child: Text(' ${userInfo['location']}',
+                                        child: Text(
+                                            ' ${info[noticeCardName == 'UserCard' ? 'location' : 'jobLocation']}',
                                             overflow: TextOverflow.ellipsis,
                                             maxLines: 1,
                                             style: GoogleFonts.overpass(
                                                 fontSize: 12,
                                                 color: Colors.white))),
+                                    const SizedBox(width: 10),
+                                    if (info['canRemotely'] == true)
+                                      const Icon(Icons.done,
+                                          size: 18, color: Colors.white),
+                                    if (info['canRemotely'] == true)
+                                      Text(' Zdalne',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.overpass(
+                                              fontSize: 12,
+                                              color: Colors.white)),
                                   ],
                                 )
                               ]))),
@@ -130,9 +96,14 @@ class UserNotice extends StatelessWidget {
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
                         radius: 50,
-                        foregroundImage: NetworkImage(userInfo['profilePicture']
+                        foregroundImage: NetworkImage(info[
+                                    noticeCardName == 'UserCard'
+                                        ? 'profilePicture'
+                                        : 'jobImage']
                                 .isNotEmpty
-                            ? userInfo['profilePicture']
+                            ? info[noticeCardName == 'UserCard'
+                                ? 'profilePicture'
+                                : 'jobImage']
                             : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*4wskaw*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA'),
                       )),
                   const SizedBox(width: 10),

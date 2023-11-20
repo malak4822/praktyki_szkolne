@@ -3,11 +3,18 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/pages/jobs/jobcard.dart';
+import 'package:prakty/view/usersnotices.dart';
+import 'package:prakty/widgets/loadingscreen.dart';
 
-class JobNoticesPage extends StatelessWidget {
-  JobNoticesPage({super.key, required this.isAccountTypeUser});
+class NoticesPage extends StatelessWidget {
+  NoticesPage({
+    super.key,
+    this.isAccountTypeUser,
+    required this.pageName,
+  });
 
-  bool isAccountTypeUser;
+  bool? isAccountTypeUser = false;
+  String pageName;
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +30,12 @@ class JobNoticesPage extends StatelessWidget {
             : null,
         body: SafeArea(
             child: FutureBuilder(
-                future: MyDb().downloadJobAds(),
+                future: pageName == 'JobNotices'
+                    ? MyDb().downloadJobAds()
+                    : MyDb().downloadUsersStates(),
                 builder: (context, AsyncSnapshot<List> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const LoadingWidget();
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -39,8 +48,7 @@ class JobNoticesPage extends StatelessWidget {
                                 Icon(Icons.location_searching_outlined,
                                     color: gradient[0], size: 52),
                                 const SizedBox(height: 30),
-                                Text(
-                                    'Narazie Niestety Nie Ma Ogłoszeń W Twojej Okolicy',
+                                Text('Narazie Niestety Nie Ma Ogłoszeń',
                                     style: GoogleFonts.overpass(
                                         fontSize: 22,
                                         fontWeight: FontWeight.w900,
@@ -49,7 +57,8 @@ class JobNoticesPage extends StatelessWidget {
                               ])),
                     );
                   } else {
-                    final myJobList = snapshot.data;
+                    final dynamic noticesList = snapshot.data;
+                    print(noticesList);
                     return Container(
                         padding: const EdgeInsets.all(12),
                         child: Column(
@@ -70,11 +79,22 @@ class JobNoticesPage extends StatelessWidget {
                             // JOB LIST
                             ListView.builder(
                                 clipBehavior: Clip.none,
-                                itemCount: myJobList!.length,
+                                itemCount: noticesList!.length,
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return JobNotice(
-                                      jobData: myJobList, index: index);
+                                  if (pageName == 'JobNotices') {
+                                    // return JobNotice(
+                                    // jobData: noticesList[index]);
+                                    return NoticeCard(
+                                      info: noticesList[index],
+                                      noticeCardName: 'JobCard',
+                                    );
+                                  } else {
+                                    return NoticeCard(
+                                      info: noticesList[index],
+                                      noticeCardName: 'UserCard',
+                                    );
+                                  }
                                 })
                           ],
                         ));
