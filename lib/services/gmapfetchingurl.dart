@@ -18,7 +18,6 @@ class NetworkUtility {
   }
 }
 
-
 class PlaceAutoCompleteResponse {
   final String? status;
   final List<AutoCompletePrediction>? predictions;

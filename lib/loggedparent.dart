@@ -3,7 +3,6 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/view/notices.dart';
 import 'package:prakty/view/userpage.dart';
 import 'package:prakty/providers/googlesign.dart';
-import 'package:prakty/view/usersnotices.dart';
 import 'package:provider/provider.dart';
 
 class LoggedParentWidget extends StatefulWidget {

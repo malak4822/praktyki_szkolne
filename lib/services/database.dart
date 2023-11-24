@@ -228,8 +228,6 @@ class MyDb {
           await _firestore.collection('users').doc(ownerId).get();
       Map<String, dynamic> ownerInfo =
           docSnapshot.data() as Map<String, dynamic>;
-      print('OWNER INFO --> $ownerInfo');
-
       return ownerInfo;
     } catch (e) {
       debugPrint(e.toString());

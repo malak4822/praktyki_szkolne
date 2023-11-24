@@ -1,35 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/services/database.dart';
-import 'package:prakty/view/userpage.dart';
 import 'package:prakty/widgets/backbutton.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class JobAdvertisement extends StatefulWidget {
-  const JobAdvertisement({super.key});
+  const JobAdvertisement({super.key, required this.userInfo});
 
+  final Map userInfo;
   @override
   State<JobAdvertisement> createState() => _JobAdvertisementState();
 }
 
 class _JobAdvertisementState extends State<JobAdvertisement> {
-  late Map userInfo;
   Map? ownerData;
-  bool isOwnerVisible = false;
-
-  @override
-  void didChangeDependencies() async {
-    userInfo =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    ownerData = await MyDb().takeAdOwnersData(userInfo['belongsToUser']);
-    setState(() {});
-    super.didChangeDependencies();
-  }
 
   @override
   Widget build(BuildContext context) {
-    var aBox = MediaQuery.sizeOf(context).width * 2 / 13;
-
+    final userInfo = widget.userInfo;
     Widget interactionBox(icon, String command) => Container(
           decoration: BoxDecoration(
               gradient: const LinearGradient(colors: gradient),
@@ -42,7 +30,8 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
             },
             style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.only(left: 8),
-                fixedSize: Size(aBox, aBox),
+                fixedSize: Size(MediaQuery.sizeOf(context).width * 2 / 13,
+                    MediaQuery.sizeOf(context).width * 2 / 13),
                 backgroundColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16))),
@@ -82,9 +71,11 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       borderRadius: BorderRadius.circular(16)),
                   child: Column(
                     children: [
+                      Text("Nazwa Stanowiska :",
+                          style: fontSize16, textAlign: TextAlign.center),
+                      const Divider(color: Colors.white, thickness: 2),
                       Text(userInfo['jobName'],
                           style: fontSize20, textAlign: TextAlign.center),
-                      const Divider(color: Colors.white, thickness: 2),
                       Text(userInfo['jobDescription'],
                           style: fontSize16, textAlign: TextAlign.center),
                     ],
@@ -113,63 +104,76 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       boxShadow: myOutlineBoxShadow,
                       color: Colors.white24,
                       borderRadius: BorderRadius.circular(16)),
-                  child: Visibility(
-                      visible: ownerData != null,
-                      child: Column(
-                        children: [
-                          Text(userInfo['companyName'],
-                              style: fontSize20,
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis),
-                          const Divider(color: Colors.white, thickness: 2),
-                          const SizedBox(height: 8),
-                          GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isOwnerVisible = true;
-                                });
-                              },
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                      child: Container(
-                                          height: 90,
-                                          decoration: BoxDecoration(
-                                              gradient: const LinearGradient(
-                                                  colors: gradient),
-                                              border: Border.all(
-                                                  width: 2,
-                                                  color: Colors.white),
-                                              borderRadius:
-                                                  BorderRadius.circular(16)),
-                                          child: Center(
-                                              child: Text(
-                                            'Dodane Przez \n ${ownerData!['username']}',
-                                            style: fontSize16,
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.clip,
-                                          )))),
-                                  const SizedBox(width: 8),
-                                  Container(
-                                      width: 90,
-                                      height: 90,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                                            color: Colors.white, width: 2),
-                                      ),
-                                      child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          child: Image.network(
-                                              ownerData!['profilePicture'] != ''
-                                                  ? ownerData!['profilePicture']
-                                                  : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
-                                              fit: BoxFit.cover))),
-                                ],
-                              ))
-                        ],
-                      ))),
+                  child: Column(
+                    children: [
+                      Text(userInfo['companyName'],
+                          style: fontSize20,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis),
+                      const Divider(color: Colors.white, thickness: 2),
+                      const SizedBox(height: 8),
+                      FutureBuilder(
+                        future:
+                            MyDb().takeAdOwnersData(userInfo['belongsToUser']),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<Map<dynamic, dynamic>?> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator(
+                                backgroundColor: gradient[0],
+                                color: gradient[1],
+                                strokeWidth: 10);
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return Text('Brak Informacji', style: fontSize16);
+                          } else {
+                            String employerName = snapshot.data!['username'];
+                            String employerImage =
+                                snapshot.data!['profilePicture'];
+                            return Row(
+                              children: [
+                                Expanded(
+                                    child: Container(
+                                        height: 90,
+                                        decoration: BoxDecoration(
+                                            gradient: const LinearGradient(
+                                                colors: gradient),
+                                            border: Border.all(
+                                                width: 2, color: Colors.white),
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        child: Center(
+                                            child: Text(
+                                          'Dodane Przez \n $employerName',
+                                          style: fontSize16,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.clip,
+                                        )))),
+                                const SizedBox(width: 8),
+                                Container(
+                                    width: 90,
+                                    height: 90,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                          color: Colors.white, width: 2),
+                                    ),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Image.network(
+                                            employerImage != ''
+                                                ? employerImage
+                                                : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
+                                            fit: BoxFit.cover))),
+                              ],
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  )),
 
               // ZAWÓD
               const SizedBox(height: 8),
@@ -195,29 +199,6 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   ]))
             ])),
         backButton(context),
-        Visibility(
-            visible: isOwnerVisible,
-            child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isOwnerVisible = false;
-                  });
-                },
-                child: Container(
-                    color: Colors.white54,
-                    child: Center(
-                        child: Container(
-                            decoration: BoxDecoration(
-                                boxShadow: myBoxShadow,
-                                borderRadius: BorderRadius.circular(16)),
-                            width: MediaQuery.of(context).size.width * 2 / 3,
-                            height: MediaQuery.of(context).size.height * 5 / 11,
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: UserPage(
-                                  isOwnProfile: false,
-                                  shownUser: ownerData ?? '',
-                                )))))))
       ])),
     );
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/services/database.dart';
-import 'package:prakty/pages/jobs/jobcard.dart';
 import 'package:prakty/view/usersnotices.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
 
@@ -58,7 +57,6 @@ class NoticesPage extends StatelessWidget {
                     );
                   } else {
                     final dynamic noticesList = snapshot.data;
-                    print(noticesList);
                     return Container(
                         padding: const EdgeInsets.all(12),
                         child: Column(

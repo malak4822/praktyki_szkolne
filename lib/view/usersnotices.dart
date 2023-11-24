@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/pages/jobs/expandedjob.dart';
 import 'package:prakty/view/userpage.dart';
 
 class NoticeCard extends StatelessWidget {
@@ -16,81 +17,83 @@ class NoticeCard extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => Card(
-                          child: SafeArea(
-                              child: Stack(children: [
-                        UserPage(isOwnProfile: false, shownUser: info),
-                        IconButton(
-                            alignment: Alignment.topLeft,
-                            iconSize: 28,
-                            onPressed: () => Navigator.pop(context),
-                            icon: const Icon(Icons.arrow_back_ios_rounded,
-                                color: Colors.white)),
-                      ])))));
+                  builder: (context) => Stack(children: [
+                        noticeCardName == 'UserCard'
+                            ? UserPage(isOwnProfile: false, shownUser: info)
+                            : JobAdvertisement(userInfo: info),
+                        noticeCardName == 'UserCard'
+                            ? SafeArea(
+                                child: IconButton(
+                                    alignment: Alignment.topLeft,
+                                    iconSize: 28,
+                                    onPressed: () => Navigator.pop(context),
+                                    icon: const Icon(
+                                        Icons.arrow_back_ios_rounded,
+                                        color: Colors.white)))
+                            : const SizedBox(),
+                      ])));
         },
         child: Container(
             decoration: BoxDecoration(
                 boxShadow: myBoxShadow,
                 gradient: const LinearGradient(colors: gradient),
                 borderRadius: BorderRadius.circular(10)),
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: SizedBox(
                 height: 120,
                 child: Row(children: [
                   Expanded(
                       flex: 3,
-                      child: Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              info[noticeCardName == 'UserCard'
+                                  ? 'username'
+                                  : 'companyName'],
+                              style: fontSize20,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                                info[noticeCardName == 'UserCard'
+                                    ? 'description'
+                                    : 'jobDescription'],
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.overpass(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  info[noticeCardName == 'UserCard'
-                                      ? 'username'
-                                      : 'companyName'],
-                                  style: fontSize20,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.center,
-                                ),
-                                Text(
-                                    info[noticeCardName == 'UserCard'
-                                        ? 'description'
-                                        : 'jobDescription'],
-                                    maxLines: 2,
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.overpass(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white)),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.location_city,
-                                        size: 18, color: Colors.white),
-                                    Expanded(
-                                        child: Text(
-                                            ' ${info[noticeCardName == 'UserCard' ? 'location' : 'jobLocation']}',
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: GoogleFonts.overpass(
-                                                fontSize: 12,
-                                                color: Colors.white))),
-                                    const SizedBox(width: 10),
-                                    if (info['canRemotely'] == true)
-                                      const Icon(Icons.done,
-                                          size: 18, color: Colors.white),
-                                    if (info['canRemotely'] == true)
-                                      Text(' Zdalne',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.overpass(
-                                              fontSize: 12,
-                                              color: Colors.white)),
-                                  ],
-                                )
-                              ]))),
+                                const Icon(Icons.location_city,
+                                    size: 18, color: Colors.white),
+                                Expanded(
+                                    child: Text(
+                                        ' ${info[noticeCardName == 'UserCard' ? 'location' : 'jobLocation']}',
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: GoogleFonts.overpass(
+                                            fontSize: 12,
+                                            color: Colors.white))),
+                                const SizedBox(width: 10),
+                                if (info['canRemotely'] == true)
+                                  const Icon(Icons.done,
+                                      size: 18, color: Colors.white),
+                                if (info['canRemotely'] == true)
+                                  Text(' Zdalne',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.overpass(
+                                          fontSize: 12, color: Colors.white)),
+                              ],
+                            )
+                          ])),
+                  const SizedBox(width: 10),
                   CircleAvatar(
                       radius: 52.5,
                       backgroundColor: Colors.white,

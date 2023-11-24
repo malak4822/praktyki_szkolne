@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/loggedparent.dart';
 import 'package:prakty/pages/jobs/addjob.dart';
-import 'package:prakty/pages/jobs/expandedjob.dart';
 import 'package:prakty/pages/user/edituserpage.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/widgets/error.dart';
@@ -40,17 +39,16 @@ class MyApp extends StatelessWidget {
                       child: const LoadingWidget()),
                 ]),
             '/addJob': (context) => const AddJob(),
-            '/advertisement': (context) => const JobAdvertisement(),
           },
           debugShowCheckedModeBanner: false,
           title: 'Prakty',
           theme: ThemeData(
               elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ButtonStyle(
-                elevation: MaterialStateProperty.all(0),
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    Colors.white.withOpacity(0.2))),
-          )),
+                style: ButtonStyle(
+                    elevation: MaterialStateProperty.all(0),
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Colors.white.withOpacity(0.2))),
+              )),
           home: const MyHomePage(),
         ));
   }

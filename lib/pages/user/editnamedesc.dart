@@ -57,7 +57,7 @@ class _EditNameAndDescState extends State<EditNameAndDesc> {
                     child: CupertinoPicker(
                         itemExtent: 18,
                         scrollController: FixedExtentScrollController(
-                            initialItem: widget.ageCont),
+                            initialItem: widget.ageCont - 14),
                         onSelectedItemChanged: (int newVal) =>
                             widget.callback(newVal + 14),
                         children: List.generate(
