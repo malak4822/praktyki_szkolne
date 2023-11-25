@@ -46,6 +46,7 @@ class MyDb {
         currentUser.username = data?["username"] ?? "";
         currentUser.email = data?['email'] ?? "";
         currentUser.description = data?['description'] ?? "";
+        currentUser.phoneNum = data?['phoneNum'] ?? "";
         currentUser.age = data?['age'] ?? 0;
         currentUser.skillsSet =
             (data?['skillsSet'] as List<dynamic>?)?.map((dynamic item) {
@@ -77,6 +78,20 @@ class MyDb {
         'age': newAge,
       });
       return [newUsername, newDescription, newLocation, newAge.toString()];
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  Future<List<String>?> updateContactInfo(
+      String userId, String email, String phoneNum) async {
+    try {
+      await _firestore.collection('users').doc(userId).update({
+        'email': email,
+        'phoneNum': phoneNum,
+      });
+      return [email, phoneNum];
     } catch (e) {
       debugPrint(e.toString());
       return null;

@@ -4,6 +4,7 @@ class MyUser {
   String userId;
   String username;
   String description;
+  String phoneNum;
   String location;
   int age;
   bool isAccountTypeUser;
@@ -17,9 +18,10 @@ class MyUser {
     required this.userId,
     required this.username,
     required this.age,
+    required this.description,
+    required this.phoneNum,
     required this.location,
     required this.isAccountTypeUser,
-    required this.description,
     required this.skillsSet,
     required this.email,
     required this.profilePicture,
@@ -32,6 +34,7 @@ class MyUser {
       'userId': userId,
       'username': username,
       'description': description,
+      'phoneNum': phoneNum,
       'location': location,
       'age': age,
       'isAccountTypeUser': isAccountTypeUser,

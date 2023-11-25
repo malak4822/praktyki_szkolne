@@ -4,6 +4,7 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
+import 'package:prakty/widgets/contactbox.dart';
 import 'package:provider/provider.dart';
 import '../widgets/skillboxes.dart';
 
@@ -131,6 +132,25 @@ class UserPage extends StatelessWidget {
                               shownUser['skillsSet'][index].values.single,
                               context,
                               true)))))),
+      ElevatedButton(
+          onPressed: () {
+            print(shownUser['phoneNum']);
+            print(shownUser['email']);
+          },
+          child: Text("essa")),
+      Visibility(
+          visible: shownUser['phoneNum'].isNotEmpty,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              contactBox(Icons.email_rounded, 'mailto:${shownUser['email']}',
+                  true, null),
+              contactBox(
+                  Icons.phone, 'tel:+48${shownUser['jobPhone']}', true, null),
+              contactBox(
+                  Icons.sms, 'sms:+48${shownUser['jobPhone']}', true, null),
+            ],
+          ))
     ]));
   }
 }

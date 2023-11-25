@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/pages/user/editcontactinfo.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/pages/user/editskillset.dart';
 import 'package:provider/provider.dart';
@@ -36,17 +37,24 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     final TextEditingController descriptionCont =
         TextEditingController(text: user.description);
 
-    final TextEditingController emailCont =
-        TextEditingController(text: user.description);
-
     final TextEditingController locationCont =
         TextEditingController(text: user.location);
 
+// CONTACT CONTROLLERS
+    final TextEditingController emailCont =
+        TextEditingController(text: user.email);
+
+    final TextEditingController phoneCont =
+        TextEditingController(text: user.phoneNum);
+
+    final formKey = GlobalKey<FormState>();
+
     List<Widget> editWidgetTypes = [
       const EditPhoto(),
-      EditNameAndDesc(nameCont, descriptionCont, locationCont, ageCont,
-          emailCont, (newVal) => ageCont = newVal),
+      EditNameAndDesc(nameCont, descriptionCont, locationCont, emailCont,
+          ageCont, (newVal) => ageCont = newVal),
       const EditSkillSet(),
+      EditContactInfo(emailCont, phoneCont, formKey)
     ];
 
     return Column(children: [
@@ -79,13 +87,27 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
             editUserFunction.checkEmptiness(descriptionCont.text, nameCont.text,
                 ageCont, locationCont.text);
           }
-          // UDPATING SKILL BOXES  UDPATING SKILL BOXES
+          // UDPATING SKILL BOXES UDPATING SKILL BOXES
           if (tabToOpen == 2) {
             List<Map<String, int>>? newBoxes = await myDb.updateSkillBoxes(
                 user.userId, editUserFunction.skillBoxes);
             if (newBoxes != null) {
               googleSignFunction.refreshSkillSet(editUserFunction.skillBoxes);
             }
+          }
+          // UDPATING CONTACT INFORMATIONS
+          if (tabToOpen == 3) {
+            if (formKey.currentState?.validate() ?? false) {
+              print('Form is valid');
+            } else {
+              print('ISNO T VALUID');
+            }
+            // List<String>? infoFields = await myDb.updateContactInfo(
+            //     user.userId, emailCont.text, phoneCont.text);
+            // if (infoFields != null) {
+            //   googleSignFunction.refreshContactInfo(
+            //       infoFields[0], infoFields[1]);
+            // }
           }
         }
 

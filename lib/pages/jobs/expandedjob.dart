@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/widgets/backbutton.dart';
+import 'package:prakty/widgets/contactbox.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class JobAdvertisement extends StatefulWidget {
@@ -18,26 +19,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
   @override
   Widget build(BuildContext context) {
     final userInfo = widget.userInfo;
-    Widget interactionBox(icon, String command) => Container(
-          decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: gradient),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: myBoxShadow),
-          child: ElevatedButton.icon(
-            label: const SizedBox(),
-            onPressed: () async {
-              !await launchUrl(Uri.parse(command));
-            },
-            style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.only(left: 8),
-                fixedSize: Size(MediaQuery.sizeOf(context).width * 2 / 13,
-                    MediaQuery.sizeOf(context).width * 2 / 13),
-                backgroundColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16))),
-            icon: Icon(icon, size: 32, color: Colors.white),
-          ),
-        );
+    print(userInfo);
 
     return Scaffold(
       body: SafeArea(
@@ -86,13 +68,17 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   spacing: 16,
                   runSpacing: 16,
                   children: [
-                    interactionBox(
-                        Icons.email_rounded, 'mailto:${userInfo['jobEmail']}'),
-                    interactionBox(
-                        Icons.phone, 'tel:+48${userInfo['jobPhone']}'),
-                    interactionBox(Icons.sms, 'sms:+48${userInfo['jobPhone']}'),
-                    interactionBox(Icons.pin_drop_rounded,
-                        "https://www.google.com/maps/search/?api=1&query=${userInfo['jobLocation']}"),
+                    contactBox(Icons.email_rounded,
+                        'mailto:${userInfo['jobEmail']}', true, null),
+                    contactBox(Icons.phone,
+                        'tel:+48${userInfo['jobPhone']}', true, null),
+                    contactBox(Icons.sms, 'sms:+48${userInfo['jobPhone']}',
+                        true, null),
+                    contactBox(
+                        Icons.pin_drop_rounded,
+                        "https://www.google.com/maps/search/?api=1&query=${userInfo['jobLocation']}",
+                        true,
+                        null),
                   ]),
               const SizedBox(height: 16),
               // COMPANY NAME

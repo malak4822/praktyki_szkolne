@@ -91,7 +91,7 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
       } else if (val.length < 7) {
         return 'Liczba Znaków Jest Za Mała';
       }
-      if (hintTxt == 'Email Kontaktowy') {
+      if (hintTxt == 'Email') {
         if (!val.contains('@') || val.length < 7) {
           return 'Email Jest Nie Poprawny';
         }

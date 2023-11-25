@@ -26,6 +26,12 @@ class GoogleSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void refreshContactInfo(newEmail, newPhone) {
+    _currentUser.email = newEmail;
+    _currentUser.phoneNum = newPhone;
+    notifyListeners();
+  }
+
   void refreshSkillSet(newSkillSet) {
     _currentUser.skillsSet = newSkillSet;
     notifyListeners();
@@ -44,6 +50,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       userId: '',
       username: '',
       description: '',
+      phoneNum: '',
       age: 0,
       isAccountTypeUser: true,
       email: '',
@@ -62,6 +69,7 @@ class GoogleSignInProvider extends ChangeNotifier {
           userId: '',
           username: '',
           description: '',
+          phoneNum: '',
           age: 0,
           isAccountTypeUser: true,
           email: '',
