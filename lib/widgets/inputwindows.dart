@@ -84,21 +84,25 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
         callBack();
       }
     },
-    focusNode: hintTxt != 'Miejsce' ? FocusNode(canRequestFocus: true) : FocusScopeNode(),
+    focusNode: hintTxt != 'Miejsce'
+        ? FocusNode(canRequestFocus: true)
+        : FocusScopeNode(),
     validator: (val) {
-      if (val!.isEmpty) {
-        return 'Proszę Uzupełnić Puste Pole';
-      } else if (val.length < 7) {
-        return 'Liczba Znaków Jest Za Mała';
-      }
-      if (hintTxt == 'Email') {
-        if (!val.contains('@') || val.length < 7) {
-          return 'Email Jest Nie Poprawny';
-        }
-      }
       if (hintTxt == 'Telefon') {
-        if (val.length != 9) {
+        if (val!.length == 0) {
+        } else if (val.length != 9) {
           return 'Telefon Nie Ma 9 Cyfr';
+        }
+      } else {
+        if (val!.isEmpty) {
+          return 'Proszę Uzupełnić Puste Pole';
+        } else if (val.length < 7) {
+          return 'Liczba Znaków Jest Za Mała';
+        }
+        if (hintTxt == 'Email') {
+          if (!val.contains('@') || val.length < 7) {
+            return 'Email Jest Nie Poprawny';
+          }
         }
       }
       return null;

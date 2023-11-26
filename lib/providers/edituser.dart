@@ -144,7 +144,6 @@ class EditUser extends ChangeNotifier {
         checkTimeout: const Duration(seconds: 1));
     if (await customInstance.hasConnection == true) {
       _showErrorMessage = false;
-      notifyListeners();
       return true;
     } else {
       showErrorBox(

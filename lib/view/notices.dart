@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/services/database.dart';
-import 'package:prakty/view/usersnotices.dart';
+import 'package:prakty/view/noticecard.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
 
 class NoticesPage extends StatelessWidget {
@@ -73,7 +73,7 @@ class NoticesPage extends StatelessWidget {
                                         Icons.filter_alt, 1),
                                   ],
                                 )),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 8),
                             // JOB LIST
                             ListView.builder(
                                 clipBehavior: Clip.none,
@@ -81,8 +81,6 @@ class NoticesPage extends StatelessWidget {
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
                                   if (pageName == 'JobNotices') {
-                                    // return JobNotice(
-                                    // jobData: noticesList[index]);
                                     return NoticeCard(
                                       info: noticesList[index],
                                       noticeCardName: 'JobCard',

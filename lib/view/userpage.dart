@@ -20,6 +20,7 @@ class UserPage extends StatelessWidget {
       MyUser myUser = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
       shownUser = myUser.toMap();
     }
+    print(shownUser);
     return Scaffold(
         body: ListView(children: [
       SizedBox(
@@ -47,8 +48,12 @@ class UserPage extends StatelessWidget {
                             .checkEmptiness(
                                 shownUser['username'],
                                 shownUser['description'],
-                                shownUser['age'],
-                                shownUser['location']);
+                                shownUser['isAccountTypeUser']
+                                    ? shownUser['age']
+                                    : 1,
+                                shownUser['isAccountTypeUser']
+                                    ? shownUser['location']
+                                    : 'a');
 
                         Navigator.pushNamed(context, '/editUser');
                       },
@@ -132,25 +137,30 @@ class UserPage extends StatelessWidget {
                               shownUser['skillsSet'][index].values.single,
                               context,
                               true)))))),
-      ElevatedButton(
-          onPressed: () {
-            print(shownUser['phoneNum']);
-            print(shownUser['email']);
-          },
-          child: Text("essa")),
-      Visibility(
-          visible: shownUser['phoneNum'].isNotEmpty,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              contactBox(Icons.email_rounded, 'mailto:${shownUser['email']}',
-                  true, null),
-              contactBox(
-                  Icons.phone, 'tel:+48${shownUser['jobPhone']}', true, null),
-              contactBox(
-                  Icons.sms, 'sms:+48${shownUser['jobPhone']}', true, null),
-            ],
-          ))
+      const SizedBox(height: 8),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Visibility(
+              visible: shownUser['email'].isNotEmpty,
+              child: contactBox(
+                  Icons.email_rounded, 'mailto:${shownUser['email']}', true)),
+          const SizedBox(width: 10),
+          Visibility(
+              visible: shownUser['phoneNum'].isNotEmpty ||
+                  shownUser['phoneNum'] == null,
+              child: Row(
+                children: [
+                  contactBox(
+                      Icons.phone, 'tel:+48${shownUser['phoneNum']}', true),
+                  const SizedBox(width: 10),
+                  contactBox(
+                      Icons.sms, 'sms:+48${shownUser['phoneNum']}', true),
+                ],
+              )),
+        ],
+      ),
+      const SizedBox(height: 16),
     ]));
   }
 }

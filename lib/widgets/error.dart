@@ -3,17 +3,18 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:provider/provider.dart';
 
-
 class ErrorMessage extends StatelessWidget {
   const ErrorMessage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var hasInternet = Provider.of<EditUser>(context, listen: false).checkInternetConnectivity();
+    final funcEditProv = Provider.of<EditUser>(context, listen: false);
     return Stack(children: [
       InkWell(
           onTap: () async {
-            await hasInternet;
+            if (await funcEditProv.checkInternetConnectivity()) {
+              funcEditProv.closeErrorBox();
+            }
           },
           child: Container(color: Colors.white.withOpacity(0.6))),
       Center(
@@ -51,7 +52,10 @@ class ErrorMessage extends StatelessWidget {
                           child: const Icon(Icons.restart_alt,
                               size: 32, color: Colors.white),
                           onPressed: () async {
-                            await hasInternet;
+                            if (await funcEditProv
+                                .checkInternetConnectivity()) {
+                              funcEditProv.closeErrorBox();
+                            }
                           },
                         )),
                   ])))),

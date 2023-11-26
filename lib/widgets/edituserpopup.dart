@@ -52,7 +52,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     List<Widget> editWidgetTypes = [
       const EditPhoto(),
       EditNameAndDesc(nameCont, descriptionCont, locationCont, emailCont,
-          ageCont, (newVal) => ageCont = newVal),
+          ageCont, (newVal) => ageCont = newVal, user.isAccountTypeUser),
       const EditSkillSet(),
       EditContactInfo(emailCont, phoneCont, formKey)
     ];
@@ -60,7 +60,27 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     return Column(children: [
       Expanded(child: GestureDetector(onTap: () async {
         MyDb myDb = MyDb();
-        editUserFunction.changeLoading();
+
+        // UDPATING CONTACT INFORMATIONS
+        if (tabToOpen == 3) {
+          // if (phoneCont.text.isNotEmpty) {
+          if (formKey.currentState?.validate() ?? false) {
+            editUserFunction.changeLoading();
+            List<String>? infoFields = await myDb.updateContactInfo(
+                user.userId, emailCont.text, phoneCont.text);
+            if (infoFields != null) {
+              googleSignFunction.refreshContactInfo(
+                  infoFields[0], infoFields[1]);
+              editUserFunction.toogleEditingPopUp(3);
+            }
+            editUserFunction.changeLoading();
+          }
+          // } else {
+          //   editUserFunction.toogleEditingPopUp(3);
+          // }
+        } else {
+          editUserFunction.changeLoading();
+        }
 
         if (await editUserFunction.checkInternetConnectivity()) {
           // UPDATING PHOTO UPDATING PHOTO UPDATING PHOTO
@@ -84,8 +104,13 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
               googleSignFunction.refreshNameAndDesc(
                   infoFields[0], infoFields[1], infoFields[2], infoFields[3]);
             }
-            editUserFunction.checkEmptiness(descriptionCont.text, nameCont.text,
-                ageCont, locationCont.text);
+            if (user.isAccountTypeUser) {
+              editUserFunction.checkEmptiness(descriptionCont.text,
+                  nameCont.text, ageCont, locationCont.text);
+            } else {
+              editUserFunction.checkEmptiness(
+                  descriptionCont.text, nameCont.text, 1, 'a');
+            }
           }
           // UDPATING SKILL BOXES UDPATING SKILL BOXES
           if (tabToOpen == 2) {
@@ -95,24 +120,11 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
               googleSignFunction.refreshSkillSet(editUserFunction.skillBoxes);
             }
           }
-          // UDPATING CONTACT INFORMATIONS
-          if (tabToOpen == 3) {
-            if (formKey.currentState?.validate() ?? false) {
-              print('Form is valid');
-            } else {
-              print('ISNO T VALUID');
-            }
-            // List<String>? infoFields = await myDb.updateContactInfo(
-            //     user.userId, emailCont.text, phoneCont.text);
-            // if (infoFields != null) {
-            //   googleSignFunction.refreshContactInfo(
-            //       infoFields[0], infoFields[1]);
-            // }
-          }
         }
-
-        editUserFunction.changeLoading();
-        editUserFunction.toogleEditingPopUp(0);
+        if (tabToOpen != 3) {
+          editUserFunction.changeLoading();
+          editUserFunction.toogleEditingPopUp(3);
+        }
       })),
       Expanded(
           flex: 4,

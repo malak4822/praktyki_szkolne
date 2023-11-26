@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/services/database.dart';
+import 'package:prakty/view/userpage.dart';
 import 'package:prakty/widgets/backbutton.dart';
 import 'package:prakty/widgets/contactbox.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class JobAdvertisement extends StatefulWidget {
-  const JobAdvertisement({super.key, required this.userInfo});
+  const JobAdvertisement({super.key, required this.jobInfo});
 
-  final Map userInfo;
+  final Map jobInfo;
   @override
   State<JobAdvertisement> createState() => _JobAdvertisementState();
 }
@@ -18,8 +19,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
 
   @override
   Widget build(BuildContext context) {
-    final userInfo = widget.userInfo;
-    print(userInfo);
+    final jobInfo = widget.jobInfo;
 
     return Scaffold(
       body: SafeArea(
@@ -32,7 +32,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                 gradient: const LinearGradient(colors: gradient),
                 borderRadius: BorderRadius.circular(16)),
             child: ListView(children: [
-              if (userInfo['jobImage'] != null)
+              if (jobInfo['jobImage'] != null)
                 Container(
                     margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
@@ -41,7 +41,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                     ),
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
-                        child: Image.network(userInfo['jobImage'],
+                        child: Image.network(jobInfo['jobImage'],
                             height: 220, fit: BoxFit.cover))),
               const SizedBox(height: 16),
               Container(
@@ -56,9 +56,9 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       Text("Nazwa Stanowiska :",
                           style: fontSize16, textAlign: TextAlign.center),
                       const Divider(color: Colors.white, thickness: 2),
-                      Text(userInfo['jobName'],
+                      Text(jobInfo['jobName'],
                           style: fontSize20, textAlign: TextAlign.center),
-                      Text(userInfo['jobDescription'],
+                      Text(jobInfo['jobDescription'],
                           style: fontSize16, textAlign: TextAlign.center),
                     ],
                   )),
@@ -69,16 +69,15 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   runSpacing: 16,
                   children: [
                     contactBox(Icons.email_rounded,
-                        'mailto:${userInfo['jobEmail']}', true, null),
-                    contactBox(Icons.phone,
-                        'tel:+48${userInfo['jobPhone']}', true, null),
-                    contactBox(Icons.sms, 'sms:+48${userInfo['jobPhone']}',
-                        true, null),
+                        'mailto:${jobInfo['jobEmail']}', true),
+                    contactBox(
+                        Icons.phone, 'tel:+48${jobInfo['jobPhone']}', true),
+                    contactBox(
+                        Icons.sms, 'sms:+48${jobInfo['jobPhone']}', true),
                     contactBox(
                         Icons.pin_drop_rounded,
-                        "https://www.google.com/maps/search/?api=1&query=${userInfo['jobLocation']}",
-                        true,
-                        null),
+                        "https://www.google.com/maps/search/?api=1&query=${jobInfo['jobLocation']}",
+                        true),
                   ]),
               const SizedBox(height: 16),
               // COMPANY NAME
@@ -92,7 +91,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       borderRadius: BorderRadius.circular(16)),
                   child: Column(
                     children: [
-                      Text(userInfo['companyName'],
+                      Text(jobInfo['companyName'],
                           style: fontSize20,
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis),
@@ -100,7 +99,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       const SizedBox(height: 8),
                       FutureBuilder(
                         future:
-                            MyDb().takeAdOwnersData(userInfo['belongsToUser']),
+                            MyDb().takeAdOwnersData(jobInfo['belongsToUser']),
                         builder: (BuildContext context,
                             AsyncSnapshot<Map<dynamic, dynamic>?> snapshot) {
                           if (snapshot.connectionState ==
@@ -118,43 +117,56 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                             String employerName = snapshot.data!['username'];
                             String employerImage =
                                 snapshot.data!['profilePicture'];
-                            return Row(
-                              children: [
-                                Expanded(
-                                    child: Container(
+                            return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => UserPage(
+                                                isOwnProfile: false,
+                                                shownUser: snapshot.data,
+                                              )));
+                                },
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        child: Container(
+                                            height: 90,
+                                            decoration: BoxDecoration(
+                                                gradient: const LinearGradient(
+                                                    colors: gradient),
+                                                border: Border.all(
+                                                    width: 2,
+                                                    color: Colors.white),
+                                                borderRadius:
+                                                    BorderRadius.circular(16)),
+                                            child: Center(
+                                                child: Text(
+                                              'Dodane Przez \n $employerName',
+                                              style: fontSize16,
+                                              textAlign: TextAlign.center,
+                                              overflow: TextOverflow.clip,
+                                            )))),
+                                    const SizedBox(width: 8),
+                                    Container(
+                                        width: 90,
                                         height: 90,
                                         decoration: BoxDecoration(
-                                            gradient: const LinearGradient(
-                                                colors: gradient),
-                                            border: Border.all(
-                                                width: 2, color: Colors.white),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          border: Border.all(
+                                              color: Colors.white, width: 2),
+                                        ),
+                                        child: ClipRRect(
                                             borderRadius:
-                                                BorderRadius.circular(16)),
-                                        child: Center(
-                                            child: Text(
-                                          'Dodane Przez \n $employerName',
-                                          style: fontSize16,
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.clip,
-                                        )))),
-                                const SizedBox(width: 8),
-                                Container(
-                                    width: 90,
-                                    height: 90,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                          color: Colors.white, width: 2),
-                                    ),
-                                    child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(16),
-                                        child: Image.network(
-                                            employerImage != ''
-                                                ? employerImage
-                                                : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
-                                            fit: BoxFit.cover))),
-                              ],
-                            );
+                                                BorderRadius.circular(16),
+                                            child: Image.network(
+                                                employerImage != ''
+                                                    ? employerImage
+                                                    : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
+                                                fit: BoxFit.cover))),
+                                  ],
+                                ));
                           }
                         },
                       ),
@@ -171,10 +183,10 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       boxShadow: myOutlineBoxShadow,
                       borderRadius: BorderRadius.circular(16)),
                   child: Column(children: [
-                    if (userInfo['canRemotely'] == true)
-                      Text(userInfo['jobQualification'],
+                    if (jobInfo['canRemotely'] == true)
+                      Text(jobInfo['jobQualification'],
                           style: fontSize16, textAlign: TextAlign.center),
-                    if (userInfo['canRemotely'] == true)
+                    if (jobInfo['canRemotely'] == true)
                       const Divider(color: Colors.white, thickness: 2),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       const Icon((Icons.done_outline_rounded),

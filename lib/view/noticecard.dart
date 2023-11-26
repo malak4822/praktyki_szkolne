@@ -20,7 +20,7 @@ class NoticeCard extends StatelessWidget {
                   builder: (context) => Stack(children: [
                         noticeCardName == 'UserCard'
                             ? UserPage(isOwnProfile: false, shownUser: info)
-                            : JobAdvertisement(userInfo: info),
+                            : JobAdvertisement(jobInfo: info),
                         noticeCardName == 'UserCard'
                             ? SafeArea(
                                 child: IconButton(
@@ -34,6 +34,7 @@ class NoticeCard extends StatelessWidget {
                       ])));
         },
         child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 4),
             decoration: BoxDecoration(
                 boxShadow: myBoxShadow,
                 gradient: const LinearGradient(colors: gradient),
@@ -100,14 +101,10 @@ class NoticeCard extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 50,
                         foregroundImage: NetworkImage(info[
-                                    noticeCardName == 'UserCard'
-                                        ? 'profilePicture'
-                                        : 'jobImage']
-                                .isNotEmpty
-                            ? info[noticeCardName == 'UserCard'
-                                ? 'profilePicture'
-                                : 'jobImage']
-                            : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*4wskaw*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA'),
+                                noticeCardName == 'UserCard'
+                                    ? 'profilePicture'
+                                    : 'jobImage'] ??
+                            'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*4wskaw*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA'),
                       )),
                   const SizedBox(width: 10),
                 ]))));

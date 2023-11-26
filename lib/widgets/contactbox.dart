@@ -3,8 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../constants.dart';
 
-Widget contactBox(icon, String command, bool notToEdit, callBack) =>
-    Container(
+Widget contactBox(icon, String command, bool notToEdit) => Container(
       height: 76,
       decoration: BoxDecoration(
           gradient: const LinearGradient(colors: gradient),
@@ -16,7 +15,6 @@ Widget contactBox(icon, String command, bool notToEdit, callBack) =>
           if (command != '') {
             !await launchUrl(Uri.parse(command));
           }
-          callBack();
         },
         style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.only(left: 24, right: 16),
@@ -24,6 +22,6 @@ Widget contactBox(icon, String command, bool notToEdit, callBack) =>
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16))),
         icon: Icon(icon,
-            size: 32, color: notToEdit ? Colors.white : Colors.white70),
+            size: 32, color: notToEdit ? Colors.white : Colors.white38),
       ),
     );

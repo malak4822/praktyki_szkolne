@@ -46,14 +46,13 @@ class EditUserPage extends StatelessWidget {
                       gradient: LinearGradient(colors: gradient),
                       borderRadius: BorderRadius.vertical(
                           bottom: Radius.elliptical(200, 30))),
-                  child: IconButton(
-                      alignment: Alignment.topLeft,
-                      iconSize: 28,
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.arrow_back_ios_rounded,
-                          color: Colors.white)),
                 ),
-
+                IconButton(
+                    alignment: Alignment.topLeft,
+                    iconSize: 28,
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back_ios_rounded,
+                        color: Colors.white)),
                 //BLAD, NIE PODKRESLA PRZY LOGOWANIU JAK EMAIL JEST ZLE SFORMATOWANY
                 Center(
                     child: CircleAvatar(
@@ -96,85 +95,117 @@ class EditUserPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 10),
                       child: Column(children: [
-                        Text(currentUser.username,
-                            style: GoogleFonts.overpass(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
-                            )),
                         Center(
-                            child: Text(
-                          textAlign: TextAlign.center,
-                          '${currentUser.age == 0 ? '' : '${currentUser.age.toString()} lat,'}  ${currentUser.location}',
-                          style: GoogleFonts.overpass(
-                              color: Colors.white, fontSize: 16),
-                          maxLines: 1,
-                        )),
-                        const SizedBox(height: 5),
-                        Text(currentUser.description,
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.overpass(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold))
+                            child: Text(currentUser.username,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.overpass(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w800,
+                                ))),
+                        Visibility(
+                            visible: currentUser.isAccountTypeUser,
+                            child: Center(
+                                child: Text(
+                              textAlign: TextAlign.center,
+                              '${currentUser.age == 0 ? '' : '${currentUser.age.toString()} lat,'}  ${currentUser.location}',
+                              style: GoogleFonts.overpass(
+                                  color: Colors.white, fontSize: 16),
+                              maxLines: 1,
+                            ))),
+                        const SizedBox(height: 2),
+                        Center(
+                            child: Text(currentUser.description,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.overpass(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold)))
                       ])),
                   SizedBox(
-                      height: 110,
+                      height: currentUser.isAccountTypeUser ? 110 : 80,
                       child: blackBox(
                           1,
                           editUserProvider.areFieldsEmpty ? true : false,
                           0,
                           context))
                 ])),
-            SizedBox(
-                height: 130,
-                child: Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width / 13,
-                        right: MediaQuery.of(context).size.width / 13,
-                        top: 6),
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: currentUser.skillsSet.isEmpty
-                            ? 1
-                            : currentUser.skillsSet.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          if (currentUser.skillsSet.isEmpty) {
-                            return Container(
-                                height: 120,
-                                margin: const EdgeInsets.all(6),
-                                width: MediaQuery.of(context).size.width / 4,
-                                decoration: const BoxDecoration(
-                                  boxShadow: myBoxShadow,
-                                  gradient: LinearGradient(colors: gradient),
-                                ),
-                                child: blackBox(2, true, 0, context));
-                          } else {
-                            return skillEditBox(
-                                currentUser.skillsSet[index].keys.single,
-                                currentUser.skillsSet[index].values.single,
-                                index,
-                                context);
-                          }
-                        }))),
+            Visibility(
+                visible: currentUser.isAccountTypeUser,
+                child: SizedBox(
+                    height: 130,
+                    child: Padding(
+                        padding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width / 13,
+                            right: MediaQuery.of(context).size.width / 13,
+                            top: 6),
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: currentUser.skillsSet.isEmpty
+                                ? 1
+                                : currentUser.skillsSet.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              if (currentUser.skillsSet.isEmpty) {
+                                return Container(
+                                    height: 120,
+                                    margin: const EdgeInsets.all(6),
+                                    width:
+                                        MediaQuery.of(context).size.width / 4,
+                                    decoration: const BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(8)),
+                                      boxShadow: myBoxShadow,
+                                      gradient:
+                                          LinearGradient(colors: gradient),
+                                    ),
+                                    child: blackBox(2, true, 0, context));
+                              } else {
+                                return skillEditBox(
+                                    currentUser.skillsSet[index].keys.single,
+                                    currentUser.skillsSet[index].values.single,
+                                    index,
+                                    context);
+                              }
+                            })))),
           ]),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              contactBox(Icons.email_rounded, '', false, () {
-                Provider.of<EditUser>(context, listen: false)
-                    .toogleEditingPopUp(3);
-              }),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  contactBox(Icons.email_rounded, '', false),
+                  IconButton(
+                      onPressed: () {
+                        Provider.of<EditUser>(context, listen: false)
+                            .toogleEditingPopUp(3);
+                      },
+                      icon: const Icon(Icons.mode_edit_outlined),
+                      color: Colors.white,
+                      iconSize: 32),
+                ],
+              ),
               const SizedBox(width: 16),
-              contactBox(Icons.phone, '', false, () {
-                Provider.of<EditUser>(context, listen: false)
-                    .toogleEditingPopUp(3);
-              }),
+              Stack(
+                fit: StackFit.passthrough,
+                alignment: Alignment.center,
+                children: [
+                  contactBox(Icons.phone, '', false),
+                  IconButton(
+                      onPressed: () {
+                        Provider.of<EditUser>(context, listen: false)
+                            .toogleEditingPopUp(3);
+                      },
+                      icon: const Icon(Icons.mode_edit_outlined),
+                      color: Colors.white,
+                      iconSize: 32),
+                ],
+              ),
             ],
-          )
+          ),
         ]),
         Visibility(
             visible: editUserProvider.isEditingSeen,
