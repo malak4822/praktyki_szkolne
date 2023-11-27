@@ -88,20 +88,31 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
         ? FocusNode(canRequestFocus: true)
         : FocusScopeNode(),
     validator: (val) {
-      if (hintTxt == 'Telefon') {
-        if (val!.length == 0) {
-        } else if (val.length != 9) {
-          return 'Telefon Nie Ma 9 Cyfr';
-        }
+      if (hintTxt == 'Miejsce') {
       } else {
-        if (val!.isEmpty) {
-          return 'Proszę Uzupełnić Puste Pole';
-        } else if (val.length < 7) {
-          return 'Liczba Znaków Jest Za Mała';
-        }
-        if (hintTxt == 'Email') {
-          if (!val.contains('@') || val.length < 7) {
-            return 'Email Jest Nie Poprawny';
+        if (hintTxt == 'Telefon') {
+          if (val!.isEmpty) {
+          } else if (val.length != 9) {
+            return 'Telefon Nie Ma 9 Cyfr';
+          }
+        } else {
+          if (val!.isEmpty) {
+            return 'Proszę Uzupełnić Puste Pole';
+          } else if (val.length < 7) {
+            return 'Liczba Znaków Jest Za Mała';
+          }
+          if (val == 'Opis Stanowiska') {
+            return 'Proszę Wpisać Minimum 80 znaków';
+          }
+          if (hintTxt == 'Email') {
+            if (!val.contains('@') || val.length < 7) {
+              return 'Email Jest Nie Poprawny';
+            }
+          }
+          if (hintTxt == 'Numer Telefonu') {
+            if (val.length != 9) {
+              return 'Telefon Nie ma 9 Cyfr';
+            }
           }
         }
       }

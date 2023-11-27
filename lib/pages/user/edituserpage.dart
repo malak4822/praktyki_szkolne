@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/pages/user/changeuserprivate.dart';
 import 'package:prakty/providers/googlesign.dart';
+
 import 'package:prakty/widgets/contactbox.dart';
 import 'package:prakty/widgets/error.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +25,9 @@ class EditUserPage extends StatelessWidget {
 
     TextEditingController emailCont =
         TextEditingController(text: currentUser.email);
+
+    String ageAndLocationString =
+        '${currentUser.age == 0 ? '' : '${currentUser.age.toString()} ${getAgeSuffix(currentUser.age)}'}${currentUser.location != '' ? ', ${currentUser.location}' : ''}';
 
     return Scaffold(
         body: PageView(controller: pageCont, children: [
@@ -73,12 +77,12 @@ class EditUserPage extends StatelessWidget {
                                 height: 160,
                                 fadeInDuration:
                                     const Duration(milliseconds: 500),
-                                image: currentUser.profilePicture.isNotEmpty
-                                    ? NetworkImage(currentUser.profilePicture)
-                                    : const AssetImage('images/man/man.png')
-                                        as ImageProvider<Object>,
-                                placeholder:
-                                    const AssetImage('images/man/man.png'),
+                                image: NetworkImage(currentUser
+                                        .profilePicture.isNotEmpty
+                                    ? currentUser.profilePicture
+                                    : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.'),
+                                placeholder: const NetworkImage(
+                                    'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.'),
                               )),
                               ClipOval(child: blackBox(0, false, 0, context))
                             ]))))
@@ -107,8 +111,8 @@ class EditUserPage extends StatelessWidget {
                             visible: currentUser.isAccountTypeUser,
                             child: Center(
                                 child: Text(
+                              ageAndLocationString,
                               textAlign: TextAlign.center,
-                              '${currentUser.age == 0 ? '' : '${currentUser.age.toString()} lat,'}  ${currentUser.location}',
                               style: GoogleFonts.overpass(
                                   color: Colors.white, fontSize: 16),
                               maxLines: 1,

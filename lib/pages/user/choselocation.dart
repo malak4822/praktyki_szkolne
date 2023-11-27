@@ -68,7 +68,7 @@ class _FindOnMapState extends State<FindOnMap> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const FaIcon(Icons.my_location_sharp),
+                            const FaIcon(Icons.my_location_sharp, color: Colors.white,),
                             Expanded(
                               child: Text(
                                 " ${placePredictions[index].description}",

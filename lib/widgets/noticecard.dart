@@ -9,6 +9,21 @@ class NoticeCard extends StatelessWidget {
 
   final dynamic info;
   final String noticeCardName;
+  String showCorrectImage() {
+    if (noticeCardName == 'UserCard') {
+      if (info['profilePicture'] == null || info['profilePicture'] == '') {
+        return 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*4wskaw*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA';
+      } else {
+        return info['profilePicture'];
+      }
+    } else {
+      if (info['jobImage'] == null || info['jobImage'] == '') {
+        return 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fcompany_icon.png?alt=media&token=7c9796bf-2b8b-40d4-bc71-b85aeb82c269';
+      } else {
+        return info['jobImage'];
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,21 +32,10 @@ class NoticeCard extends StatelessWidget {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => Stack(children: [
-                        noticeCardName == 'UserCard'
-                            ? UserPage(isOwnProfile: false, shownUser: info)
-                            : JobAdvertisement(jobInfo: info),
-                        noticeCardName == 'UserCard'
-                            ? SafeArea(
-                                child: IconButton(
-                                    alignment: Alignment.topLeft,
-                                    iconSize: 28,
-                                    onPressed: () => Navigator.pop(context),
-                                    icon: const Icon(
-                                        Icons.arrow_back_ios_rounded,
-                                        color: Colors.white)))
-                            : const SizedBox(),
-                      ])));
+                builder: (context) => noticeCardName == 'UserCard'
+                    ? UserPage(isOwnProfile: false, shownUser: info)
+                    : JobAdvertisement(jobInfo: info),
+              ));
         },
         child: Container(
             margin: const EdgeInsets.symmetric(vertical: 4),
@@ -57,22 +61,30 @@ class NoticeCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
                             ),
-                            Text(
-                                info[noticeCardName == 'UserCard'
+                            if (info[noticeCardName == 'UserCard'
                                     ? 'description'
-                                    : 'jobDescription'],
-                                maxLines: 2,
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.overpass(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
+                                    : 'jobDescription']
+                                .isNotEmpty)
+                              Text(
+                                  info[noticeCardName == 'UserCard'
+                                      ? 'description'
+                                      : 'jobDescription'],
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.overpass(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.location_city,
-                                    size: 18, color: Colors.white),
+                                if (info[noticeCardName == 'UserCard'
+                                        ? 'location'
+                                        : 'jobLocation']
+                                    .isNotEmpty)
+                                  const Icon(Icons.location_city,
+                                      size: 18, color: Colors.white),
                                 Expanded(
                                     child: Text(
                                         ' ${info[noticeCardName == 'UserCard' ? 'location' : 'jobLocation']}',
@@ -96,15 +108,18 @@ class NoticeCard extends StatelessWidget {
                           ])),
                   const SizedBox(width: 10),
                   CircleAvatar(
-                      radius: 52.5,
+                      radius: 53,
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
                         radius: 50,
-                        foregroundImage: NetworkImage(info[
-                                noticeCardName == 'UserCard'
-                                    ? 'profilePicture'
-                                    : 'jobImage'] ??
-                            'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*4wskaw*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA'),
+                        foregroundImage: NetworkImage(
+                          showCorrectImage(),
+                        ),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(colors: gradient)),
+                        ),
                       )),
                   const SizedBox(width: 10),
                 ]))));

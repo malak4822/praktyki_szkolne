@@ -20,7 +20,9 @@ class UserPage extends StatelessWidget {
       MyUser myUser = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
       shownUser = myUser.toMap();
     }
-    print(shownUser);
+    String ageAndLocationString =
+        '${shownUser['age'] == 0 ? '' : '${shownUser['age'].toString()} ${getAgeSuffix(shownUser['age'])}'}${shownUser['location'] != '' ? ', ${shownUser['location']}' : ''}';
+
     return Scaffold(
         body: ListView(children: [
       SizedBox(
@@ -74,13 +76,19 @@ class UserPage extends StatelessWidget {
                             child: FadeInImage(
                           fit: BoxFit.cover,
                           fadeInDuration: const Duration(milliseconds: 500),
-                          image: NetworkImage(shownUser['profilePicture']
-                                  .isNotEmpty
+                          image: NetworkImage(shownUser['profilePicture'] != ''
                               ? shownUser['profilePicture']
                               : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.'),
                           placeholder: const NetworkImage(
                               'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.'),
-                        )))))
+                        ))))),
+            if (!isOwnProfile)
+              IconButton(
+                  alignment: Alignment.topLeft,
+                  iconSize: 28,
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back_ios_rounded,
+                      color: Colors.white)),
           ])),
       Container(
           margin: const EdgeInsets.symmetric(horizontal: 25),
@@ -101,20 +109,23 @@ class UserPage extends StatelessWidget {
                             color: Colors.white,
                             fontSize: 20,
                             fontWeight: FontWeight.w800))),
-                Center(
-                    child: Text(
-                  textAlign: TextAlign.center,
-                  '${shownUser['age'] == 0 ? '' : '${shownUser['age'].toString()} lat,'}  ${shownUser['location']}',
-                  style:
-                      GoogleFonts.overpass(color: Colors.white, fontSize: 16),
-                )),
+                Visibility(
+                    visible: shownUser['isAccountTypeUser'],
+                    child: Center(
+                        child: Text(
+                      textAlign: TextAlign.center,
+                      ageAndLocationString,
+                      style: GoogleFonts.overpass(
+                          color: Colors.white, fontSize: 16),
+                    ))),
                 const SizedBox(height: 5),
-                Text(shownUser['description'],
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.overpass(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold)),
+                if (shownUser['description'].isNotEmpty)
+                  Text(shownUser['description'],
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.overpass(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
               ]),
             )
           ])),
@@ -147,8 +158,7 @@ class UserPage extends StatelessWidget {
                   Icons.email_rounded, 'mailto:${shownUser['email']}', true)),
           const SizedBox(width: 10),
           Visibility(
-              visible: shownUser['phoneNum'].isNotEmpty ||
-                  shownUser['phoneNum'] == null,
+              visible: shownUser['phoneNum'] != '',
               child: Row(
                 children: [
                   contactBox(

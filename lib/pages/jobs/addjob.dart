@@ -92,7 +92,7 @@ class _AddJobState extends State<AddJob> {
                     updateValues(jobEmail, 'Email', 1, null,
                         Icons.email, TextInputType.emailAddress, null),
                     const SizedBox(height: 12),
-                    updateValues(jobPhone, 'Telefon', 1, 9, Icons.phone,
+                    updateValues(jobPhone, 'Numer Telefonu', 1, 9, Icons.phone,
                         TextInputType.phone, null),
                     const SizedBox(height: 12),
                     updateValues(jobQualification, 'Nazwa Kwalifikacji', 1, 28,
