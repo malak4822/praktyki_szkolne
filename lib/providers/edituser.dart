@@ -25,6 +25,12 @@ class EditUser extends ChangeNotifier {
   File? _imgFile;
   File? get imgFile => _imgFile;
 
+  set removeImage(basicPPUrl) => _imgFile = null;
+
+  void setInitialFile() {
+    _imgFile = File('freshImage');
+  }
+
   Future<void> getStorageImage() async {
     final imagePicker = ImagePicker();
 
@@ -32,7 +38,7 @@ class EditUser extends ChangeNotifier {
         source: ImageSource.gallery, imageQuality: 12);
     if (pickedImage != null) {
       _imgFile = File(pickedImage.path);
-
+      print('Image Added -> $_imgFile');
       notifyListeners();
     }
   }
@@ -69,13 +75,16 @@ class EditUser extends ChangeNotifier {
   }
 
   Future<void> deleteSelectedImage() async {
-    if (_imgFile != null) {
-      try {
-        await _imgFile!.delete();
-        _imgFile = null;
-        notifyListeners();
-      } catch (e) {
-        debugPrint('Error deleting image: $e');
+    if (_imgFile!.path == 'freshImage') {
+    } else {
+      if (_imgFile != null) {
+        try {
+          await _imgFile!.delete();
+          _imgFile = null;
+          notifyListeners();
+        } catch (e) {
+          debugPrint('Error deleting image: $e');
+        }
       }
     }
   }

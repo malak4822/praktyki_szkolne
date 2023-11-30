@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -112,23 +113,26 @@ class MyDb {
   }
 
   Future<String?> uploadImageToStorage(String userId, imgFile) async {
-    final storage = FirebaseStorage.instance;
+    if (imgFile != null ? imgFile.path == 'freshImage' : false) {
+      return 'freshImage';
+    } else {
+      final storage = FirebaseStorage.instance;
+      try {
+        final storageReference =
+            storage.ref().child('profile_pictures/$userId.jpg');
+        await storageReference.putFile(imgFile != null ? imgFile! : '');
+        final imageUrl = await storageReference.getDownloadURL();
 
-    try {
-      final storageReference =
-          storage.ref().child('profile_pictures/$userId.jpg');
-      await storageReference.putFile(imgFile!);
-      final imageUrl = await storageReference.getDownloadURL();
+        await _firestore
+            .collection('users')
+            .doc(userId)
+            .update({'profilePicture': imgFile != null ? imageUrl : ''});
 
-      await _firestore
-          .collection('users')
-          .doc(userId)
-          .update({'profilePicture': imageUrl});
-
-      return imageUrl;
-    } catch (e) {
-      debugPrint('Error uploading image to Firebase Storage: $e');
-      return null;
+        return imageUrl;
+      } catch (e) {
+        debugPrint('Error uploading image to Firebase Storage: $e');
+        return null;
+      }
     }
   }
 

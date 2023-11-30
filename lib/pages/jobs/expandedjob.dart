@@ -4,7 +4,6 @@ import 'package:prakty/services/database.dart';
 import 'package:prakty/view/userpage.dart';
 import 'package:prakty/widgets/backbutton.dart';
 import 'package:prakty/widgets/contactbox.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class JobAdvertisement extends StatefulWidget {
   const JobAdvertisement({super.key, required this.jobInfo});
