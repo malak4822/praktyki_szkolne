@@ -4,8 +4,9 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/widgets/noticecard.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
+import 'package:prakty/widgets/sortandfilter.dart';
 
-class NoticesPage extends StatelessWidget {
+class NoticesPage extends StatefulWidget {
   NoticesPage({
     super.key,
     this.isAccountTypeUser,
@@ -16,20 +17,29 @@ class NoticesPage extends StatelessWidget {
   String pageName;
 
   @override
+  State<NoticesPage> createState() => _NoticesPageState();
+}
+
+class _NoticesPageState extends State<NoticesPage> {
+  late String listToOpen = '';
+  final ValueNotifier<bool> isTabVisible = ValueNotifier<bool>(false);
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-        floatingActionButton: isAccountTypeUser == false
-            ? FloatingActionButton(
-                backgroundColor: gradient[1],
-                foregroundColor: Colors.white,
-                splashColor: gradient[0],
-                onPressed: () => Navigator.pushNamed(context, '/addJob'),
-                child: const Icon(Icons.add))
-            : null,
-        body: SafeArea(
-            child: FutureBuilder(
-                future: pageName == 'JobNotices'
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+      floatingActionButton: widget.isAccountTypeUser == false
+          ? FloatingActionButton(
+              backgroundColor: gradient[1],
+              foregroundColor: Colors.white,
+              splashColor: gradient[0],
+              onPressed: () => Navigator.pushNamed(context, '/addJob'),
+              child: const Icon(Icons.add))
+          : null,
+      body: SafeArea(
+        child: Stack(
+          children: [
+            FutureBuilder(
+                future: widget.pageName == 'JobNotices'
                     ? MyDb().downloadJobAds()
                     : MyDb().downloadUsersStates(),
                 builder: (context, AsyncSnapshot<List> snapshot) {
@@ -62,15 +72,17 @@ class NoticesPage extends StatelessWidget {
                         child: Column(
                           children: [
                             Container(
-                                decoration:
-                                    const BoxDecoration(boxShadow: myBoxShadow),
+                                padding: const EdgeInsets.all(2),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    twoButton(context, 'Sortuj', Icons.sort, 0),
-                                    twoButton(context, 'Filtruj',
-                                        Icons.filter_alt, 1),
+                                    Expanded(
+                                        child:
+                                            twoButton('Sortuj', Icons.sort, 0)),
+                                    Expanded(
+                                        child: twoButton(
+                                            'Filtruj', Icons.filter_alt, 1)),
                                   ],
                                 )),
                             const SizedBox(height: 8),
@@ -80,7 +92,7 @@ class NoticesPage extends StatelessWidget {
                                 itemCount: noticesList!.length,
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
-                                  if (pageName == 'JobNotices') {
+                                  if (widget.pageName == 'JobNotices') {
                                     return NoticeCard(
                                       info: noticesList[index],
                                       noticeCardName: 'JobCard',
@@ -95,12 +107,77 @@ class NoticesPage extends StatelessWidget {
                           ],
                         ));
                   }
-                })));
+                }),
+            ValueListenableBuilder(
+              valueListenable: isTabVisible,
+              builder: (context, isVisible, child) => Visibility(
+                visible: isTabVisible.value,
+                child: Stack(
+                  children: [
+                    Material(
+                      color: Colors.white70,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(16),
+                        onTap: () {
+                          isTabVisible.value = false;
+                        },
+                        splashFactory: InkRipple.splashFactory,
+                        splashColor: gradient[1],
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 2 / 3,
+                        height: MediaQuery.of(context).size.height / 2,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            gradient: const LinearGradient(colors: gradient)),
+                        child: Column(children: [
+                          Center(
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: WidgetListGenerator()
+                                  .generateWidgetList(listToOpen),
+                              //  listToOpen == 'sortUsers' ? const sortUsers() : ,
+
+                              // if (listToOpen == 'filterUsers')
+                              //   const FilterUser(),
+                              // if (listToOpen == 'sortJobs') const SortJobs(),
+                              // if (listToOpen == 'filterJobs')
+                              //   const FilterJobs(),
+                            ),
+                          ),
+                          const Spacer(),
+                          SizedBox(
+                              width: double.maxFinite,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white24,
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            bottom: Radius.circular(16))),
+                                    padding: const EdgeInsets.all(12)),
+                                child: const Icon(Icons.done,
+                                    size: 32, color: Colors.white),
+                                onPressed: () async {},
+                              ))
+                        ]),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
-  Widget twoButton(context, txt, icon, num) => ElevatedButton(
+  Widget twoButton(txt, icon, num) => ElevatedButton(
         style: ElevatedButton.styleFrom(
-          fixedSize: Size((MediaQuery.of(context).size.width / 2) - 12, 50),
+          elevation: 7,
+          padding: const EdgeInsets.all(12),
           backgroundColor: gradient[num],
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
@@ -114,7 +191,13 @@ class NoticesPage extends StatelessWidget {
             ),
           ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          listToOpen = (widget.pageName == 'UsersNotices')
+              ? (num == 0 ? 'sortUsers' : 'filterUsers')
+              : (num == 1 ? 'filterJobs' : 'sortJobs');
+
+          isTabVisible.value = true;
+        },
         child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [Text(txt, style: fontSize16), Icon(icon)]),

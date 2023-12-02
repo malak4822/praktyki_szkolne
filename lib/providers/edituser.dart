@@ -22,10 +22,10 @@ class EditUser extends ChangeNotifier {
     _skillBoxesBackup = skillBoxes;
   }
 
-  File? _imgFile;
-  File? get imgFile => _imgFile;
+  File _imgFile = File('');
+  File get imgFile => _imgFile;
 
-  set removeImage(basicPPUrl) => _imgFile = null;
+  set removeImage(basicPPUrl) => _imgFile = File('');
 
   void setInitialFile() {
     _imgFile = File('freshImage');
@@ -75,17 +75,12 @@ class EditUser extends ChangeNotifier {
   }
 
   Future<void> deleteSelectedImage() async {
-    if (_imgFile!.path == 'freshImage') {
-    } else {
-      if (_imgFile != null) {
-        try {
-          await _imgFile!.delete();
-          _imgFile = null;
-          notifyListeners();
-        } catch (e) {
-          debugPrint('Error deleting image: $e');
-        }
-      }
+    try {
+      await _imgFile.delete();
+      _imgFile = File('');
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error deleting image: $e');
     }
   }
 

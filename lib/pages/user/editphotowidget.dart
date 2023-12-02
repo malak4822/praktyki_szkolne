@@ -22,8 +22,6 @@ class _EditPhotoState extends State<EditPhoto> {
     setState(() {
       pictureToShow = const NetworkImage(basicPPUrl);
     });
-    print(
-        'Image Deleted -> ${Provider.of<EditUser>(context, listen: false).imgFile}');
   }
 
   void updatePhoto() {

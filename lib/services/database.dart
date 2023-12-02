@@ -112,27 +112,26 @@ class MyDb {
     }
   }
 
-  Future<String?> uploadImageToStorage(String userId, imgFile) async {
-    if (imgFile != null ? imgFile.path == 'freshImage' : false) {
-      return 'freshImage';
-    } else {
-      final storage = FirebaseStorage.instance;
-      try {
+  Future<String> uploadImageToStorage(String userId, imgFile) async {
+    final storage = FirebaseStorage.instance;
+    try {
+      String imageUrl = '';
+      if (imgFile.path.isNotEmpty) {
         final storageReference =
             storage.ref().child('profile_pictures/$userId.jpg');
-        await storageReference.putFile(imgFile != null ? imgFile! : '');
-        final imageUrl = await storageReference.getDownloadURL();
-
-        await _firestore
-            .collection('users')
-            .doc(userId)
-            .update({'profilePicture': imgFile != null ? imageUrl : ''});
-
-        return imageUrl;
-      } catch (e) {
-        debugPrint('Error uploading image to Firebase Storage: $e');
-        return null;
+        await storageReference.putFile(imgFile);
+        imageUrl = await storageReference.getDownloadURL();
       }
+
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .update({'profilePicture': imageUrl});
+
+      return imageUrl;
+    } catch (e) {
+      debugPrint('Error uploading image to Firebase Storage: $e');
+      return '';
     }
   }
 
