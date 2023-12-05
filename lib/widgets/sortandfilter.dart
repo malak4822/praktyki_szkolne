@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prakty/constants.dart';
 
 // class SortUsers  {
 
@@ -6,51 +7,63 @@ import 'package:flutter/material.dart';
 //   List<Widget> lis =>Container();
 // }
 class WidgetListGenerator {
-  List<Widget> generateWidgetList(String listToOpen) {
-    List<String>? Function()? whichList;
+  WidgetListGenerator(this.listToOpen, this.searchingPrefs, this.callBack);
 
+  String listToOpen;
+  Function callBack;
+  List<int> searchingPrefs;
+
+  Widget myText(index, text, sortPageNumber) => ListTile(
+      title: Text(text, style: fontSize16),
+      leading: Radio(
+        fillColor: MaterialStateProperty.all(Colors.white),
+        overlayColor: MaterialStateProperty.all(Colors.white),
+        value: index,
+        groupValue: searchingPrefs[sortPageNumber],
+        onChanged: (value) {
+          callBack(sortPageNumber, value);
+        },
+      ));
+
+  List<Widget> getMappedList(List<String> function, int sortPageNumber) {
+    return function
+        .asMap()
+        .entries
+        .map((entry) => myText(entry.key, entry.value, sortPageNumber))
+        .toList();
+  }
+
+  List<Widget> generateWidgetList() {
     if (listToOpen == 'sortUsers') {
-      whichList = sortUsers;
+      return getMappedList(sortUsers(), 0);
     } else if (listToOpen == 'filterUsers') {
-      whichList = filterUsers;
+      return getMappedList(filterUsers(), 1);
     } else if (listToOpen == 'sortJobs') {
-      whichList = sortJobs;
+      return getMappedList(sortJobs(), 2);
     } else if (listToOpen == 'filterJobs') {
-      whichList = filterJobs;
+      return getMappedList(filterJobs(), 3);
+    } else {
+      return [];
     }
-
-    // Use null-aware operator to check if whichList is null before calling
-    return whichList?.call()?.map((text) => Text(text)).toList() ?? [];
   }
 }
+
 List<String> sortUsers() {
   return [
-    'Od Najstarszych',
-    'Od Największej Ilości Umiejętności'
-        'Od Najbliżej Położonych'
+    'Od Najstarszych Wiekiem',
+    'Od Największej Ilości Umiejętności',
+    'Od Najbliżej Położonych'
   ];
 }
 
 List<String> filterUsers() {
-  return [
-    'filterUser1',
-    'filterUser2'
-        'filterUser3'
-  ];
+  return ['filterUser1', 'filterUser2', 'filterUser3'];
 }
 
 List<String> sortJobs() {
-  return [
-    'sortJobs1',
-    'sortJobs2'
-        'sortJobs3'
-  ];
+  return ['sortJobs1', 'sortJobs2', 'sortJobs3'];
 }
 
 List<String> filterJobs() {
-  return [
-    'filterJobs1',
-    'filterJobs2'
-        'filterJobs3'
-  ];
+  return ['filterJobs1', 'filterJobs2', 'filterJobs3'];
 }

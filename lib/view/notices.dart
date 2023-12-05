@@ -5,6 +5,7 @@ import 'package:prakty/services/database.dart';
 import 'package:prakty/widgets/noticecard.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
 import 'package:prakty/widgets/sortandfilter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NoticesPage extends StatefulWidget {
   NoticesPage({
@@ -21,8 +22,40 @@ class NoticesPage extends StatefulWidget {
 }
 
 class _NoticesPageState extends State<NoticesPage> {
+  @override
+  void initState() {
+    readSearchingPrefs();
+    super.initState();
+  }
+
   late String listToOpen = '';
+  ValueNotifier<List<int>> searchingPreferences =
+      ValueNotifier<List<int>>([0, 0, 0, 0]);
   final ValueNotifier<bool> isTabVisible = ValueNotifier<bool>(false);
+  int sortPageNum = 0;
+
+  void readSearchingPrefs() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    List<String> searchingPrefStringList =
+        prefs.getStringList('searchingPrefs') ?? [];
+
+    List<int> convertedToInts =
+        List.from(searchingPrefStringList.map((e) => int.parse(e)));
+
+    searchingPreferences.value = convertedToInts;
+    print(searchingPreferences.value);
+  }
+
+  void setSearchingPrefs(sortPageNumber) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    List<String> converted =
+        List.from(searchingPreferences.value.map((e) => e.toString()));
+
+    await prefs.setStringList('searchingPrefs', converted);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,19 +167,21 @@ class _NoticesPageState extends State<NoticesPage> {
                             gradient: const LinearGradient(colors: gradient)),
                         child: Column(children: [
                           Center(
-                            child: ListView(
+                              child: ValueListenableBuilder(
+                            valueListenable: searchingPreferences,
+                            builder: (context, searchPrefs, child) => ListView(
                               shrinkWrap: true,
-                              children: WidgetListGenerator()
-                                  .generateWidgetList(listToOpen),
-                              //  listToOpen == 'sortUsers' ? const sortUsers() : ,
-
-                              // if (listToOpen == 'filterUsers')
-                              //   const FilterUser(),
-                              // if (listToOpen == 'sortJobs') const SortJobs(),
-                              // if (listToOpen == 'filterJobs')
-                              //   const FilterJobs(),
+                              children: WidgetListGenerator(
+                                  listToOpen, searchingPreferences.value,
+                                  (sortPageNumber, value) {
+                                sortPageNum = sortPageNumber;
+                                List<int> newList =
+                                    List.from(searchingPreferences.value);
+                                newList[sortPageNumber] = value;
+                                searchingPreferences.value = newList;
+                              }).generateWidgetList(),
                             ),
-                          ),
+                          )),
                           const Spacer(),
                           SizedBox(
                               width: double.maxFinite,
@@ -159,7 +194,10 @@ class _NoticesPageState extends State<NoticesPage> {
                                     padding: const EdgeInsets.all(12)),
                                 child: const Icon(Icons.done,
                                     size: 32, color: Colors.white),
-                                onPressed: () async {},
+                                onPressed: () async {
+                                  setSearchingPrefs(sortPageNum);
+                                  isTabVisible.value = false;
+                                },
                               ))
                         ]),
                       ),
