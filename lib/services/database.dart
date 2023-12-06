@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -135,11 +133,15 @@ class MyDb {
     }
   }
 
-  Future<List> downloadJobAds() async {
+  Future<List<Map>> downloadJobAds() async {
     try {
       final collection = _firestore.collection('/jobAd');
       final QuerySnapshot jobCards = await collection.get();
-      final List myJobList = jobCards.docs.map((doc) => doc.data()).toList();
+
+      final List<Map<String, dynamic>> myJobList = jobCards.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+
       return myJobList;
     } catch (e) {
       debugPrint(e.toString());
@@ -154,12 +156,14 @@ class MyDb {
       final QuerySnapshot usersCollection = await collection.get();
       final List myUsersList =
           usersCollection.docs.map((doc) => doc.data()).toList();
+
       for (int i = 0; i < myUsersList.length; i++) {
         var isVacan = myUsersList[i]['jobVacancy'];
         if (isVacan == true) {
           usrsWithNotices.add(myUsersList[i]);
         }
       }
+
       return usrsWithNotices;
     } catch (e) {
       debugPrint(e.toString());

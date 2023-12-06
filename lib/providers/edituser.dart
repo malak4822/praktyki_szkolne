@@ -38,7 +38,6 @@ class EditUser extends ChangeNotifier {
         source: ImageSource.gallery, imageQuality: 12);
     if (pickedImage != null) {
       _imgFile = File(pickedImage.path);
-      print('Image Added -> $_imgFile');
       notifyListeners();
     }
   }

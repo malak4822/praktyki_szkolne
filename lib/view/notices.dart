@@ -28,11 +28,12 @@ class _NoticesPageState extends State<NoticesPage> {
     super.initState();
   }
 
-  late String listToOpen = '';
-  ValueNotifier<List<int>> searchingPreferences =
+  List<int> correctSearchinPrefs = [0, 0, 0, 0];
+
+  ValueNotifier<List<int>> tempSearchingPrefs =
       ValueNotifier<List<int>>([0, 0, 0, 0]);
   final ValueNotifier<bool> isTabVisible = ValueNotifier<bool>(false);
-  int sortPageNum = 0;
+  int listToOpen = 0;
 
   void readSearchingPrefs() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -43,15 +44,15 @@ class _NoticesPageState extends State<NoticesPage> {
     List<int> convertedToInts =
         List.from(searchingPrefStringList.map((e) => int.parse(e)));
 
-    searchingPreferences.value = convertedToInts;
-    print(searchingPreferences.value);
+    correctSearchinPrefs = convertedToInts;
+    tempSearchingPrefs.value = convertedToInts;
   }
 
-  void setSearchingPrefs(sortPageNumber) async {
+  void setSearchingPrefs() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     List<String> converted =
-        List.from(searchingPreferences.value.map((e) => e.toString()));
+        List.from(correctSearchinPrefs.map((e) => e.toString()));
 
     await prefs.setStringList('searchingPrefs', converted);
   }
@@ -92,48 +93,76 @@ class _NoticesPageState extends State<NoticesPage> {
                                 const SizedBox(height: 30),
                                 Text('Narazie Niestety Nie Ma Ogłoszeń',
                                     style: GoogleFonts.overpass(
-                                        fontSize: 22,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.w900,
                                         color: gradient[0]),
                                     textAlign: TextAlign.center)
                               ])),
                     );
                   } else {
-                    final dynamic noticesList = snapshot.data;
+                    List<Map> noticesList = snapshot.data as List<Map>;
+
+                    void sortParticularAlgorytm(radioValue) {
+                      switch (radioValue) {
+                        case 0:
+                          print('OLD LIST -> $noticesList');
+                          noticesList.sort((a, b) => a['accountCreated']
+                              .compareTo(b['accountCreated']));
+                          print('NEW LIST -> $noticesList');
+
+                          break;
+                        case 1:
+                          print('OLD LIST -> $noticesList');
+                          noticesList.sort((a, b) => b['accountCreated']
+                              .compareTo(a['accountCreated']));
+                          print('NEW LIST -> $noticesList');
+                          break;
+                        case 2:
+                          // SOTRUJ UŻYTKOWNIKÓW W SPOSÓB 3
+                          break;
+                      }
+                    }
+
+                    switch (listToOpen) {
+                      case 0 || 1:
+                        sortParticularAlgorytm(correctSearchinPrefs[0]);
+                        // sortParticularAlgorytm(correctSearchinPrefs[1]);
+                        break;
+                      case 2 || 3:
+                        // sortParticularAlgorytm(correctSearchinPrefs[2]);
+                        // sortParticularAlgorytm(correctSearchinPrefs[3]);
+                        break;
+                    }
+
                     return Container(
                         padding: const EdgeInsets.all(12),
                         child: Column(
                           children: [
-                            Container(
-                                padding: const EdgeInsets.all(2),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Expanded(
-                                        child:
-                                            twoButton('Sortuj', Icons.sort, 0)),
-                                    Expanded(
-                                        child: twoButton(
-                                            'Filtruj', Icons.filter_alt, 1)),
-                                  ],
-                                )),
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: twoButton('Sortuj', Icons.sort, 0)),
+                                Expanded(
+                                    child: twoButton(
+                                        'Filtruj', Icons.filter_alt, 1)),
+                              ],
+                            ),
                             const SizedBox(height: 8),
                             // JOB LIST
                             ListView.builder(
                                 clipBehavior: Clip.none,
-                                itemCount: noticesList!.length,
+                                itemCount: noticesList.length,
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, int index) {
-                                  if (widget.pageName == 'JobNotices') {
+                                  if (widget.pageName == 'UsersNotices') {
                                     return NoticeCard(
                                       info: noticesList[index],
-                                      noticeCardName: 'JobCard',
+                                      noticeCardName: 'UserCard',
                                     );
                                   } else {
                                     return NoticeCard(
                                       info: noticesList[index],
-                                      noticeCardName: 'UserCard',
+                                      noticeCardName: 'JobCard',
                                     );
                                   }
                                 })
@@ -168,17 +197,19 @@ class _NoticesPageState extends State<NoticesPage> {
                         child: Column(children: [
                           Center(
                               child: ValueListenableBuilder(
-                            valueListenable: searchingPreferences,
+                            valueListenable: tempSearchingPrefs,
                             builder: (context, searchPrefs, child) => ListView(
                               shrinkWrap: true,
                               children: WidgetListGenerator(
-                                  listToOpen, searchingPreferences.value,
-                                  (sortPageNumber, value) {
-                                sortPageNum = sortPageNumber;
-                                List<int> newList =
-                                    List.from(searchingPreferences.value);
-                                newList[sortPageNumber] = value;
-                                searchingPreferences.value = newList;
+                                  listToOpen, tempSearchingPrefs.value,
+                                  (int newValue) {
+                                List<int> temporarySearchingPrefs =
+                                    List.from(tempSearchingPrefs.value);
+
+                                temporarySearchingPrefs[listToOpen] = newValue;
+
+                                tempSearchingPrefs.value =
+                                    temporarySearchingPrefs;
                               }).generateWidgetList(),
                             ),
                           )),
@@ -195,7 +226,11 @@ class _NoticesPageState extends State<NoticesPage> {
                                 child: const Icon(Icons.done,
                                     size: 32, color: Colors.white),
                                 onPressed: () async {
-                                  setSearchingPrefs(sortPageNum);
+                                  correctSearchinPrefs =
+                                      tempSearchingPrefs.value;
+                                  setSearchingPrefs();
+                                  setState(() {});
+                                 
                                   isTabVisible.value = false;
                                 },
                               ))
@@ -212,7 +247,7 @@ class _NoticesPageState extends State<NoticesPage> {
     );
   }
 
-  Widget twoButton(txt, icon, num) => ElevatedButton(
+  Widget twoButton(String txt, IconData icon, int num) => ElevatedButton(
         style: ElevatedButton.styleFrom(
           elevation: 7,
           padding: const EdgeInsets.all(12),
@@ -230,10 +265,10 @@ class _NoticesPageState extends State<NoticesPage> {
           ),
         ),
         onPressed: () {
+          tempSearchingPrefs.value = List.from(correctSearchinPrefs);
           listToOpen = (widget.pageName == 'UsersNotices')
-              ? (num == 0 ? 'sortUsers' : 'filterUsers')
-              : (num == 1 ? 'filterJobs' : 'sortJobs');
-
+              ? (num == 0 ? 0 : 1)
+              : (num == 1 ? 3 : 2);
           isTabVisible.value = true;
         },
         child: Row(

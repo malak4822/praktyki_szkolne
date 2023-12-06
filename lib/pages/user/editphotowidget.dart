@@ -26,7 +26,7 @@ class _EditPhotoState extends State<EditPhoto> {
 
   void updatePhoto() {
     pictureToShow =
-        FileImage(Provider.of<EditUser>(context, listen: false).imgFile!);
+        FileImage(Provider.of<EditUser>(context, listen: false).imgFile);
   }
 
   @override

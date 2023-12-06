@@ -5,9 +5,10 @@ import 'package:prakty/pages/jobs/expandedjob.dart';
 import 'package:prakty/view/userpage.dart';
 
 class NoticeCard extends StatelessWidget {
-  const NoticeCard({super.key, required this.noticeCardName, this.info});
+  const NoticeCard(
+      {super.key, required this.noticeCardName, required this.info});
 
-  final dynamic info;
+  final Map info;
   final String noticeCardName;
   String showCorrectImage() {
     if (noticeCardName == 'UserCard') {
