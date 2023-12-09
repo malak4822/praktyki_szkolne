@@ -9,8 +9,7 @@ import 'package:provider/provider.dart';
 import '../widgets/skillboxes.dart';
 
 class UserPage extends StatelessWidget {
-  UserPage({Key? key, this.shownUser, required this.isOwnProfile})
-      : super(key: key);
+  UserPage({super.key, this.shownUser, required this.isOwnProfile});
   dynamic shownUser;
   bool isOwnProfile;
 

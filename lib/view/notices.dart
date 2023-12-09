@@ -39,13 +39,15 @@ class _NoticesPageState extends State<NoticesPage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     List<String> searchingPrefStringList =
-        prefs.getStringList('searchingPrefs') ?? [];
+        prefs.getStringList('searchingPrefs') ?? ['0', '0', '0', '0'];
 
     List<int> convertedToInts =
         List.from(searchingPrefStringList.map((e) => int.parse(e)));
 
     correctSearchinPrefs = convertedToInts;
     tempSearchingPrefs.value = convertedToInts;
+
+    print(' CORRECT SERACHIN PREFS-> $correctSearchinPrefs');
   }
 
   void setSearchingPrefs() async {
@@ -102,33 +104,41 @@ class _NoticesPageState extends State<NoticesPage> {
                   } else {
                     List<Map> noticesList = snapshot.data as List<Map>;
 
+                    // void countDistanceToSort() {
+                    //   List userLocationsList = [];
+                    //   for (var element in noticesList) {
+                    //     userLocationsList.add(element['location']);
+                    //   }
+                    //   print(userLocationsList);
+                    // }
+
                     void sortParticularAlgorytm(radioValue) {
                       switch (radioValue) {
                         case 0:
-                          print('OLD LIST -> $noticesList');
-                          noticesList.sort((a, b) => a['accountCreated']
-                              .compareTo(b['accountCreated']));
-                          print('NEW LIST -> $noticesList');
-
-                          break;
-                        case 1:
-                          print('OLD LIST -> $noticesList');
                           noticesList.sort((a, b) => b['accountCreated']
                               .compareTo(a['accountCreated']));
-                          print('NEW LIST -> $noticesList');
+                          break;
+                        case 1:
+                          noticesList
+                              .sort((a, b) => b['age'].compareTo(a['age']));
                           break;
                         case 2:
-                          // SOTRUJ UŻYTKOWNIKÓW W SPOSÓB 3
+                          noticesList.sort((a, b) => b['skillsSet']
+                              .length
+                              .compareTo(a['skillsSet'].length));
+                          break;
+                        case 3:
+                          // countDistanceToSort();
                           break;
                       }
                     }
 
-                    switch (listToOpen) {
-                      case 0 || 1:
+                    switch (widget.pageName) {
+                      case 'UsersNotices':
                         sortParticularAlgorytm(correctSearchinPrefs[0]);
                         // sortParticularAlgorytm(correctSearchinPrefs[1]);
                         break;
-                      case 2 || 3:
+                      case 'JobNotices':
                         // sortParticularAlgorytm(correctSearchinPrefs[2]);
                         // sortParticularAlgorytm(correctSearchinPrefs[3]);
                         break;
@@ -205,9 +215,7 @@ class _NoticesPageState extends State<NoticesPage> {
                                   (int newValue) {
                                 List<int> temporarySearchingPrefs =
                                     List.from(tempSearchingPrefs.value);
-
                                 temporarySearchingPrefs[listToOpen] = newValue;
-
                                 tempSearchingPrefs.value =
                                     temporarySearchingPrefs;
                               }).generateWidgetList(),
@@ -230,7 +238,7 @@ class _NoticesPageState extends State<NoticesPage> {
                                       tempSearchingPrefs.value;
                                   setSearchingPrefs();
                                   setState(() {});
-                                 
+
                                   isTabVisible.value = false;
                                 },
                               ))

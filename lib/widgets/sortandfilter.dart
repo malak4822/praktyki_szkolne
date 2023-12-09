@@ -50,6 +50,7 @@ class WidgetListGenerator {
 
 List<String> sortUsers() {
   return [
+    'Od Najnowszych',
     'Od Najstarszych Wiekiem',
     'Od Największej Ilości Umiejętności',
     'Od Najbliżej Położonych'

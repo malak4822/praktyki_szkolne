@@ -5,7 +5,7 @@ import 'package:prakty/widgets/skillboxes.dart';
 import 'package:provider/provider.dart';
 
 class EditSkillSet extends StatefulWidget {
-  const EditSkillSet({Key? key}) : super(key: key);
+  const EditSkillSet({super.key});
 
   @override
   State<EditSkillSet> createState() => _EditSkillSetState();
