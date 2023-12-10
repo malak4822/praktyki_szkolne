@@ -47,42 +47,32 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     final TextEditingController phoneCont =
         TextEditingController(text: user.phoneNum);
 
-    final formKey = GlobalKey<FormState>();
+    final formKeyPhone = GlobalKey<FormState>();
+    final formKeyDesc = GlobalKey<FormState>();
 
     List<Widget> editWidgetTypes = [
       EditPhoto(user: user),
-      EditNameAndDesc(nameCont, descriptionCont, locationCont, emailCont,
-          ageCont, (newVal) => ageCont = newVal, user.isAccountTypeUser),
+      EditNameAndDesc(
+          nameCont,
+          descriptionCont,
+          locationCont,
+          emailCont,
+          ageCont,
+          (newVal) => ageCont = newVal,
+          user.isAccountTypeUser,
+          formKeyDesc),
       const EditSkillSet(),
-      EditContactInfo(emailCont, phoneCont, formKey)
+      EditContactInfo(emailCont, phoneCont, formKeyPhone)
     ];
 
     return Column(children: [
       Expanded(child: GestureDetector(onTap: () async {
         MyDb myDb = MyDb();
 
-        // UDPATING CONTACT INFORMATIONS
-        if (tabToOpen == 3) {
-          // if (phoneCont.text.isNotEmpty) {
-          if (formKey.currentState?.validate() ?? false) {
-            editUserFunction.changeLoading();
-            List<String>? infoFields = await myDb.updateContactInfo(
-                user.userId, emailCont.text, phoneCont.text);
-            if (infoFields != null) {
-              googleSignFunction.refreshContactInfo(
-                  infoFields[0], infoFields[1]);
-              editUserFunction.toogleEditingPopUp(3);
-            }
+        if (await editUserFunction.checkInternetConnectivity()) {
+          if (tabToOpen != 3 && tabToOpen != 1) {
             editUserFunction.changeLoading();
           }
-          // } else {
-          //   editUserFunction.toogleEditingPopUp(3);
-          // }
-        } else {
-          editUserFunction.changeLoading();
-        }
-
-        if (await editUserFunction.checkInternetConnectivity()) {
           // UPDATING PHOTO UPDATING PHOTO UPDATING PHOTO
           if (tabToOpen == 0) {
             var uploadUrl = await myDb.uploadImageToStorage(
@@ -93,34 +83,55 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
 
           // UDPATING USER INFO UDPATING USER INFO UDPATING
           if (tabToOpen == 1) {
-            List<String>? infoFields = await myDb.updateInfoFields(
-                user.userId,
-                nameCont.text,
-                descriptionCont.text,
-                locationCont.text,
-                ageCont);
-            if (infoFields != null) {
-              googleSignFunction.refreshNameAndDesc(
-                  infoFields[0], infoFields[1], infoFields[2], infoFields[3]);
-            }
-            if (user.isAccountTypeUser) {
-              editUserFunction.checkEmptiness(descriptionCont.text,
-                  nameCont.text, ageCont, locationCont.text);
-            } else {
-              editUserFunction.checkEmptiness(
-                  descriptionCont.text, nameCont.text, 1, 'a');
+            if (formKeyDesc.currentState?.validate() ?? false) {
+              editUserFunction.changeLoading();
+              List<String>? infoFields = await myDb.updateInfoFields(
+                  user.userId,
+                  nameCont.text,
+                  descriptionCont.text,
+                  locationCont.text,
+                  ageCont);
+              if (infoFields != null) {
+                googleSignFunction.refreshNameAndDesc(
+                    infoFields[0], infoFields[1], infoFields[2], infoFields[3]);
+                editUserFunction.toogleEditingPopUp(3);
+              }
+              if (user.isAccountTypeUser) {
+                editUserFunction.checkEmptiness(descriptionCont.text,
+                    nameCont.text, ageCont, locationCont.text);
+              } else {
+                editUserFunction.checkEmptiness(
+                    descriptionCont.text, nameCont.text, 1, 'a');
+              }
+              editUserFunction.changeLoading();
             }
           }
           // UDPATING SKILL BOXES UDPATING SKILL BOXES
-          if (tabToOpen == 2) {
+          else if (tabToOpen == 2) {
             List<Map<String, int>>? newBoxes = await myDb.updateSkillBoxes(
                 user.userId, editUserFunction.skillBoxes);
             if (newBoxes != null) {
               googleSignFunction.refreshSkillSet(editUserFunction.skillBoxes);
             }
+            // UDPATING PHONE CONTANT UDPATING PHONE
+          } else if (tabToOpen == 3) {
+            if (formKeyPhone.currentState?.validate() ?? false) {
+              editUserFunction.changeLoading();
+          
+              List<String>? infoFields = await myDb.updateContactInfo(
+                  user.userId, emailCont.text, phoneCont.text);
+              if (infoFields != null) {
+                googleSignFunction.refreshContactInfo(
+                    infoFields[0], infoFields[1]);
+                    print('essa');
+              }
+              print('essssssssssssssssss');
+              editUserFunction.toogleEditingPopUp(3);
+              editUserFunction.changeLoading();
+            }
           }
         }
-        if (tabToOpen != 3) {
+        if (tabToOpen != 3 && tabToOpen != 1) {
           editUserFunction.changeLoading();
           editUserFunction.toogleEditingPopUp(3);
         }

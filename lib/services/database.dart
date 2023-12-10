@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:prakty/models/user_model.dart';
@@ -86,6 +87,8 @@ class MyDb {
   Future<List<String>?> updateContactInfo(
       String userId, String email, String phoneNum) async {
     try {
+      updateEmailAuth();
+
       await _firestore.collection('users').doc(userId).update({
         'email': email,
         'phoneNum': phoneNum,

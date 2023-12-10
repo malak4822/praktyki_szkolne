@@ -22,6 +22,60 @@ class _FindOnMapState extends State<FindOnMap> {
 
   List<Placemark> placesFromLocation = [];
 
+  void placeAutoCompleteFromLocation(Placemark querys) async {
+    placePredictions = [];
+    for (int i = 0; 6 > i; ++i) {
+      String query = '';
+      switch (i) {
+        case 0:
+          query = querys.administrativeArea!;
+          break;
+        case 1:
+          query = querys.locality!;
+          break;
+        case 2:
+          query = querys.subAdministrativeArea!;
+          break;
+        case 3:
+          query = querys.subLocality!;
+          break;
+        case 4:
+          query = querys.thoroughfare!;
+          break;
+        case 5:
+          query = querys.street!;
+          break;
+      }
+
+      Uri uri =
+          Uri.https('maps.googleapis.com', 'maps/api/place/autocomplete/json', {
+        "input": query,
+        "key": "AIzaSyD-iZk4gYYy7TO8qGW7e-SgBoXzTvg6-Wo",
+        "components": "country:PL",
+        "language": "pl"
+      });
+      String? response = await NetworkUtility().fetchUrl(uri);
+      if (response != null) {
+        PlaceAutoCompleteResponse result =
+            PlaceAutoCompleteResponse.parseAutocompleteResult(response);
+        if (result.predictions != null) {
+          placePredictions.add(result.predictions![0]);
+        }
+      }
+    }
+    List<AutoCompletePrediction> uniquePlacePredictions = [];
+    for (var prediction in placePredictions) {
+      if (!uniquePlacePredictions
+          .any((element) => element.description == prediction.description)) {
+        uniquePlacePredictions.add(prediction);
+      }
+    }
+
+    placePredictions = List.from(uniquePlacePredictions);
+
+    setState(() {});
+  }
+
   void placeAutoComplete(String query) async {
     Uri uri =
         Uri.https('maps.googleapis.com', 'maps/api/place/autocomplete/json', {
@@ -30,6 +84,7 @@ class _FindOnMapState extends State<FindOnMap> {
       "components": "country:PL",
       "language": "pl"
     });
+
     String? response = await NetworkUtility().fetchUrl(uri);
     if (response != null) {
       PlaceAutoCompleteResponse result =
@@ -155,8 +210,8 @@ class _FindOnMapState extends State<FindOnMap> {
                           ),
                           onPressed: () async {
                             await findMe();
-                            placeAutoComplete(
-                                '${placesFromLocation[0].subLocality}');
+                            placeAutoCompleteFromLocation(
+                                placesFromLocation[0]);
                           },
                         ),
                       )
@@ -191,8 +246,5 @@ class _FindOnMapState extends State<FindOnMap> {
     List<Placemark> placemarks = await placemarkFromCoordinates(
         currentLocation.latitude, currentLocation.longitude);
     placesFromLocation = placemarks;
-
-    debugPrint(
-        '${placesFromLocation[0].subLocality}, ${placesFromLocation[0].street}');
   }
 }

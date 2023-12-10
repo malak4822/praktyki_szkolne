@@ -159,23 +159,25 @@ class _NoticesPageState extends State<NoticesPage> {
                             ),
                             const SizedBox(height: 8),
                             // JOB LIST
-                            ListView.builder(
-                                clipBehavior: Clip.none,
-                                itemCount: noticesList.length,
-                                shrinkWrap: true,
-                                itemBuilder: (BuildContext context, int index) {
-                                  if (widget.pageName == 'UsersNotices') {
-                                    return NoticeCard(
-                                      info: noticesList[index],
-                                      noticeCardName: 'UserCard',
-                                    );
-                                  } else {
-                                    return NoticeCard(
-                                      info: noticesList[index],
-                                      noticeCardName: 'JobCard',
-                                    );
-                                  }
-                                })
+                            Expanded(
+                                child: ListView.builder(
+                                    clipBehavior: Clip.none,
+                                    itemCount: noticesList.length,
+                                    shrinkWrap: true,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      if (widget.pageName == 'UsersNotices') {
+                                        return NoticeCard(
+                                          info: noticesList[index],
+                                          noticeCardName: 'UserCard',
+                                        );
+                                      } else {
+                                        return NoticeCard(
+                                          info: noticesList[index],
+                                          noticeCardName: 'JobCard',
+                                        );
+                                      }
+                                    }))
                           ],
                         ));
                   }

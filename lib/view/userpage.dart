@@ -10,6 +10,7 @@ import '../widgets/skillboxes.dart';
 
 class UserPage extends StatelessWidget {
   UserPage({super.key, this.shownUser, required this.isOwnProfile});
+
   dynamic shownUser;
   bool isOwnProfile;
 
@@ -20,7 +21,7 @@ class UserPage extends StatelessWidget {
       shownUser = myUser.toMap();
     }
     String ageAndLocationString =
-        '${shownUser['age'] == 0 ? '' : '${shownUser['age'].toString()} ${getAgeSuffix(shownUser['age'])}'}${shownUser['location'] != '' ? ', ${shownUser['location']}' : ''}';
+        '${shownUser['age'] == 0 ? '' : '${shownUser['age'].toString()} ${getAgeSuffix(shownUser['age'])}'}${shownUser['age'] != 0 || shownUser['location'] != '' ? ', ' : ''}${shownUser['location'] != '' ? '${shownUser['location']}' : ''}';
 
     return Scaffold(
         body: ListView(children: [
