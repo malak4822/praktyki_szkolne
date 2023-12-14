@@ -105,8 +105,9 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
             return 'Proszę Wpisać Minimum 80 znaków';
           }
           if (hintTxt == 'Email') {
-            if (!val.contains('@') || val.length < 7) {
-              return 'Email Jest Nie Poprawny';
+            if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                .hasMatch(val)) {
+              return 'Wpisz Poprawny E-mail';
             }
           }
           if (hintTxt == 'Numer Telefonu') {

@@ -85,14 +85,17 @@ class MyDb {
   }
 
   Future<List<String>?> updateContactInfo(
-      String userId, String email, String phoneNum) async {
-    try {
-      updateEmailAuth();
+      String email, String phoneNum, User user) async {
+    String providerId = user.providerData[0].providerId;
 
-      await _firestore.collection('users').doc(userId).update({
+    try {
+      await _firestore.collection('users').doc(user.uid).update({
         'email': email,
         'phoneNum': phoneNum,
       });
+      if (providerId == 'password') {
+        user.updateEmail(email);
+      }
       return [email, phoneNum];
     } catch (e) {
       debugPrint(e.toString());

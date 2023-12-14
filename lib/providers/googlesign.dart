@@ -8,6 +8,8 @@ import '../models/user_model.dart';
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
+
+
   void toogleAccountType(newType) {
     _currentUser.isAccountTypeUser = newType;
     notifyListeners();
@@ -60,6 +62,34 @@ class GoogleSignInProvider extends ChangeNotifier {
       accountCreated: Timestamp(0, 0),
       skillsSet: []);
   MyUser get getCurrentUser => _currentUser;
+
+  Future<bool> authenticateUser(
+      String actualPassword, String newEmail, Function callBack) async {
+    User? user = auth.currentUser;
+    if (actualPassword.isNotEmpty) {
+      if (user != null) {
+        try {
+           user.reauthenticateWithCredential(
+            EmailAuthProvider.credential(
+              email: _currentUser.email,
+              password: actualPassword,
+            ),
+          );
+          callBack(true, '');
+          return true;
+        } on FirebaseAuthException catch (errorMsg) {
+          // if (errorMsg.code == 'invalid-credential' || errorMsg.code == 'wrong-password') {}
+          debugPrint(errorMsg.toString());
+          callBack(false, 'Proszę Wpisać Poprawnę Hasło');
+          return false;
+        }
+      }
+      return false;
+    } else {
+      callBack(false, 'Proszę Wpisać Hasło');
+      return false;
+    }
+  }
 
   // LOG OUT LOG OUT LOG OUT LOG OUT
   Future<void> logout() async {

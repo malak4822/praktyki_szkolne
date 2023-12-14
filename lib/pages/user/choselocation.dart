@@ -210,8 +210,14 @@ class _FindOnMapState extends State<FindOnMap> {
                           ),
                           onPressed: () async {
                             await findMe();
-                            placeAutoCompleteFromLocation(
-                                placesFromLocation[0]);
+                            if (placesFromLocation.isNotEmpty) {
+                              placeAutoCompleteFromLocation(
+                                  placesFromLocation[0]);
+                            } else {
+                              if (!mounted) return;
+                              showSnackBar(
+                                  context, 'Nie Znaleziono Żadnych Lokalizacji');
+                            }
                           },
                         ),
                       )
@@ -227,24 +233,38 @@ class _FindOnMapState extends State<FindOnMap> {
     );
   }
 
+  void showSnackBar(BuildContext context, String text) {
+    final snackBar = SnackBar(
+      padding: const EdgeInsets.fromLTRB(46, 4, 0, 4),
+      backgroundColor: gradient[1].withOpacity(0.86),
+      showCloseIcon: true,
+      content: Text(
+        text,
+        style: fontSize16,
+        textAlign: TextAlign.center,
+      ),
+      duration: const Duration(seconds: 2), // Optional: Set the duration
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   Future<void> findMe() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // User denied permission. Handle appropriately.
-        return;
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        if (!mounted) return;
+        showSnackBar(context, 'Odmówiono Dostępu Do Lokalizacji');
       }
-    } else if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-      return;
-    }
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium);
-    LatLng currentLocation = LatLng(position.latitude, position.longitude);
 
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        currentLocation.latitude, currentLocation.longitude);
-    placesFromLocation = placemarks;
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.medium);
+      LatLng currentLocation = LatLng(position.latitude, position.longitude);
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          currentLocation.latitude, currentLocation.longitude);
+      placesFromLocation = placemarks;
+    }
   }
 }

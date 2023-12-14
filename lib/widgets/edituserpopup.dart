@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/pages/user/editcontactinfo.dart';
@@ -44,6 +45,8 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     final TextEditingController emailCont =
         TextEditingController(text: user.email);
 
+    final TextEditingController passCont = TextEditingController();
+
     final TextEditingController phoneCont =
         TextEditingController(text: user.phoneNum);
 
@@ -62,7 +65,8 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           user.isAccountTypeUser,
           formKeyDesc),
       const EditSkillSet(),
-      EditContactInfo(emailCont, phoneCont, formKeyPhone)
+      EditContactInfo(
+          emailCont, passCont, phoneCont, formKeyPhone, user.isAccountTypeUser)
     ];
 
     return Column(children: [
@@ -113,19 +117,24 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
             if (newBoxes != null) {
               googleSignFunction.refreshSkillSet(editUserFunction.skillBoxes);
             }
-            // UDPATING PHONE CONTANT UDPATING PHONE
+            // UDPATING PHONE CONTACT UDPATING PHONE
           } else if (tabToOpen == 3) {
             if (formKeyPhone.currentState?.validate() ?? false) {
               editUserFunction.changeLoading();
-          
+
+              if (!mounted) return;
+              var userCredentials =
+                  Provider.of<GoogleSignInProvider>(context, listen: false)
+                      .auth
+                      .currentUser;
+
               List<String>? infoFields = await myDb.updateContactInfo(
-                  user.userId, emailCont.text, phoneCont.text);
+                  emailCont.text, phoneCont.text, userCredentials!);
               if (infoFields != null) {
                 googleSignFunction.refreshContactInfo(
                     infoFields[0], infoFields[1]);
-                    print('essa');
               }
-              print('essssssssssssssssss');
+
               editUserFunction.toogleEditingPopUp(3);
               editUserFunction.changeLoading();
             }
