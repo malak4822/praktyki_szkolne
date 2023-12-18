@@ -154,7 +154,7 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
           borderSide: BorderSide(width: 4, color: Colors.white),
           borderRadius: BorderRadius.all(Radius.circular(28))),
       enabledBorder: const OutlineInputBorder(
-        borderSide: BorderSide(width: 1, color: Colors.white),
+        borderSide: BorderSide(width: 2, color: Colors.white),
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       border: const OutlineInputBorder(

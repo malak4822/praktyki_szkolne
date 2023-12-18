@@ -21,8 +21,6 @@ class UserPage extends StatelessWidget {
       MyUser myUser = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
       shownUser = myUser.toMap();
     }
-    String ageAndLocationString =
-        '${shownUser['age'] == 0 ? '' : '${shownUser['age'].toString()} ${getAgeSuffix(shownUser['age'])}'}${shownUser['age'] != 0 || shownUser['location'] != '' ? ', ' : ''}${shownUser['location'] != '' ? '${shownUser['location']}' : ''}';
 
     return Scaffold(
         body: ListView(children: [
@@ -131,7 +129,7 @@ class UserPage extends StatelessWidget {
                     child: Center(
                         child: Text(
                       textAlign: TextAlign.center,
-                      ageAndLocationString,
+                      '${shownUser['age'] == 0 ? '' : '${shownUser['age'].toString()} ${getAgeSuffix(shownUser['age'])}'}${shownUser['location'] != '' ? ', ${shownUser['location']}' : ''}',
                       style: GoogleFonts.overpass(
                           color: Colors.white, fontSize: 16),
                     ))),

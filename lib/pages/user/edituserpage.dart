@@ -26,9 +26,6 @@ class EditUserPage extends StatelessWidget {
     TextEditingController emailCont =
         TextEditingController(text: currentUser.email);
 
-    String ageAndLocationString =
-        '${currentUser.age == 0 ? '' : '${currentUser.age.toString()} ${getAgeSuffix(currentUser.age)}'}${currentUser.location != '' ? ', ${currentUser.location}' : ''}';
-
     return Scaffold(
         body: PageView(controller: pageCont, children: [
       Stack(children: [
@@ -124,7 +121,7 @@ class EditUserPage extends StatelessWidget {
                             visible: currentUser.isAccountTypeUser,
                             child: Center(
                                 child: Text(
-                              ageAndLocationString,
+                              '${currentUser.age == 0 ? '' : '${currentUser.age.toString()} ${getAgeSuffix(currentUser.age)}'}${currentUser.location != '' ? ', ${currentUser.location}' : ''}',
                               textAlign: TextAlign.center,
                               style: GoogleFonts.overpass(
                                   color: Colors.white, fontSize: 16),

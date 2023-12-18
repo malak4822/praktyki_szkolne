@@ -96,7 +96,7 @@ class NoticeCard extends StatelessWidget {
                                             color: Colors.white))),
                                 const SizedBox(width: 10),
                                 if (info['canRemotely'] == true)
-                                  const Icon(Icons.done,
+                                  const Icon(Icons.done_outline_rounded,
                                       size: 18, color: Colors.white),
                                 if (info['canRemotely'] == true)
                                   Text(' Zdalne',

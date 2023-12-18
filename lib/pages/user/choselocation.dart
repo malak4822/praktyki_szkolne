@@ -168,8 +168,21 @@ class _FindOnMapState extends State<FindOnMap> {
                           style: fontSize16,
                           controller: locationController,
                           decoration: InputDecoration(
+                            prefixIcon: IconButton(
+                              icon: const Icon(Icons.highlight_remove_rounded,
+                                  color: Colors.white),
+                              color: Colors.white,
+                              onPressed: () {
+                                setState(() {
+                                  locationController.text = '';
+                                });
+                                widget.callBack('');
+                                Navigator.pop(context);
+                                //
+                              },
+                            ),
                             suffixIcon: IconButton(
-                              icon: const Icon(Icons.done, color: Colors.white),
+                              icon: const Icon(Icons.done_outline_rounded, color: Colors.white),
                               color: Colors.white,
                               onPressed: () {
                                 SystemChannels.textInput
@@ -215,8 +228,8 @@ class _FindOnMapState extends State<FindOnMap> {
                                   placesFromLocation[0]);
                             } else {
                               if (!mounted) return;
-                              showSnackBar(
-                                  context, 'Nie Znaleziono Żadnych Lokalizacji');
+                              showSnackBar(context,
+                                  'Nie Znaleziono Żadnych Lokalizacji');
                             }
                           },
                         ),

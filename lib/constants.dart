@@ -12,6 +12,9 @@ const List<Color> gradient = [
 ];
 String getAgeSuffix(int age) {
   if (age % 10 == 2 || age % 10 == 3 || age % 10 == 4) {
+    if (age == 14) {
+      return 'lat';
+    }
     return 'lata';
   } else {
     return 'lat';

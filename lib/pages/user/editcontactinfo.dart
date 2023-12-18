@@ -61,7 +61,7 @@ class _EditContactInfoState extends State<EditContactInfo> {
                     suffixIconColor: Colors.white,
                     suffixIcon: IconButton(
                       iconSize: 28,
-                      icon: const Icon(Icons.done),
+                      icon: const Icon(Icons.done_outline_rounded),
                       onPressed: () async {
                         await Provider.of<GoogleSignInProvider>(context,
                                 listen: false)

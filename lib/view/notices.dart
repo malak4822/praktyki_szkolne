@@ -233,7 +233,7 @@ class _NoticesPageState extends State<NoticesPage> {
                                         borderRadius: BorderRadius.vertical(
                                             bottom: Radius.circular(16))),
                                     padding: const EdgeInsets.all(12)),
-                                child: const Icon(Icons.done,
+                                child: const Icon(Icons.done_outline_rounded,
                                     size: 32, color: Colors.white),
                                 onPressed: () async {
                                   correctSearchinPrefs =

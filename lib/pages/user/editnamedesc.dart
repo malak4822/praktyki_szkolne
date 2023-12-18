@@ -46,31 +46,59 @@ class _EditNameAndDescState extends State<EditNameAndDesc> {
                 Icons.description_rounded, TextInputType.text, null),
             const SizedBox(height: 10),
             Visibility(
-                visible: widget.isAccountTypeUser,
-                child: updateValues(widget.locationCont, 'Miejsce', null, null,
-                    Icons.location_on_rounded, null, () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              FindOnMap(callBack: (String val) {
-                                setState(() {
-                                  widget.locationCont.text = val;
-                                });
-                              })));
-                })),
+              visible: widget.isAccountTypeUser,
+              child: Row(
+                children: [
+                  const Icon(Icons.location_on_sharp, color: Colors.white),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                            borderRadius: BorderRadius.circular(16),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          FindOnMap(callBack: (String val) {
+                                            setState(() {
+                                              widget.locationCont.text = val;
+                                            });
+                                          })));
+                            },
+                            child: Center(
+                                child: Text(
+                              widget.locationCont.text.isEmpty
+                                  ? 'Miejsce'
+                                  : widget.locationCont.text,
+                              style: fontSize16,
+                              textAlign: TextAlign.center,
+                            ))),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
             const SizedBox(height: 16),
             Visibility(
                 visible: widget.isAccountTypeUser,
                 child: Row(children: [
                   const Icon(Icons.person, color: Colors.white),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 16),
                   Expanded(
                       child: Container(
                           height: 50,
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 1),
-                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(color: Colors.white, width: 2),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                           child: CupertinoPicker(
                               itemExtent: 18,

@@ -89,8 +89,8 @@ class _AddJobState extends State<AddJob> {
                     updateValues(companyName, 'Nazwa Firmy', 1, 24,
                         Icons.business, TextInputType.text, null),
                     const SizedBox(height: 12),
-                    updateValues(jobEmail, 'Email', 1, null,
-                        Icons.email, TextInputType.emailAddress, null),
+                    updateValues(jobEmail, 'Email', 1, null, Icons.email,
+                        TextInputType.emailAddress, null),
                     const SizedBox(height: 12),
                     updateValues(jobPhone, 'Numer Telefonu', 1, 9, Icons.phone,
                         TextInputType.phone, null),
@@ -98,18 +98,58 @@ class _AddJobState extends State<AddJob> {
                     updateValues(jobQualification, 'Nazwa Kwalifikacji', 1, 28,
                         Icons.text_fields_rounded, TextInputType.text, null),
                     const SizedBox(height: 12),
-                    updateValues(jobLocation, 'Miejsce', null, null,
-                        Icons.location_on_rounded, null, () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  FindOnMap(callBack: (String val) {
-                                    setState(() {
-                                      jobLocation.text = val;
-                                    });
-                                  })));
-                    }),
+                    // updateValues(jobLocation, 'Miejsce', null, null,
+                    //     Icons.location_on_rounded, null, () {
+                    //   Navigator.push(
+                    //       context,
+                    //       MaterialPageRoute(
+                    //           builder: (context) =>
+                    //               FindOnMap(callBack: (String val) {
+                    //                 setState(() {
+                    //                   jobLocation.text = val;
+                    //                 });
+                    //               })));
+                    // }),
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on_sharp,
+                            color: Colors.white),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                  borderRadius: BorderRadius.circular(16),
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => FindOnMap(
+                                                    callBack: (String val) {
+                                                  setState(() {
+                                                    jobLocation.text = val;
+                                                  });
+                                                })));
+                                  },
+                                  child: Center(
+                                      child: Text(
+                                    jobLocation.text.isEmpty
+                                        ? 'Miejsce'
+                                        : jobLocation.text,
+                                    style: fontSize16,
+                                    textAlign: TextAlign.center,
+                                  ))),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                     const SizedBox(height: 20),
                     updateValues(jobDescription, 'Opis Stanowiska', 10, 600,
                         Icons.description_outlined, TextInputType.text, null),
@@ -136,7 +176,7 @@ class _AddJobState extends State<AddJob> {
                             padding: const EdgeInsets.all(8),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15)),
-                            backgroundColor: Colors.white24,
+                            backgroundColor: Colors.white,
                             elevation: 20),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
@@ -160,7 +200,6 @@ class _AddJobState extends State<AddJob> {
                                     jobDescription.text,
                                     canRemotely);
                                 if (eee != null) {
-                             
                                   if (!mounted) return;
                                   Provider.of<GoogleSignInProvider>(context,
                                           listen: false)
@@ -172,10 +211,10 @@ class _AddJobState extends State<AddJob> {
                             }
                           }
                         },
-                        child: const Icon(
-                          Icons.done,
-                          color: Colors.white,
-                          size: 28,
+                        child: Icon(
+                          Icons.done_outline_rounded,
+                          color: gradient[1],
+                          size: 24,
                         )),
                   ])))),
       backButton(context),
