@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: AnimatedOpacity(
                             opacity: !_isLoginClicked ? 1 : 0,
                             curve: Curves.linearToEaseOut,
-                            duration: const Duration(milliseconds: 500),
+                            duration: const Duration(milliseconds: 700),
                             child: Visibility(
                                 visible: !_isLoginClicked,
                                 child: MyTextFormField(
@@ -63,7 +63,6 @@ class _LoginPageState extends State<LoginPage> {
                                   myHintText: 'Imię I Nazwisko',
                                   myPrefixIcon: const Icon(Icons.person),
                                   myKeyboardType: TextInputType.name,
-                                  fieldNumber: 0,
                                 )))),
                     const SizedBox(height: 15),
                     MyTextFormField(
@@ -73,7 +72,6 @@ class _LoginPageState extends State<LoginPage> {
                       myHintText: 'Email',
                       myPrefixIcon: const Icon(Icons.email),
                       myKeyboardType: TextInputType.emailAddress,
-                      fieldNumber: 1,
                     ),
                     const SizedBox(height: 15),
                     MyTextFormField(
@@ -92,48 +90,63 @@ class _LoginPageState extends State<LoginPage> {
                       myHintText: 'Hasło',
                       myPrefixIcon: const Icon(Icons.key_rounded),
                       myKeyboardType: TextInputType.visiblePassword,
-                      fieldNumber: 2,
                     ),
                     const SizedBox(height: 12),
-                    Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 2, color: Colors.white),
-                            borderRadius: BorderRadius.circular(16)),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 12),
-                        child: DropdownButton<bool>(
-                            dropdownColor:
-                                const Color.fromARGB(255, 1, 192, 209),
-                            isExpanded: true,
-                            borderRadius: BorderRadius.circular(16),
-                            icon: const Icon(Icons.arrow_drop_down,
-                                color: Colors.white),
-                            underline: const SizedBox(),
-                            value: Provider.of<GoogleSignInProvider>(context,
-                                    listen: false)
-                                .getCurrentUser
-                                .isAccountTypeUser,
-                            onChanged: (newValue) => setState(() {
-                                  signInProvider.toogleAccountType(newValue);
-                                  
-                                }),
-                            items: <bool>[true, false].map((bool value) {
-                              return DropdownMenuItem<bool>(
-                                  value: value,
-                                  child: Row(children: [
-                                    Icon(
-                                        value == false
-                                            ? Icons.business
-                                            : Icons.school,
-                                        color: Colors.white),
-                                    const SizedBox(width: 10),
-                                    Text(
-                                        value
-                                            ? 'Konto Ucznia'
-                                            : 'Konto Pracodawcy',
-                                        style: fontSize16),
-                                  ]));
-                            }).toList())),
+                    AnimatedSize(
+                        curve: Curves.ease,
+                        duration: const Duration(milliseconds: 300),
+                        child: AnimatedOpacity(
+                            opacity: !_isLoginClicked ? 1 : 0,
+                            curve: Curves.linearToEaseOut,
+                            duration: const Duration(milliseconds: 700),
+                            child: Visibility(
+                                visible: !_isLoginClicked,
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            width: 2, color: Colors.white),
+                                        borderRadius:
+                                            BorderRadius.circular(16)),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4, horizontal: 12),
+                                    child: DropdownButton<bool>(
+                                        dropdownColor: const Color.fromARGB(
+                                            255, 1, 192, 209),
+                                        isExpanded: true,
+                                        borderRadius: BorderRadius.circular(16),
+                                        icon: const Icon(Icons.arrow_drop_down,
+                                            color: Colors.white),
+                                        underline: const SizedBox(),
+                                        value:
+                                            Provider.of<GoogleSignInProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .getCurrentUser
+                                                .isAccountTypeUser,
+                                        onChanged: (newValue) => setState(() {
+                                              signInProvider
+                                                  .toogleAccountType(newValue);
+                                            }),
+                                        items: <bool>[true, false]
+                                            .map((bool value) {
+                                          return DropdownMenuItem<bool>(
+                                              value: value,
+                                              child: Row(children: [
+                                                Icon(
+                                                    value == false
+                                                        ? Icons.business
+                                                        : Icons.school,
+                                                    color: Colors.white),
+                                                const SizedBox(width: 10),
+                                                Text(
+                                                    value
+                                                        ? 'Konto Ucznia'
+                                                        : 'Konto Pracodawcy',
+                                                    style: fontSize16,
+                                                    textAlign:
+                                                        TextAlign.center),
+                                              ]));
+                                        }).toList()))))),
                     const SizedBox(height: 12),
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                       ElevatedButton(

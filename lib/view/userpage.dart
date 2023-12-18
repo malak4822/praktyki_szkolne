@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/models/user_model.dart';
@@ -43,9 +44,24 @@ class UserPage extends StatelessWidget {
                         bottom: Radius.elliptical(200, 30)))),
             if (isOwnProfile)
               Align(
-                  alignment: const Alignment(0.9, -0.8),
-                  child: InkWell(
-                      onTap: () {
+                alignment: Alignment.topRight,
+                child: Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    Container(
+                      width: 68,
+                      height: 58,
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(100)),
+                          color: Colors.white),
+                      padding: const EdgeInsets.all(14),
+                    ),
+                    IconButton(
+                      iconSize: 22,
+                      icon:
+                          FaIcon(FontAwesomeIcons.userPen, color: gradient[1]),
+                      onPressed: () {
                         Provider.of<EditUser>(context, listen: false)
                             .checkEmptiness(
                                 shownUser['username'],
@@ -59,9 +75,10 @@ class UserPage extends StatelessWidget {
 
                         Navigator.pushNamed(context, '/editUser');
                       },
-                      child: const Image(
-                          image: AssetImage('images/menuicon.png'),
-                          height: 30))),
+                    )
+                  ],
+                ),
+              ),
             Center(
                 child: CircleAvatar(
                     radius: 85,
@@ -132,7 +149,7 @@ class UserPage extends StatelessWidget {
       Visibility(
           visible: shownUser['skillsSet'].isNotEmpty,
           child: SizedBox(
-              height: 130,
+              height: 136,
               child: Padding(
                   padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width / 13,

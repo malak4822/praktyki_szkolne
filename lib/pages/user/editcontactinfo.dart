@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
@@ -21,6 +22,22 @@ class EditContactInfo extends StatefulWidget {
 }
 
 class _EditContactInfoState extends State<EditContactInfo> {
+  bool isLoggedInWithGoogle = false;
+
+  @override
+  void initState() {
+    User? user = FirebaseAuth.instance.currentUser;
+    String providerId = user!.providerData[0].providerId;
+    if (providerId == 'password') {
+      print('isLoggedInWithGoogle = false');
+      isLoggedInWithGoogle = false;
+    } else {
+        print('isLoggedInWithGoogle = true');
+      isLoggedInWithGoogle = true;
+    }
+    super.initState();
+  }
+
   bool isUserVerified = false;
   bool isErrorMessageVisible = false;
   String errorMessage = '';
@@ -32,7 +49,7 @@ class _EditContactInfoState extends State<EditContactInfo> {
           key: widget.formKey,
           child: Center(
               child: ListView(shrinkWrap: true, children: [
-            if (!widget.isAccountTypeUser)
+            if (!isLoggedInWithGoogle)
               TextFormField(
                   style: fontSize16,
                   obscureText: true,
@@ -106,7 +123,7 @@ class _EditContactInfoState extends State<EditContactInfo> {
                   }
                   return null;
                 },
-                style: widget.isAccountTypeUser
+                style: isLoggedInWithGoogle
                     ? fontSize16
                     : isUserVerified
                         ? fontSize16
@@ -133,16 +150,13 @@ class _EditContactInfoState extends State<EditContactInfo> {
                   border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                   ),
-                  disabledBorder: widget.isAccountTypeUser
-                      ? const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(width: 2, color: Colors.white38),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(16),
-                          ),
-                        )
-                      : const OutlineInputBorder(),
-                  enabled: widget.isAccountTypeUser ? true : isUserVerified,
+                  disabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(width: 2, color: Colors.white38),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(16),
+                    ),
+                  ),
+                  enabled: isLoggedInWithGoogle ? true : isUserVerified,
                 )),
             const SizedBox(height: 16),
             updateValues(widget.phoneCont, 'Telefon', 1, 9, Icons.phone,

@@ -8,8 +8,6 @@ import '../models/user_model.dart';
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
-
-
   void toogleAccountType(newType) {
     _currentUser.isAccountTypeUser = newType;
     notifyListeners();
@@ -63,31 +61,31 @@ class GoogleSignInProvider extends ChangeNotifier {
       skillsSet: []);
   MyUser get getCurrentUser => _currentUser;
 
-  Future<bool> authenticateUser(
+  Future<void> authenticateUser(
       String actualPassword, String newEmail, Function callBack) async {
     User? user = auth.currentUser;
     if (actualPassword.isNotEmpty) {
       if (user != null) {
         try {
-           user.reauthenticateWithCredential(
+          await user.reauthenticateWithCredential(
             EmailAuthProvider.credential(
               email: _currentUser.email,
               password: actualPassword,
             ),
           );
           callBack(true, '');
-          return true;
         } on FirebaseAuthException catch (errorMsg) {
-          // if (errorMsg.code == 'invalid-credential' || errorMsg.code == 'wrong-password') {}
-          debugPrint(errorMsg.toString());
-          callBack(false, 'Proszę Wpisać Poprawnę Hasło');
-          return false;
+          if (errorMsg.code == 'invalid-credential' ||
+              errorMsg.code == 'wrong-password') {
+            callBack(false, 'Proszę Wpisać Poprawnę Hasło');
+          } else if (errorMsg.code == 'too-many-requests') {
+            callBack(false,
+                'Zbyt wiele nieudanych prób logowania, dostęp tymczasowo wyłączony');
+          }
         }
       }
-      return false;
     } else {
       callBack(false, 'Proszę Wpisać Hasło');
-      return false;
     }
   }
 
@@ -168,6 +166,9 @@ class GoogleSignInProvider extends ChangeNotifier {
         case 'invalid-email':
           _errorMessage = 'invalid-email';
           break;
+        case 'too-many-requests':
+          _errorMessage = 'too-many-requests';
+          break;
         case 'wrong-password':
           _errorMessage = 'wrong-password';
           break;
@@ -196,10 +197,13 @@ class GoogleSignInProvider extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':
+          _errorMessage = 'email-already-in-use';
           break;
         case 'invalid-email':
+          _errorMessage = 'invalid-email';
           break;
         case 'weak-password':
+          _errorMessage = 'weak-password';
           break;
       }
     } catch (errorTxt) {

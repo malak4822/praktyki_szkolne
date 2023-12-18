@@ -18,19 +18,22 @@ Widget skillBox(skillTxt, skillLevel, context, bool isChosen) => Container(
       child: Column(
         children: [
           const Spacer(flex: 2),
-          const Icon(Icons.star, color: Colors.white, size: 32),
+          const Icon(Icons.star_border_purple500_rounded,
+              color: Colors.white, size: 32),
           const Spacer(),
           Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(skillTxt,
                   style: GoogleFonts.overpass(
-                      fontSize: 16,
-                      height: 1,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+                    fontSize: 15,
+                    height: 1,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  overflow: TextOverflow.fade,
                   maxLines: 3,
                   textAlign: TextAlign.center)),
-          const SizedBox(height: 3),
+          const SizedBox(height: 4),
           Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(skillLevel, (index) {
@@ -44,6 +47,7 @@ Widget skillBox(skillTxt, skillLevel, context, bool isChosen) => Container(
                         width: 8,
                         height: 8));
               })),
+          const SizedBox(height: 8),
           const Spacer(flex: 3),
         ],
       ),
@@ -51,7 +55,7 @@ Widget skillBox(skillTxt, skillLevel, context, bool isChosen) => Container(
 
 Widget skillEditBox(String skillTxt, int skillLevel, int chosenBox, context) {
   return Container(
-      height: 120,
+      height: 136,
       margin: const EdgeInsets.all(6),
       width: MediaQuery.of(context).size.width / 4,
       decoration: BoxDecoration(

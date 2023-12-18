@@ -63,7 +63,8 @@ class _EditSkillSetState extends State<EditSkillSet> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.star, color: Colors.white, size: 48),
+                        const Icon(Icons.star_border_purple500_rounded,
+                            color: Colors.white, size: 48),
                         const SizedBox(height: 10),
                         TextField(
                             onTapOutside: (a) => saveText(),
@@ -72,14 +73,19 @@ class _EditSkillSetState extends State<EditSkillSet> {
                             controller: skillCont,
                             keyboardType: TextInputType.text,
                             textInputAction: TextInputAction.done,
-                            maxLines: 1,
+                            maxLines: 3,
+                            maxLength: 34,
                             focusNode: myfocusNode,
                             style: fontSize20,
-                            decoration: const InputDecoration.collapsed(
+                            minLines: 1,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                              isCollapsed: true,
+                              counterStyle: fontSize16,
                               hintText: 'Umiejętność',
-                              hintStyle: TextStyle(color: Colors.white),
+                              hintStyle: const TextStyle(color: Colors.white),
                             )),
-                        const SizedBox(height: 6),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: List.generate(
@@ -87,7 +93,7 @@ class _EditSkillSetState extends State<EditSkillSet> {
                               (index) => const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 2),
                                 child: CircleAvatar(
-                                  radius: 5,
+                                  radius: 6,
                                   backgroundColor: Colors.white,
                                 ),
                               ),

@@ -12,7 +12,6 @@ class MyTextFormField extends StatelessWidget {
     required this.myHintText,
     this.myPrefixIcon,
     required this.myKeyboardType,
-    required this.fieldNumber,
   });
 
   final bool isTextObscured;
@@ -21,7 +20,6 @@ class MyTextFormField extends StatelessWidget {
   final String myHintText;
   final Icon? myPrefixIcon;
   final TextInputType myKeyboardType;
-  final int fieldNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +34,31 @@ class MyTextFormField extends StatelessWidget {
 
         getMessage();
         if (value == null || value.isEmpty) {
-          return 'Wpisz Tekst';
-        } else if (fieldNumber == 1) {
+          return 'Uzupełnij Pole';
+        } else if (myHintText == 'Imię I Nazwisko') {
+          if (value.length < 7) {
+            return 'Imię I Nazwisko Jest Za Krótkie';
+          }
+        } else if (myHintText == 'Email') {
           if (errorMessage == 'invalid-email') {
+            print('eeeeeeeeeee');
             return 'Niepoprawny Email';
+          } else if (errorMessage == 'too-many-requests') {
+            return 'Zbyt Wiele Prób, Spróbuj Później';
           } else if (errorMessage == 'user-not-found') {
             return 'Nie Ma Takiego Użytkownika';
+          } else if (errorMessage == 'email-already-in-use') {
+            return 'Email Już Jest Zajęty';
           }
-        } else if (fieldNumber == 2 && errorMessage == 'wrong-password') {
-          return 'Niepoprawne Hasło';
+        } else if (myHintText == 'Hasło') {
+          print('eseeeeseesesesseseseesseseesse');
+          if (errorMessage == 'wrong-password') {
+            return 'Zbyt Słabe Hasło, Min. 6 Znaków';
+          } else if (!value.contains(RegExp(r'[A-Z]'))) {
+            return 'Hasło Musi Mieć Conajmniej 1 Wielką Literę';
+          } else if (errorMessage == 'weak-password') {
+            return 'Hasło Musi Mieć Conajmniej 6 Znaków';
+          }
         }
         return null;
       },
@@ -96,23 +110,27 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
             return 'Telefon Nie Ma 9 Cyfr';
           }
         } else {
-          if (val!.isEmpty) {
-            return 'Proszę Uzupełnić Puste Pole';
-          } else if (val.length < 7) {
-            return 'Liczba Znaków Jest Za Mała';
-          }
-          if (val == 'Opis Stanowiska') {
-            return 'Proszę Wpisać Minimum 80 znaków';
-          }
-          if (hintTxt == 'Email') {
-            if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-                .hasMatch(val)) {
-              return 'Wpisz Poprawny E-mail';
+          if (hintTxt != 'Opis') {
+            if (val!.isEmpty) {
+              return 'Proszę Uzupełnić Puste Pole';
+            } else if (val.length < 7) {
+              return 'Liczba Znaków Jest Za Mała';
             }
-          }
-          if (hintTxt == 'Numer Telefonu') {
-            if (val.length != 9) {
-              return 'Telefon Nie ma 9 Cyfr';
+            if (val == 'Opis Stanowiska') {
+              if (val.length < 40) {
+                return 'Proszę Wpisać Minimum 40 znaków';
+              }
+            }
+            if (hintTxt == 'Email') {
+              if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                  .hasMatch(val)) {
+                return 'Wpisz Poprawny E-mail';
+              }
+            }
+            if (hintTxt == 'Numer Telefonu') {
+              if (val.length != 9) {
+                return 'Telefon Nie ma 9 Cyfr';
+              }
             }
           }
         }
