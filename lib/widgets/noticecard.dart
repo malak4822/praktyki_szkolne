@@ -1,49 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/models/advertisements_model.dart';
+import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/jobs/expandedjob.dart';
 import 'package:prakty/view/userpage.dart';
 
 class NoticeCard extends StatelessWidget {
   const NoticeCard(
-      {super.key, required this.noticeCardName, required this.info});
+      {super.key, required this.isUserNoticePage, required this.info});
 
   final dynamic info;
-  final String noticeCardName;
+  final bool isUserNoticePage;
 
   String showCorrectImage() {
-    if (noticeCardName == 'UserCard') {
-      if (info['profilePicture'] == null || info['profilePicture'] == '') {
+    if (isUserNoticePage) {
+      if (info.profilePicture == null || info.profilePicture == '') {
         return 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*4wskaw*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA';
       } else {
-        return info['profilePicture'];
+        return info.profilePicture;
       }
     } else {
-      if (info['jobImage'] == null || info['jobImage'] == '') {
+      if (info.jobImage == null || info.jobImage == '') {
         return 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fcompany_icon.png?alt=media&token=7c9796bf-2b8b-40d4-bc71-b85aeb82c269';
       } else {
-        return info['jobImage'];
+        return info.jobImage;
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (noticeCardName == 'UserCard') {
-      print('USER CARD');
-      print('ESEESESESE ESES -> ${info.description}');
+    MyUser? userNoticeInfo;
+
+    JobAdModel? jobNoticeInfo;
+
+    if (isUserNoticePage) {
+      userNoticeInfo = info;
     } else {
-      print('JOB CARD');
-      print('ESEESESESE ESES -> ${info.jobDescription}');
+      jobNoticeInfo = info;
     }
     return InkWell(
         onTap: () {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => noticeCardName == 'UserCard'
-                    ? UserPage(isOwnProfile: false, shownUser: info)
-                    : JobAdvertisement(jobInfo: info),
+                builder: (context) => isUserNoticePage
+                    ? UserPage(isOwnProfile: false, shownUser: userNoticeInfo!)
+                    : JobAdvertisement(jobInfo: jobNoticeInfo!),
               ));
         },
         child: Container(
@@ -62,22 +66,21 @@ class NoticeCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              info[noticeCardName == 'UserCard'
-                                  ? 'username'
-                                  : 'companyName'],
+                              isUserNoticePage
+                                  ? userNoticeInfo!.username
+                                  : jobNoticeInfo!.companyName,
                               style: fontSize20,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
                             ),
-                            if (info[noticeCardName == 'UserCard'
-                                    ? 'description'
-                                    : 'jobDescription']
-                                .isNotEmpty)
+                            if (isUserNoticePage
+                                ? userNoticeInfo!.description != null
+                                : jobNoticeInfo!.jobDescription != '')
                               Text(
-                                  info[noticeCardName == 'UserCard'
-                                      ? 'description'
-                                      : 'jobDescription'],
+                                  isUserNoticePage
+                                      ? userNoticeInfo!.description!
+                                      : jobNoticeInfo!.jobDescription,
                                   maxLines: 2,
                                   textAlign: TextAlign.center,
                                   overflow: TextOverflow.ellipsis,
@@ -86,32 +89,39 @@ class NoticeCard extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white)),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                if (info[noticeCardName == 'UserCard'
-                                        ? 'location'
-                                        : 'jobLocation']
-                                    .isNotEmpty)
-                                  const Icon(Icons.location_city,
-                                      size: 18, color: Colors.white),
-                                Expanded(
-                                    child: Text(
-                                        ' ${info[noticeCardName == 'UserCard' ? 'location' : 'jobLocation']}',
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: GoogleFonts.overpass(
-                                            fontSize: 12,
-                                            color: Colors.white))),
-                                const SizedBox(width: 10),
-                                if (info['canRemotely'] == true)
-                                  const Icon(Icons.done_outline_rounded,
-                                      size: 18, color: Colors.white),
-                                if (info['canRemotely'] == true)
-                                  Text(' Zdalne',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.overpass(
-                                          fontSize: 12, color: Colors.white)),
+                                if (isUserNoticePage
+                                    ? false
+                                    : jobNoticeInfo!.canRemotely)
+                                  Expanded(
+                                      child: Row(
+                                    children: [
+                                      const Icon(Icons.done_outline_rounded,
+                                          size: 18, color: Colors.white),
+                                      Text(' Zdalne ',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.overpass(
+                                              fontSize: 12,
+                                              color: Colors.white)),
+                                    ],
+                                  )),
+                                if (isUserNoticePage
+                                    ? userNoticeInfo!.location != null
+                                    : true)
+                                  Expanded(
+                                      child: Row(children: [
+                                    const Icon(Icons.location_city,
+                                        size: 18, color: Colors.white),
+                                    Expanded(
+                                        child: Text(
+                                            ' ${isUserNoticePage ? userNoticeInfo!.location : jobNoticeInfo!.jobLocation}',
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
+                                            style: GoogleFonts.overpass(
+                                                fontSize: 12,
+                                                color: Colors.white))),
+                                  ])),
                               ],
                             )
                           ])),

@@ -15,7 +15,7 @@ const String basicPPUrl =
     'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.';
 
 class _EditPhotoState extends State<EditPhoto> {
-  ImageProvider<Object> pictureToShow = const NetworkImage(basicPPUrl);
+  ImageProvider<Object>? pictureToShow = const NetworkImage(basicPPUrl);
 
   void deleteImage() {
     Provider.of<EditUser>(context, listen: false).removeImage();
@@ -26,7 +26,7 @@ class _EditPhotoState extends State<EditPhoto> {
 
   void updatePhoto() {
     pictureToShow =
-        FileImage(Provider.of<EditUser>(context, listen: false).imgFile);
+        FileImage(Provider.of<EditUser>(context, listen: false).imgFile!);
   }
 
   @override
@@ -42,7 +42,7 @@ class _EditPhotoState extends State<EditPhoto> {
 
   @override
   Widget build(BuildContext context) {
-    var editFunction = Provider.of<EditUser>(context, listen: false);
+    EditUser editFunction = Provider.of<EditUser>(context, listen: false);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,7 +61,7 @@ class _EditPhotoState extends State<EditPhoto> {
               child: ClipOval(
                   child: FadeInImage(
                 fit: BoxFit.cover,
-                image: pictureToShow,
+                image: pictureToShow ?? const NetworkImage(basicPPUrl),
                 placeholder: const NetworkImage(basicPPUrl),
               )),
             )),
@@ -80,7 +80,7 @@ class _EditPhotoState extends State<EditPhoto> {
     );
   }
 
-  Widget changePhoto(editFunction, icon) => InkWell(
+  Widget changePhoto(EditUser editFunction, icon) => InkWell(
       onTap: () async {
         if (icon == Icons.camera) {
           await editFunction.getCameraImage();

@@ -31,16 +31,18 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
   @override
   Widget build(BuildContext context) {
     List<Widget> pages = [
-      // const UsersNoticesPage(),
-      const NoticesPage(pageName: 'UsersNotices'),
+      const NoticesPage(isUserNoticePage: true),
       NoticesPage(
         isAccountTypeUser:
             Provider.of<GoogleSignInProvider>(context, listen: false)
                 .getCurrentUser
                 .isAccountTypeUser,
-        pageName: 'JobNotices',
+        isUserNoticePage: false,
       ),
-      const UserPage(isOwnProfile: true),
+      UserPage(
+          shownUser: Provider.of<GoogleSignInProvider>(context, listen: false)
+              .getCurrentUser,
+          isOwnProfile: true),
     ];
     return Scaffold(
       bottomNavigationBar: Container(

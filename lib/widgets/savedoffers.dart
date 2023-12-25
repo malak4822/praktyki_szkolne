@@ -32,7 +32,7 @@ class SavedOffers extends StatelessWidget {
           child: ListView.builder(
               itemCount: favList.length,
               itemBuilder: (context, index) => NoticeCard(
-                    noticeCardName: isAccountTypeUser ? 'UserCard' : 'JobCard',
+                    isUserNoticePage: isAccountTypeUser ? true : false,
                     info: accountFavAds,
                   ))),
       backButton(context),

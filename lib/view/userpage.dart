@@ -11,9 +11,9 @@ import 'package:provider/provider.dart';
 import '../widgets/skillboxes.dart';
 
 class UserPage extends StatelessWidget {
-  const UserPage({super.key, this.shownUser, required this.isOwnProfile});
+  UserPage({super.key, required this.shownUser, required this.isOwnProfile});
 
-  final dynamic shownUser;
+  final MyUser shownUser;
   final bool isOwnProfile;
 
   Future<dynamic> _getUser(BuildContext context) {
@@ -28,7 +28,7 @@ class UserPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dynamic userData = shownUser;
+    var userData = shownUser;
     return FutureBuilder(
         future: _getUser(context),
         builder: (builder, snapshot) {
@@ -54,43 +54,54 @@ class UserPage extends StatelessWidget {
                             gradient: LinearGradient(colors: gradient),
                             borderRadius: BorderRadius.vertical(
                                 bottom: Radius.elliptical(200, 30)))),
-                    if (isOwnProfile)
-                      Align(
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Stack(
                         alignment: Alignment.topRight,
-                        child: Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                            Container(
-                              width: 68,
-                              height: 58,
-                              decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(100)),
-                                  color: Colors.white),
-                              padding: const EdgeInsets.all(14),
-                            ),
+                        children: [
+                          Container(
+                            width: 68,
+                            height: 58,
+                            decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(100)),
+                                color: Colors.white),
+                            padding: const EdgeInsets.all(14),
+                          ),
+                          if (isOwnProfile)
                             IconButton(
-                              iconSize: 22,
-                              icon: FaIcon(FontAwesomeIcons.userPen,
-                                  color: gradient[1]),
-                              onPressed: () {
-                                Provider.of<EditUser>(context, listen: false)
-                                    .checkEmptiness(
-                                        userData.username,
-                                        userData.description ?? '',
-                                        userData.isAccountTypeUser
-                                            ? userData.age
-                                            : 1,
-                                        userData.isAccountTypeUser
-                                            ? userData.location
-                                            : 'a');
+                                iconSize: isOwnProfile ? 22 : 26,
+                                icon: FaIcon(FontAwesomeIcons.userPen,
+                                    color: gradient[1]),
+                                onPressed: () {
+                                  if (isOwnProfile) {
+                                    Provider.of<EditUser>(context,
+                                            listen: false)
+                                        .checkEmptiness(
+                                            userData.username,
+                                            userData.description ?? '',
+                                            userData.isAccountTypeUser
+                                                ? userData.age
+                                                : 1,
+                                            userData.isAccountTypeUser
+                                                ? userData.location
+                                                : 'a');
 
-                                Navigator.pushNamed(context, '/editUser');
-                              },
-                            )
-                          ],
-                        ),
+                                    Navigator.pushNamed(context, '/editUser');
+                                  } else {
+                                    GestureDetector(
+                                      onTap: () {
+                                        Provider.of<EditUser>(context,
+                                                listen: false)
+                                            .toogleAddToFav(shownUser.userId);
+                                      },
+                                    );
+                                  }
+                                }),
+                          if (!isOwnProfile) const HeartButton()
+                        ],
                       ),
+                    ),
                     Center(
                         child: CircleAvatar(
                             radius: 85,
@@ -147,14 +158,14 @@ class UserPage extends StatelessWidget {
                                 child: Text(
                               textAlign: TextAlign.center,
                               userData.age != null
-                                  ? '${userData.age == 0 ? '' : '${userData.age.toString()} ${getAgeSuffix(userData.age)}'}${userData.location != '' ? ', ${userData.location}' : ''}'
+                                  ? '${userData.age == 0 ? '' : '${userData.age.toString()} ${getAgeSuffix(userData.age!)}'}${userData.location != '' ? ', ${userData.location}' : ''}'
                                   : '',
                               style: GoogleFonts.overpass(
                                   color: Colors.white, fontSize: 16),
                             ))),
                         const SizedBox(height: 5),
                         if (userData.description != null)
-                          Text(userData.description,
+                          Text(userData.description!,
                               textAlign: TextAlign.center,
                               style: GoogleFonts.overpass(
                                   color: Colors.white,
@@ -179,9 +190,7 @@ class UserPage extends StatelessWidget {
                                   scrollDirection: Axis.horizontal,
                                   itemBuilder: (context, index) => skillBox(
                                       userData.skillsSet[index].keys.single,
-                                      userData.skillsSet[index]
-                                          .values
-                                          .single,
+                                      userData.skillsSet[index].values.single,
                                       context,
                                       true)))))),
               const SizedBox(height: 8),
@@ -197,11 +206,11 @@ class UserPage extends StatelessWidget {
                       visible: userData.phoneNum != '',
                       child: Row(
                         children: [
-                          contactBox(Icons.phone,
-                              'tel:+48${userData.phoneNum}', true),
+                          contactBox(
+                              Icons.phone, 'tel:+48${userData.phoneNum}', true),
                           const SizedBox(width: 10),
-                          contactBox(Icons.sms,
-                              'sms:+48${userData.phoneNum}', true),
+                          contactBox(
+                              Icons.sms, 'sms:+48${userData.phoneNum}', true),
                         ],
                       )),
                 ],
@@ -210,5 +219,79 @@ class UserPage extends StatelessWidget {
             ]));
           }
         });
+  }
+}
+
+class HeartButton extends StatefulWidget {
+  const HeartButton({super.key});
+
+  @override
+  HeartButtonState createState() => HeartButtonState();
+}
+
+class HeartButtonState extends State<HeartButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation _sizeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+
+    _sizeAnimation = TweenSequence<double>([
+      TweenSequenceItem<double>(
+        tween: Tween<double>(begin: 1.0, end: 1.3),
+        weight: 50,
+      ),
+      TweenSequenceItem<double>(
+        tween: Tween<double>(begin: 1.3, end: 1.0),
+        weight: 50,
+      ),
+    ]).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.slowMiddle,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (_animationController.isCompleted) {
+            _animationController.reverse();
+          } else {
+            _animationController.forward();
+          }
+        });
+      },
+      child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) => Transform.scale(
+                    scale: _sizeAnimation.value,
+                    alignment: Alignment.center,
+                    child: Icon(
+                      color: gradient[1],
+                      _animationController.isCompleted
+                          ? FontAwesomeIcons.solidHeart
+                          : FontAwesomeIcons.heart,
+                      size: 28,
+                    ),
+                  ))),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 }

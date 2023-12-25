@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
-import 'package:prakty/models/advertisements_model.dart';
-import 'package:prakty/models/user_model.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/widgets/noticecard.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
@@ -13,11 +11,11 @@ class NoticesPage extends StatefulWidget {
   const NoticesPage({
     super.key,
     this.isAccountTypeUser,
-    required this.pageName,
+    required this.isUserNoticePage,
   });
 
   final bool? isAccountTypeUser;
-  final String pageName;
+  final bool isUserNoticePage;
 
   @override
   State<NoticesPage> createState() => _NoticesPageState();
@@ -77,10 +75,11 @@ class _NoticesPageState extends State<NoticesPage> {
         child: Stack(
           children: [
             FutureBuilder(
-                future: widget.pageName == 'JobNotices'
-                    ? MyDb().downloadJobAds()
-                    : MyDb().downloadUsersStates(),
-                builder: (context, AsyncSnapshot<List> snapshot) {
+                future: widget.isUserNoticePage
+                    ? MyDb().downloadUsersStates()
+                    : MyDb().downloadJobAds(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<Object>?> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const LoadingWidget();
                   } else if (snapshot.hasError) {
@@ -104,13 +103,8 @@ class _NoticesPageState extends State<NoticesPage> {
                               ])),
                     );
                   } else {
-                    dynamic noticesList;
-                    if (widget.pageName == 'JobNotices') {
-                      noticesList = snapshot.data as List<JobAdModel>;
-                    } else {
-                      noticesList = snapshot.data as List<MyUser>;
-                      print(noticesList);
-                    }
+                    List<dynamic> info = snapshot.data!;
+
                     // void countDistanceToSort() {
                     //   List userLocationsList = [];
                     //   for (var element in noticesList) {
@@ -140,12 +134,12 @@ class _NoticesPageState extends State<NoticesPage> {
                     //   }
                     // }
 
-                    switch (widget.pageName) {
-                      case 'UsersNotices':
+                    switch (widget.isUserNoticePage) {
+                      case true:
                         // sortParticularAlgorytm(correctSearchinPrefs[0]);
                         // sortParticularAlgorytm(correctSearchinPrefs[1]);
                         break;
-                      case 'JobNotices':
+                      case false:
                         // sortParticularAlgorytm(correctSearchinPrefs[2]);
                         // sortParticularAlgorytm(correctSearchinPrefs[3]);
                         break;
@@ -169,22 +163,18 @@ class _NoticesPageState extends State<NoticesPage> {
                             Expanded(
                                 child: ListView.builder(
                                     clipBehavior: Clip.none,
-                                    itemCount: noticesList.length,
+                                    itemCount: info.length,
                                     shrinkWrap: true,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      print('eeeeeeeeeeeeeeeeeeee');
-                                      print(noticesList[index]);
-                                      if (widget.pageName == 'UsersNotices') {
+                                      if (widget.isUserNoticePage) {
                                         return NoticeCard(
-                                          info: noticesList[index],
-                                          noticeCardName: 'UserCard',
-                                        );
+                                            info: info[index],
+                                            isUserNoticePage: true);
                                       } else {
                                         return NoticeCard(
-                                          info: noticesList[index],
-                                          noticeCardName: 'JobCard',
-                                        );
+                                            info: info[index],
+                                            isUserNoticePage: false);
                                       }
                                     }))
                           ],
@@ -285,7 +275,7 @@ class _NoticesPageState extends State<NoticesPage> {
         ),
         onPressed: () {
           tempSearchingPrefs.value = List.from(correctSearchinPrefs);
-          listToOpen = (widget.pageName == 'UsersNotices')
+          listToOpen = (widget.isUserNoticePage)
               ? (num == 0 ? 0 : 1)
               : (num == 1 ? 3 : 2);
           isTabVisible.value = true;

@@ -78,7 +78,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           }
           // UPDATING PHOTO UPDATING PHOTO UPDATING PHOTO
           if (tabToOpen == 0) {
-            if (editUserFunction.imgFile.path != 'freshImage') {
+            if (editUserFunction.imgFile?.path != 'freshImage') {
               var uploadUrl = await myDb.uploadImageToStorage(
                   user.userId, editUserFunction.imgFile);
 

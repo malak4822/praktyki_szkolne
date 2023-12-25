@@ -4,6 +4,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class EditUser extends ChangeNotifier {
+  void toogleAddToFav(String userId) {
+    _favList.contains(userId) ? _favList.remove(userId) : _favList.add(userId);
+    notifyListeners();
+  }
+
   List<String> _favList = [];
   List<String> get favList => _favList;
 
@@ -25,10 +30,10 @@ class EditUser extends ChangeNotifier {
     _skillBoxesBackup = skillBoxes;
   }
 
-  File _imgFile = File('');
-  File get imgFile => _imgFile;
+  File? _imgFile;
+  File? get imgFile => _imgFile;
 
-  void removeImage() => _imgFile = File('');
+  void removeImage() => _imgFile;
 
   void setInitialFile() {
     _imgFile = File('freshImage');
@@ -78,7 +83,7 @@ class EditUser extends ChangeNotifier {
 
   Future<void> deleteSelectedImage() async {
     try {
-      await _imgFile.delete();
+      await _imgFile?.delete();
       _imgFile = File('');
       notifyListeners();
     } catch (e) {
@@ -125,8 +130,11 @@ class EditUser extends ChangeNotifier {
   bool get isEditingSeen => _isEditingSeen;
 
   void checkEmptiness(
-      String name, String description, int age, String location) {
-    if (name.isEmpty || description.isEmpty || age == 0 || location.isEmpty) {
+      String name, String? description, int? age, String? location) {
+    if (name.isEmpty ||
+        description == null ||
+        age == null ||
+        location == null) {
       _areFieldsEmpty = true;
     } else {
       _areFieldsEmpty = false;

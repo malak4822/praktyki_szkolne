@@ -30,22 +30,4 @@ class MyUser {
     required this.jobVacancy,
     required this.accountCreated,
   });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'userId': userId,
-      'username': username,
-      'description': description,
-      'phoneNum': phoneNum,
-      'location': location,
-      'age': age,
-      'isAccountTypeUser': isAccountTypeUser,
-      'skillsSet': skillsSet,
-      'email': email,
-      'profilePicture': profilePicture,
-      'likedOffers': likedOffers,
-      'jobVacancy': jobVacancy,
-      'accountCreated': accountCreated,
-    };
-  }
 }

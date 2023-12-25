@@ -143,7 +143,7 @@ class MyDb {
     }
   }
 
-  Future<List<JobAdModel>> downloadJobAds() async {
+  Future<List<JobAdModel>?> downloadJobAds() async {
     try {
       final collection = _firestore.collection('/jobAd');
       final QuerySnapshot jobCards = await collection.get();
@@ -169,11 +169,10 @@ class MyDb {
           canRemotely: myJobList[i]['canRemotely'],
         ));
       }
-
       return advertInfo;
     } catch (e) {
       debugPrint(e.toString());
-      return [];
+      return null;
     }
   }
 
@@ -289,13 +288,30 @@ class MyDb {
     }
   }
 
-  Future<Map?> takeAdOwnersData(ownerId) async {
+  Future<MyUser?> takeAdOwnersData(ownerId) async {
     try {
       DocumentSnapshot docSnapshot =
           await _firestore.collection('users').doc(ownerId).get();
       Map<String, dynamic> ownerInfo =
           docSnapshot.data() as Map<String, dynamic>;
-      return ownerInfo;
+
+      MyUser usersList = MyUser(
+          userId: ownerInfo['userId'],
+          username: ownerInfo['username'],
+          age: ownerInfo['age'],
+          description: ownerInfo['description'],
+          phoneNum: ownerInfo['phoneNum'],
+          location: ownerInfo['location'],
+          isAccountTypeUser: ownerInfo['isAccountTypeUser'],
+          skillsSet: (ownerInfo['skillsSet'] as List<dynamic>)
+              .map((item) => Map<String, int>.from(item))
+              .toList(),
+          email: ownerInfo['email'],
+          profilePicture: ownerInfo['profilePicture'],
+          likedOffers: List.from(ownerInfo['likedOffers']),
+          jobVacancy: ownerInfo['jobVacancy'],
+          accountCreated: ownerInfo['accountCreated']);
+      return usersList;
     } catch (e) {
       debugPrint(e.toString());
       return null;
