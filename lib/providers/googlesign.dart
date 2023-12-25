@@ -8,6 +8,11 @@ import '../models/user_model.dart';
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  final bool _isLiked = false;
+  bool get isLiked => _isLiked;
+
+  void toogleOffer(String offerId) {}
+
   void setState() {
     notifyListeners();
   }
@@ -53,13 +58,14 @@ class GoogleSignInProvider extends ChangeNotifier {
   MyUser _currentUser = MyUser(
       userId: '',
       username: '',
-      description: '',
-      phoneNum: '',
-      age: 0,
+      description: null,
+      phoneNum: null,
+      age: null,
       isAccountTypeUser: true,
       email: '',
-      location: '',
-      profilePicture: '',
+      location: null,
+      profilePicture: null,
+      likedOffers: [],
       jobVacancy: false,
       accountCreated: Timestamp(0, 0),
       skillsSet: []);
@@ -100,13 +106,14 @@ class GoogleSignInProvider extends ChangeNotifier {
       _currentUser = MyUser(
           userId: '',
           username: '',
-          description: '',
-          phoneNum: '',
-          age: 0,
+          description: null,
+          phoneNum: null,
+          age: null,
           isAccountTypeUser: true,
           email: '',
-          location: '',
-          profilePicture: '',
+          location: null,
+          profilePicture: null,
+          likedOffers: [],
           jobVacancy: false,
           skillsSet: [],
           accountCreated: Timestamp(0, 0));

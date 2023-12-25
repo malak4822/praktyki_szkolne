@@ -34,7 +34,6 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
   @override
   Widget build(BuildContext context) {
     final jobInfo = widget.jobInfo;
-
     return Scaffold(
       body: SafeArea(
           child: Stack(children: [
@@ -55,7 +54,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                             margin: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               boxShadow: myOutlineBoxShadow,
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(16)
                             ),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
@@ -257,6 +256,12 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
               const SizedBox(height: 8),
             ])),
         backButton(context),
+        // Align(
+        //   alignment: Alignment.topRight,
+        //   child: HeartWidget(
+        //     offerId: jobInfo[''],
+        //   ),
+        // ),
       ])),
     );
   }

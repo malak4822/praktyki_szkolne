@@ -194,7 +194,7 @@ class _AddJobState extends State<AddJob> {
                                     jobName.text,
                                     companyName.text,
                                     jobEmail.text,
-                                    jobPhone.text,
+                                    int.parse(jobPhone.text),
                                     jobLocation.text,
                                     jobQualification.text,
                                     jobDescription.text,

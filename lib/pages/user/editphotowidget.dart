@@ -31,9 +31,11 @@ class _EditPhotoState extends State<EditPhoto> {
 
   @override
   void initState() {
-    pictureToShow = widget.user.profilePicture.isNotEmpty
-        ? NetworkImage(widget.user.profilePicture)
-        : const NetworkImage(basicPPUrl);
+    if (widget.user.profilePicture != null) {
+      pictureToShow = widget.user.profilePicture!.isNotEmpty
+          ? NetworkImage(widget.user.profilePicture!)
+          : const NetworkImage(basicPPUrl);
+    }
     Provider.of<EditUser>(context, listen: false).setInitialFile();
     super.initState();
   }

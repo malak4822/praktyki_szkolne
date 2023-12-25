@@ -8,8 +8,9 @@ class NoticeCard extends StatelessWidget {
   const NoticeCard(
       {super.key, required this.noticeCardName, required this.info});
 
-  final Map info;
+  final dynamic info;
   final String noticeCardName;
+
   String showCorrectImage() {
     if (noticeCardName == 'UserCard') {
       if (info['profilePicture'] == null || info['profilePicture'] == '') {
@@ -28,6 +29,13 @@ class NoticeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (noticeCardName == 'UserCard') {
+      print('USER CARD');
+      print('ESEESESESE ESES -> ${info.description}');
+    } else {
+      print('JOB CARD');
+      print('ESEESESESE ESES -> ${info.jobDescription}');
+    }
     return InkWell(
         onTap: () {
           Navigator.push(

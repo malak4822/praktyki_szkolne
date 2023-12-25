@@ -4,6 +4,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class EditUser extends ChangeNotifier {
+  List<String> _favList = [];
+  List<String> get favList => _favList;
+
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 

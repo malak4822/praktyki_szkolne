@@ -182,7 +182,8 @@ class _FindOnMapState extends State<FindOnMap> {
                               },
                             ),
                             suffixIcon: IconButton(
-                              icon: const Icon(Icons.done_outline_rounded, color: Colors.white),
+                              icon: const Icon(Icons.done_outline_rounded,
+                                  color: Colors.white),
                               color: Colors.white,
                               onPressed: () {
                                 SystemChannels.textInput

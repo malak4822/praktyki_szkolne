@@ -3,6 +3,7 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
+import 'package:prakty/widgets/savedoffers.dart';
 import 'package:provider/provider.dart';
 
 class EditPrivUserInfo extends StatelessWidget {
@@ -24,7 +25,8 @@ class EditPrivUserInfo extends StatelessWidget {
                 boxShadow: myBoxShadow,
                 borderRadius:
                     BorderRadius.horizontal(left: Radius.circular(400))),
-            child: Stack(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                     padding: const EdgeInsets.all(26),
@@ -61,30 +63,22 @@ class EditPrivUserInfo extends StatelessWidget {
                             }),
                       ],
                     )),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        Provider.of<GoogleSignInProvider>(context,
-                                listen: false)
-                            .logout();
-                      },
-                      child: Container(
-                          width: double.infinity,
-                          height: 80,
-                          alignment: Alignment.centerRight,
-                          color: Colors.white24,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text('Wyloguj Się ', style: fontSize16),
-                              const Icon(Icons.logout_rounded,
-                                  color: Colors.white, size: 20),
-                              const SizedBox(width: 4),
-                            ],
-                          ))),
-                ),
+                button(Icons.favorite_border, 'Ulubione', () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SavedOffers(
+                                isAccountTypeUser:
+                                    currentUser.isAccountTypeUser,
+                                accountFavAds: currentUser.likedOffers,
+                              )));
+                }),
+                const SizedBox(height: 6),
+                button(Icons.logout_outlined, 'Wyloguj Się', () {
+                  Navigator.pop(context);
+                  Provider.of<GoogleSignInProvider>(context, listen: false)
+                      .logout();
+                })
               ],
             ),
           ),
@@ -92,4 +86,22 @@ class EditPrivUserInfo extends StatelessWidget {
       ),
     );
   }
+
+  Widget button(IconData icon, String text, Function function) => Container(
+        height: 60,
+        color: Colors.white24,
+        width: double.maxFinite,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () => function(),
+            splashFactory: InkRipple.splashFactory,
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(icon, color: Colors.white),
+              const SizedBox(width: 10),
+              Text(text, style: fontSize16)
+            ]),
+          ),
+        ),
+      );
 }

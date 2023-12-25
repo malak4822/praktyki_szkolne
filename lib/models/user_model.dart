@@ -3,14 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class MyUser {
   String userId;
   String username;
-  String description;
-  String phoneNum;
-  String location;
-  int age;
+  String? description;
+  String? phoneNum;
+  String? location;
+  int? age;
   bool isAccountTypeUser;
   List<Map<String, int>> skillsSet;
+  List<String> likedOffers;
   String email;
-  String profilePicture;
+  String? profilePicture;
   late bool jobVacancy;
   late Timestamp accountCreated;
 
@@ -23,6 +24,7 @@ class MyUser {
     required this.location,
     required this.isAccountTypeUser,
     required this.skillsSet,
+    required this.likedOffers,
     required this.email,
     required this.profilePicture,
     required this.jobVacancy,
@@ -41,6 +43,7 @@ class MyUser {
       'skillsSet': skillsSet,
       'email': email,
       'profilePicture': profilePicture,
+      'likedOffers': likedOffers,
       'jobVacancy': jobVacancy,
       'accountCreated': accountCreated,
     };

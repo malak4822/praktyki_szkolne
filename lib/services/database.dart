@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
@@ -21,6 +22,7 @@ class MyDb {
         'location': myUser.location,
         'isAccountTypeUser': myUser.isAccountTypeUser,
         'skillsSet': myUser.skillsSet,
+        'likedOffers': myUser.likedOffers,
         'profilePicture': myUser.profilePicture,
         'userId': myUser.userId,
         'jobVacancy': myUser.jobVacancy,
@@ -45,18 +47,19 @@ class MyDb {
 
         currentUser.username = data?["username"] ?? "";
         currentUser.email = data?['email'] ?? "";
-        currentUser.description = data?['description'] ?? "";
-        currentUser.phoneNum = data?['phoneNum'] ?? "";
-        currentUser.age = data?['age'] ?? 0;
+        currentUser.description = data?['description'];
+        currentUser.phoneNum = data?['phoneNum'];
+        currentUser.age = data?['age'];
         currentUser.skillsSet =
             (data?['skillsSet'] as List<dynamic>?)?.map((dynamic item) {
                   final Map<String, int> skill = Map<String, int>.from(item);
                   return skill;
                 }).toList() ??
                 [];
-        currentUser.location = data?['location'] ?? "";
+        currentUser.likedOffers = data?['likedOffers'] ?? [];
+        currentUser.location = data?['location'];
         currentUser.isAccountTypeUser = data?['isAccountTypeUser'] ?? true;
-        currentUser.profilePicture = data?['profilePicture'] ?? "";
+        currentUser.profilePicture = data?['profilePicture'];
         currentUser.userId = data?['userId'] ?? "";
         currentUser.jobVacancy = data?['jobVacancy'] ?? false;
         currentUser.accountCreated = data?['accountCreated'] ?? Timestamp.now();
@@ -140,7 +143,7 @@ class MyDb {
     }
   }
 
-  Future<List<Map>> downloadJobAds() async {
+  Future<List<JobAdModel>> downloadJobAds() async {
     try {
       final collection = _firestore.collection('/jobAd');
       final QuerySnapshot jobCards = await collection.get();
@@ -149,25 +152,60 @@ class MyDb {
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
 
-      return myJobList;
+      List<JobAdModel> advertInfo = [];
+
+      for (int i = 0; i < myJobList.length; i++) {
+        advertInfo.add(JobAdModel(
+          jobId: myJobList[i]['jobId'],
+          belongsToUser: myJobList[i]['belongsToUser'],
+          jobName: myJobList[i]['jobName'],
+          companyName: myJobList[i]['companyName'],
+          jobEmail: myJobList[i]['jobEmail'],
+          jobImage: myJobList[i]['jobImage'],
+          jobPhone: myJobList[i]['jobPhone'],
+          jobLocation: myJobList[i]['jobLocation'],
+          jobQualification: myJobList[i]['jobQualification'],
+          jobDescription: myJobList[i]['jobDescription'],
+          canRemotely: myJobList[i]['canRemotely'],
+        ));
+      }
+
+      return advertInfo;
     } catch (e) {
       debugPrint(e.toString());
       return [];
     }
   }
 
-  Future<List<Map>> downloadUsersStates() async {
+  Future<List<MyUser>> downloadUsersStates() async {
     try {
-      List<Map> usrsWithNotices = [];
+      List<MyUser> usrsWithNotices = [];
+
       final collection = _firestore.collection('/users');
       final QuerySnapshot usersCollection = await collection.get();
-      final List myUsersList =
-          usersCollection.docs.map((doc) => doc.data()).toList();
+
+      final List<Map<String, dynamic>> myUsersList = usersCollection.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
 
       for (int i = 0; i < myUsersList.length; i++) {
-        var isVacan = myUsersList[i]['jobVacancy'];
-        if (isVacan == true) {
-          usrsWithNotices.add(myUsersList[i]);
+        if (myUsersList[i]['jobVacancy'] == true) {
+          usrsWithNotices.add(MyUser(
+              userId: myUsersList[i]['userId'],
+              username: myUsersList[i]['username'],
+              age: myUsersList[i]['age'],
+              description: myUsersList[i]['description'],
+              phoneNum: myUsersList[i]['phoneNum'],
+              location: myUsersList[i]['location'],
+              isAccountTypeUser: myUsersList[i]['isAccountTypeUser'],
+              skillsSet: (myUsersList[i]['skillsSet'] as List<dynamic>)
+                  .map((item) => Map<String, int>.from(item))
+                  .toList(),
+              email: myUsersList[i]['email'],
+              profilePicture: myUsersList[i]['profilePicture'],
+              likedOffers: List.from(myUsersList[i]['likedOffers']),
+              jobVacancy: myUsersList[i]['jobVacancy'],
+              accountCreated: myUsersList[i]['accountCreated']));
         }
       }
 
@@ -192,16 +230,16 @@ class MyDb {
   }
 
   Future<List?> addFirestoreJobAd(
-      userId,
+      String userId,
       noticePhoto,
-      jobName,
-      companyName,
-      jobEmail,
-      jobPhone,
-      jobLocation,
-      jobQualification,
-      jobDescription,
-      canRemotely) async {
+      String jobName,
+      String companyName,
+      String jobEmail,
+      int jobPhone,
+      String jobLocation,
+      String jobQualification,
+      String jobDescription,
+      bool canRemotely) async {
     late String code;
     String generateRandomCode() {
       const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';

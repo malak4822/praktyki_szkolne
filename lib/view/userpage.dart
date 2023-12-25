@@ -20,7 +20,7 @@ class UserPage extends StatelessWidget {
     if (isOwnProfile) {
       MyUser myUser = Provider.of<GoogleSignInProvider>(context, listen: false)
           .getCurrentUser;
-      return Future.value(myUser.toMap());
+      return Future.value(myUser);
     } else {
       return Future.value(shownUser);
     }
@@ -76,13 +76,13 @@ class UserPage extends StatelessWidget {
                               onPressed: () {
                                 Provider.of<EditUser>(context, listen: false)
                                     .checkEmptiness(
-                                        userData['username'],
-                                        userData['description'],
-                                        userData['isAccountTypeUser']
-                                            ? userData['age']
+                                        userData.username,
+                                        userData.description ?? '',
+                                        userData.isAccountTypeUser
+                                            ? userData.age
                                             : 1,
-                                        userData['isAccountTypeUser']
-                                            ? userData['location']
+                                        userData.isAccountTypeUser
+                                            ? userData.location
                                             : 'a');
 
                                 Navigator.pushNamed(context, '/editUser');
@@ -106,11 +106,10 @@ class UserPage extends StatelessWidget {
                                   fit: BoxFit.cover,
                                   fadeInDuration:
                                       const Duration(milliseconds: 500),
-                                  image: NetworkImage(userData[
-                                              'profilePicture'] !=
-                                          ''
-                                      ? userData['profilePicture']
-                                      : 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.'),
+                                  image: NetworkImage(
+                                    userData.profilePicture ??
+                                        'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.',
+                                  ),
                                   placeholder: const NetworkImage(
                                       'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.'),
                                 ))))),
@@ -134,7 +133,7 @@ class UserPage extends StatelessWidget {
                           horizontal: 20, vertical: 10),
                       child: Column(children: [
                         Center(
-                            child: Text(userData['username'],
+                            child: Text(userData.username,
                                 softWrap: true,
                                 maxLines: 2,
                                 textAlign: TextAlign.center,
@@ -143,17 +142,19 @@ class UserPage extends StatelessWidget {
                                     fontSize: 20,
                                     fontWeight: FontWeight.w800))),
                         Visibility(
-                            visible: userData['isAccountTypeUser'],
+                            visible: userData.isAccountTypeUser,
                             child: Center(
                                 child: Text(
                               textAlign: TextAlign.center,
-                              '${userData['age'] == 0 ? '' : '${userData['age'].toString()} ${getAgeSuffix(userData['age'])}'}${userData['location'] != '' ? ', ${userData['location']}' : ''}',
+                              userData.age != null
+                                  ? '${userData.age == 0 ? '' : '${userData.age.toString()} ${getAgeSuffix(userData.age)}'}${userData.location != '' ? ', ${userData.location}' : ''}'
+                                  : '',
                               style: GoogleFonts.overpass(
                                   color: Colors.white, fontSize: 16),
                             ))),
                         const SizedBox(height: 5),
-                        if (userData['description'].isNotEmpty)
-                          Text(userData['description'],
+                        if (userData.description != null)
+                          Text(userData.description,
                               textAlign: TextAlign.center,
                               style: GoogleFonts.overpass(
                                   color: Colors.white,
@@ -163,7 +164,7 @@ class UserPage extends StatelessWidget {
                     )
                   ])),
               Visibility(
-                  visible: userData['skillsSet'].isNotEmpty,
+                  visible: userData.skillsSet.isNotEmpty,
                   child: SizedBox(
                       height: 136,
                       child: Padding(
@@ -174,11 +175,11 @@ class UserPage extends StatelessWidget {
                           child: Center(
                               child: ListView.builder(
                                   shrinkWrap: true,
-                                  itemCount: userData['skillsSet'].length,
+                                  itemCount: userData.skillsSet.length,
                                   scrollDirection: Axis.horizontal,
                                   itemBuilder: (context, index) => skillBox(
-                                      userData['skillsSet'][index].keys.single,
-                                      userData['skillsSet'][index]
+                                      userData.skillsSet[index].keys.single,
+                                      userData.skillsSet[index]
                                           .values
                                           .single,
                                       context,
@@ -188,19 +189,19 @@ class UserPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Visibility(
-                      visible: userData['email'].isNotEmpty,
+                      visible: userData.email.isNotEmpty,
                       child: contactBox(Icons.email_rounded,
-                          'mailto:${userData['email']}', true)),
+                          'mailto:${userData.email}', true)),
                   const SizedBox(width: 10),
                   Visibility(
-                      visible: userData['phoneNum'] != '',
+                      visible: userData.phoneNum != '',
                       child: Row(
                         children: [
                           contactBox(Icons.phone,
-                              'tel:+48${userData['phoneNum']}', true),
+                              'tel:+48${userData.phoneNum}', true),
                           const SizedBox(width: 10),
                           contactBox(Icons.sms,
-                              'sms:+48${userData['phoneNum']}', true),
+                              'sms:+48${userData.phoneNum}', true),
                         ],
                       )),
                 ],

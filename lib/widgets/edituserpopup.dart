@@ -29,7 +29,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
 
     var user = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
 
-    int ageCont = user.age;
+    int? ageCont = user.age;
 
     final TextEditingController nameCont =
         TextEditingController(text: user.username);
@@ -59,7 +59,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           descriptionCont,
           locationCont,
           emailCont,
-          ageCont,
+          ageCont!,
           (newVal) => ageCont = newVal,
           user.isAccountTypeUser,
           formKeyDesc),
@@ -97,7 +97,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
                   nameCont.text,
                   descriptionCont.text,
                   locationCont.text,
-                  ageCont);
+                  ageCont!);
               if (infoFields != null) {
                 googleSignFunction.refreshNameAndDesc(
                     infoFields[0], infoFields[1], infoFields[2], infoFields[3]);
@@ -105,7 +105,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
               }
               if (user.isAccountTypeUser) {
                 editUserFunction.checkEmptiness(descriptionCont.text,
-                    nameCont.text, ageCont, locationCont.text);
+                    nameCont.text, ageCont!, locationCont.text);
               } else {
                 editUserFunction.checkEmptiness(
                     descriptionCont.text, nameCont.text, 1, 'a');

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/models/advertisements_model.dart';
+import 'package:prakty/models/user_model.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/widgets/noticecard.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
@@ -102,8 +104,13 @@ class _NoticesPageState extends State<NoticesPage> {
                               ])),
                     );
                   } else {
-                    List<Map> noticesList = snapshot.data as List<Map>;
-
+                    dynamic noticesList;
+                    if (widget.pageName == 'JobNotices') {
+                      noticesList = snapshot.data as List<JobAdModel>;
+                    } else {
+                      noticesList = snapshot.data as List<MyUser>;
+                      print(noticesList);
+                    }
                     // void countDistanceToSort() {
                     //   List userLocationsList = [];
                     //   for (var element in noticesList) {
@@ -112,30 +119,30 @@ class _NoticesPageState extends State<NoticesPage> {
                     //   print(userLocationsList);
                     // }
 
-                    void sortParticularAlgorytm(radioValue) {
-                      switch (radioValue) {
-                        case 0:
-                          noticesList.sort((a, b) => b['accountCreated']
-                              .compareTo(a['accountCreated']));
-                          break;
-                        case 1:
-                          noticesList
-                              .sort((a, b) => b['age'].compareTo(a['age']));
-                          break;
-                        case 2:
-                          noticesList.sort((a, b) => b['skillsSet']
-                              .length
-                              .compareTo(a['skillsSet'].length));
-                          break;
-                        case 3:
-                          // countDistanceToSort();
-                          break;
-                      }
-                    }
+                    // void sortParticularAlgorytm(radioValue) {
+                    //   switch (radioValue) {
+                    //     case 0:
+                    //       noticesList.sort((a, b) => b['accountCreated']
+                    //           .compareTo(a['accountCreated']));
+                    //       break;
+                    //     case 1:
+                    //       noticesList
+                    //           .sort((a, b) => b['age'].compareTo(a['age']));
+                    //       break;
+                    //     case 2:
+                    //       noticesList.sort((a, b) => b['skillsSet']
+                    //           .length
+                    //           .compareTo(a['skillsSet'].length));
+                    //       break;
+                    //     case 3:
+                    //       // countDistanceToSort();
+                    //       break;
+                    //   }
+                    // }
 
                     switch (widget.pageName) {
                       case 'UsersNotices':
-                        sortParticularAlgorytm(correctSearchinPrefs[0]);
+                        // sortParticularAlgorytm(correctSearchinPrefs[0]);
                         // sortParticularAlgorytm(correctSearchinPrefs[1]);
                         break;
                       case 'JobNotices':
@@ -166,6 +173,8 @@ class _NoticesPageState extends State<NoticesPage> {
                                     shrinkWrap: true,
                                     itemBuilder:
                                         (BuildContext context, int index) {
+                                      print('eeeeeeeeeeeeeeeeeeee');
+                                      print(noticesList[index]);
                                       if (widget.pageName == 'UsersNotices') {
                                         return NoticeCard(
                                           info: noticesList[index],
