@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/pages/user/editcontactinfo.dart';
@@ -79,10 +78,14 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           }
           // UPDATING PHOTO UPDATING PHOTO UPDATING PHOTO
           if (tabToOpen == 0) {
-            var uploadUrl = await myDb.uploadImageToStorage(
-                user.userId, editUserFunction.imgFile);
-            googleSignFunction.refreshProfilePicture(uploadUrl);
-            editUserFunction.deleteSelectedImage();
+            if (editUserFunction.imgFile.path != 'freshImage') {
+              var uploadUrl = await myDb.uploadImageToStorage(
+                  user.userId, editUserFunction.imgFile);
+
+              googleSignFunction.refreshProfilePicture(uploadUrl);
+
+              editUserFunction.deleteSelectedImage();
+            }
           }
 
           // UDPATING USER INFO UDPATING USER INFO UDPATING

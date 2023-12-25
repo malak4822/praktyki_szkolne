@@ -29,10 +29,8 @@ class _EditContactInfoState extends State<EditContactInfo> {
     User? user = FirebaseAuth.instance.currentUser;
     String providerId = user!.providerData[0].providerId;
     if (providerId == 'password') {
-      print('isLoggedInWithGoogle = false');
       isLoggedInWithGoogle = false;
     } else {
-        print('isLoggedInWithGoogle = true');
       isLoggedInWithGoogle = true;
     }
     super.initState();

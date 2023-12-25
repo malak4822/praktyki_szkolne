@@ -8,6 +8,10 @@ import '../models/user_model.dart';
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  void setState() {
+    notifyListeners();
+  }
+
   void toogleAccountType(newType) {
     _currentUser.isAccountTypeUser = newType;
     notifyListeners();

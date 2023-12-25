@@ -25,13 +25,12 @@ class PlaceAutoCompleteResponse {
 
   factory PlaceAutoCompleteResponse.fromJson(Map<String, dynamic> json) {
     return PlaceAutoCompleteResponse(
-        status: json['status'] as String?,
-        predictions: json['predictions'] != null
-            ? json['predictions']
-                .map<AutoCompletePrediction>(
-                    (json) => AutoCompletePrediction.fromJson(json))
-                .toList()
-            : null);
+      status: json['status'] as String?,
+      predictions: (json['predictions'] as List<dynamic>?)
+          ?.map<AutoCompletePrediction>((item) =>
+              AutoCompletePrediction.fromJson(item as Map<String, dynamic>))
+          .toList(),
+    );
   }
 
   static PlaceAutoCompleteResponse parseAutocompleteResult(

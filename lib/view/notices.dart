@@ -8,14 +8,14 @@ import 'package:prakty/widgets/sortandfilter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NoticesPage extends StatefulWidget {
-  NoticesPage({
+  const NoticesPage({
     super.key,
     this.isAccountTypeUser,
     required this.pageName,
   });
 
-  bool? isAccountTypeUser = false;
-  String pageName;
+  final bool? isAccountTypeUser;
+  final String pageName;
 
   @override
   State<NoticesPage> createState() => _NoticesPageState();

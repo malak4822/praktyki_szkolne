@@ -118,6 +118,7 @@ class MyDb {
 
   Future<String> uploadImageToStorage(String userId, imgFile) async {
     final storage = FirebaseStorage.instance;
+
     try {
       String imageUrl = '';
       if (imgFile.path.isNotEmpty) {

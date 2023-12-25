@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
 
 class JobNotice extends StatelessWidget {
-  JobNotice({super.key, required this.jobData});
-  dynamic jobData;
+  const JobNotice({super.key, required this.jobData});
+  final dynamic jobData;
   @override
   Widget build(BuildContext context) {
     return InkWell(

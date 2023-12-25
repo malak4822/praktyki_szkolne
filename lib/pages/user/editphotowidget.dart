@@ -18,7 +18,7 @@ class _EditPhotoState extends State<EditPhoto> {
   ImageProvider<Object> pictureToShow = const NetworkImage(basicPPUrl);
 
   void deleteImage() {
-    Provider.of<EditUser>(context, listen: false).removeImage = basicPPUrl;
+    Provider.of<EditUser>(context, listen: false).removeImage();
     setState(() {
       pictureToShow = const NetworkImage(basicPPUrl);
     });

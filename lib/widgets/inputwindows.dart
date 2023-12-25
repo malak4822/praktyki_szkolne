@@ -41,7 +41,6 @@ class MyTextFormField extends StatelessWidget {
           }
         } else if (myHintText == 'Email') {
           if (errorMessage == 'invalid-email') {
-            print('eeeeeeeeeee');
             return 'Niepoprawny Email';
           } else if (errorMessage == 'too-many-requests') {
             return 'Zbyt Wiele Prób, Spróbuj Później';
@@ -51,7 +50,6 @@ class MyTextFormField extends StatelessWidget {
             return 'Email Już Jest Zajęty';
           }
         } else if (myHintText == 'Hasło') {
-          print('eseeeeseesesesseseseesseseesse');
           if (errorMessage == 'wrong-password') {
             return 'Zbyt Słabe Hasło, Min. 6 Znaków';
           } else if (!value.contains(RegExp(r'[A-Z]'))) {

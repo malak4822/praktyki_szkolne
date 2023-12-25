@@ -5,7 +5,7 @@ import 'package:prakty/pages/user/choselocation.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 
 class EditNameAndDesc extends StatefulWidget {
-  EditNameAndDesc(
+  const EditNameAndDesc(
       this.nameCont,
       this.descriptionCont,
       this.locationCont,
@@ -20,7 +20,7 @@ class EditNameAndDesc extends StatefulWidget {
   final TextEditingController descriptionCont;
   final TextEditingController emailCont;
   final bool isAccountTypeUser;
-  TextEditingController locationCont;
+  final TextEditingController locationCont;
   final GlobalKey<FormState> formKey;
 
   final int ageCont;

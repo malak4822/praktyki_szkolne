@@ -25,7 +25,7 @@ class EditUser extends ChangeNotifier {
   File _imgFile = File('');
   File get imgFile => _imgFile;
 
-  set removeImage(basicPPUrl) => _imgFile = File('');
+  void removeImage() => _imgFile = File('');
 
   void setInitialFile() {
     _imgFile = File('freshImage');

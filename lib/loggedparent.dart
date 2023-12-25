@@ -32,7 +32,7 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
   Widget build(BuildContext context) {
     List<Widget> pages = [
       // const UsersNoticesPage(),
-      NoticesPage(pageName: 'UsersNotices'),
+      const NoticesPage(pageName: 'UsersNotices'),
       NoticesPage(
         isAccountTypeUser:
             Provider.of<GoogleSignInProvider>(context, listen: false)
@@ -40,7 +40,7 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
                 .isAccountTypeUser,
         pageName: 'JobNotices',
       ),
-      UserPage(isOwnProfile: true),
+      const UserPage(isOwnProfile: true),
     ];
     return Scaffold(
       bottomNavigationBar: Container(
