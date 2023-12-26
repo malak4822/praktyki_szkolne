@@ -3,6 +3,7 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/view/notices.dart';
 import 'package:prakty/view/userpage.dart';
 import 'package:prakty/providers/googlesign.dart';
+import 'package:prakty/widgets/loadingscreen.dart';
 import 'package:provider/provider.dart';
 
 class LoggedParentWidget extends StatefulWidget {
@@ -13,13 +14,6 @@ class LoggedParentWidget extends StatefulWidget {
 }
 
 class _LoggedParentWidgetState extends State<LoggedParentWidget> {
-  @override
-  void initState() {
-    Provider.of<GoogleSignInProvider>(context, listen: false)
-        .setUserOnStart(context);
-    super.initState();
-  }
-
   int _currentIndex = 1;
 
   void changePage(int newIndex) {
@@ -39,10 +33,25 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
                 .isAccountTypeUser,
         isUserNoticePage: false,
       ),
-      UserPage(
-          shownUser: Provider.of<GoogleSignInProvider>(context, listen: false)
-              .getCurrentUser,
-          isOwnProfile: true),
+      FutureBuilder(
+          future: Provider.of<GoogleSignInProvider>(context, listen: false)
+              .setUserOnStart(context),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const LoadingWidget();
+            } else if (snapshot.connectionState == ConnectionState.done) {
+              return UserPage(
+                  shownUser:
+                      Provider.of<GoogleSignInProvider>(context, listen: false)
+                          .getCurrentUser,
+                  isOwnProfile: true);
+            } else {
+              return Center(
+                  child: Text(
+                      'Wystąpił Nie Typowy Błąd, Spróbuj Ponownie Później',
+                      style: fontSize20));
+            }
+          }),
     ];
     return Scaffold(
       bottomNavigationBar: Container(

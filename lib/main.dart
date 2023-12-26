@@ -13,7 +13,6 @@ import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
 import 'widgets/loadingscreen.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -32,9 +31,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (c) => EditUser())
         ],
         child: MaterialApp(
-          initialRoute: '/root',
           routes: {
-            '/root': (context) => const MyHomePage(),
             '/editUser': (context) => Stack(children: [
                   const EditUserPage(),
                   Visibility(

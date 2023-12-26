@@ -33,7 +33,7 @@ class EditUser extends ChangeNotifier {
   File? _imgFile;
   File? get imgFile => _imgFile;
 
-  void removeImage() => _imgFile;
+  void removeImage() => _imgFile = null;
 
   void setInitialFile() {
     _imgFile = File('freshImage');

@@ -152,12 +152,11 @@ class GoogleSignInProvider extends ChangeNotifier {
     }
   }
 
-  void setUserOnStart(context) async {
+  Future<void> setUserOnStart(context) async {
     try {
       if (auth.currentUser != null) {
         await MyDb().getUserInfo(context, auth.currentUser!.uid);
       }
-      notifyListeners();
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -171,6 +170,7 @@ class GoogleSignInProvider extends ChangeNotifier {
     try {
       UserCredential userCredentials =
           await auth.signInWithEmailAndPassword(email: email, password: pass);
+
       await MyDb().getUserInfo(_currentUser, userCredentials.user!.uid);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

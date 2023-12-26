@@ -42,27 +42,26 @@ class MyDb {
         DocumentSnapshot docSnapshot =
             await _firestore.collection('users').doc(userId).get();
 
-        Map<String, dynamic>? data =
-            docSnapshot.data() as Map<String, dynamic>?;
+        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
 
-        currentUser.username = data?["username"] ?? "";
-        currentUser.email = data?['email'] ?? "";
-        currentUser.description = data?['description'];
-        currentUser.phoneNum = data?['phoneNum'];
-        currentUser.age = data?['age'];
+        currentUser.username = data["username"] ?? "";
+        currentUser.email = data['email'] ?? "";
+        currentUser.description = data['description'];
+        currentUser.phoneNum = data['phoneNum'];
+        currentUser.age = data['age'];
         currentUser.skillsSet =
-            (data?['skillsSet'] as List<dynamic>?)?.map((dynamic item) {
+            (data['skillsSet'] as List<dynamic>?)?.map((dynamic item) {
                   final Map<String, int> skill = Map<String, int>.from(item);
                   return skill;
                 }).toList() ??
                 [];
-        currentUser.likedOffers = data?['likedOffers'] ?? [];
-        currentUser.location = data?['location'];
-        currentUser.isAccountTypeUser = data?['isAccountTypeUser'] ?? true;
-        currentUser.profilePicture = data?['profilePicture'];
-        currentUser.userId = data?['userId'] ?? "";
-        currentUser.jobVacancy = data?['jobVacancy'] ?? false;
-        currentUser.accountCreated = data?['accountCreated'] ?? Timestamp.now();
+        currentUser.likedOffers = List.from(data['likedOffers']);
+        currentUser.location = data['location'];
+        currentUser.isAccountTypeUser = data['isAccountTypeUser'];
+        currentUser.profilePicture = data['profilePicture'];
+        currentUser.userId = data['userId'];
+        currentUser.jobVacancy = data['jobVacancy'];
+        currentUser.accountCreated = data['accountCreated'] ?? Timestamp.now();
         Provider.of<EditUser>(context, listen: false).setSkillBoxes =
             currentUser.skillsSet;
       }

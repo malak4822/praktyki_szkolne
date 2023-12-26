@@ -8,11 +8,8 @@ import 'package:prakty/widgets/sortandfilter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NoticesPage extends StatefulWidget {
-  const NoticesPage({
-    super.key,
-    this.isAccountTypeUser,
-    required this.isUserNoticePage,
-  });
+  const NoticesPage(
+      {super.key, this.isAccountTypeUser, required this.isUserNoticePage});
 
   final bool? isAccountTypeUser;
   final bool isUserNoticePage;
@@ -46,8 +43,6 @@ class _NoticesPageState extends State<NoticesPage> {
 
     correctSearchinPrefs = convertedToInts;
     tempSearchingPrefs.value = convertedToInts;
-
-    print(' CORRECT SERACHIN PREFS-> $correctSearchinPrefs');
   }
 
   void setSearchingPrefs() async {
