@@ -5,13 +5,15 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
+import 'package:prakty/widgets/topbuttons.dart';
 import 'package:prakty/widgets/contactbox.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
 import 'package:provider/provider.dart';
 import '../widgets/skillboxes.dart';
 
 class UserPage extends StatelessWidget {
-  UserPage({super.key, required this.shownUser, required this.isOwnProfile});
+  const UserPage(
+      {super.key, required this.shownUser, required this.isOwnProfile});
 
   final MyUser shownUser;
   final bool isOwnProfile;
@@ -59,15 +61,16 @@ class UserPage extends StatelessWidget {
                       child: Stack(
                         alignment: Alignment.topRight,
                         children: [
-                          Container(
-                            width: 68,
-                            height: 58,
-                            decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(100)),
-                                color: Colors.white),
-                            padding: const EdgeInsets.all(14),
-                          ),
+                          if (isOwnProfile)
+                            Container(
+                              width: 68,
+                              height: 58,
+                              decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(100)),
+                                  color: Colors.white),
+                              padding: const EdgeInsets.all(14),
+                            ),
                           if (isOwnProfile)
                             IconButton(
                                 iconSize: isOwnProfile ? 22 : 26,
@@ -98,7 +101,27 @@ class UserPage extends StatelessWidget {
                                     );
                                   }
                                 }),
-                          if (!isOwnProfile) const HeartButton()
+                          if (!isOwnProfile &&
+                              !Provider.of<GoogleSignInProvider>(context,
+                                      listen: false)
+                                  .getCurrentUser
+                                  .isAccountTypeUser)
+                            HeartButton(
+                              isOnUserPage: true,
+                              noticeId: shownUser.userId,
+                              userId: Provider.of<GoogleSignInProvider>(context,
+                                      listen: false)
+                                  .getCurrentUser
+                                  .userId,
+                              initialValue: Provider.of<GoogleSignInProvider>(
+                                          context,
+                                          listen: false)
+                                      .getCurrentUser
+                                      .likedOffers
+                                      .contains(shownUser.userId)
+                                  ? 1
+                                  : 0,
+                            )
                         ],
                       ),
                     ),
@@ -219,79 +242,5 @@ class UserPage extends StatelessWidget {
             ]));
           }
         });
-  }
-}
-
-class HeartButton extends StatefulWidget {
-  const HeartButton({super.key});
-
-  @override
-  HeartButtonState createState() => HeartButtonState();
-}
-
-class HeartButtonState extends State<HeartButton>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation _sizeAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 400),
-      vsync: this,
-    );
-
-    _sizeAnimation = TweenSequence<double>([
-      TweenSequenceItem<double>(
-        tween: Tween<double>(begin: 1.0, end: 1.3),
-        weight: 50,
-      ),
-      TweenSequenceItem<double>(
-        tween: Tween<double>(begin: 1.3, end: 1.0),
-        weight: 50,
-      ),
-    ]).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.slowMiddle,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          if (_animationController.isCompleted) {
-            _animationController.reverse();
-          } else {
-            _animationController.forward();
-          }
-        });
-      },
-      child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) => Transform.scale(
-                    scale: _sizeAnimation.value,
-                    alignment: Alignment.center,
-                    child: Icon(
-                      color: gradient[1],
-                      _animationController.isCompleted
-                          ? FontAwesomeIcons.solidHeart
-                          : FontAwesomeIcons.heart,
-                      size: 28,
-                    ),
-                  ))),
-    );
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
   }
 }

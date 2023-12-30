@@ -9,6 +9,17 @@ class EditUser extends ChangeNotifier {
     notifyListeners();
   }
 
+  void initialFileSet() => _imgFile = File('fresh');
+
+  set setpictureToShow(currentImage) {
+    if (currentImage != null) {
+      _pictureToShow = NetworkImage(currentImage);
+    } else {
+      _pictureToShow = null;
+      notifyListeners();
+    }
+  }
+
   List<String> _favList = [];
   List<String> get favList => _favList;
 
@@ -30,13 +41,15 @@ class EditUser extends ChangeNotifier {
     _skillBoxesBackup = skillBoxes;
   }
 
+  ImageProvider<Object>? _pictureToShow;
+  ImageProvider<Object>? get pictureToShow => _pictureToShow;
+
   File? _imgFile;
   File? get imgFile => _imgFile;
 
-  void removeImage() => _imgFile = null;
-
-  void setInitialFile() {
-    _imgFile = File('freshImage');
+  void removeImage() {
+    _pictureToShow = null;
+    notifyListeners();
   }
 
   Future<void> getStorageImage() async {
@@ -45,7 +58,10 @@ class EditUser extends ChangeNotifier {
     final pickedImage = await imagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 12);
     if (pickedImage != null) {
-      _imgFile = File(pickedImage.path);
+      final imgFile = File(pickedImage.path);
+      _pictureToShow = FileImage(imgFile);
+      _imgFile = imgFile;
+
       notifyListeners();
     }
   }
@@ -53,11 +69,13 @@ class EditUser extends ChangeNotifier {
   Future<void> getCameraImage() async {
     final imagePicker = ImagePicker();
 
-    final pickedImage = await imagePicker.pickImage(
+    final XFile? pickedImage = await imagePicker.pickImage(
         source: ImageSource.camera, imageQuality: 12);
 
     if (pickedImage != null) {
-      _imgFile = File(pickedImage.path);
+      final imgFile = File(pickedImage.path);
+      _pictureToShow = FileImage(imgFile);
+      _imgFile = imgFile;
 
       notifyListeners();
     }
@@ -84,7 +102,7 @@ class EditUser extends ChangeNotifier {
   Future<void> deleteSelectedImage() async {
     try {
       await _imgFile?.delete();
-      _imgFile = File('');
+      _imgFile = null;
       notifyListeners();
     } catch (e) {
       debugPrint('Error deleting image: $e');

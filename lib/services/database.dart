@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +12,29 @@ import 'package:provider/provider.dart';
 
 class MyDb {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<String> saveFav(
+      bool isAddedToFav, String userId, String noticeId) async {
+    try {
+      var doc = _firestore.collection('users').doc(userId);
+
+      if (isAddedToFav) {
+        print('esas');
+        doc.update({
+          'likedOffers': FieldValue.arrayRemove([noticeId]),
+        });
+      } else {
+        print('esasadasdadasdsa');
+        doc.update({
+          'likedOffers': FieldValue.arrayUnion([noticeId]),
+        });
+      }
+      return 'success';
+    } catch (e) {
+      debugPrint(e.toString());
+      return e.toString();
+    }
+  }
 
   Future<void> addFirestoreUser(MyUser myUser) async {
     try {
@@ -118,16 +142,19 @@ class MyDb {
     }
   }
 
-  Future<String> uploadImageToStorage(String userId, imgFile) async {
+  Future<String?> uploadImageToStorage(String userId, File? imgFile) async {
     final storage = FirebaseStorage.instance;
 
     try {
-      String imageUrl = '';
-      if (imgFile.path.isNotEmpty) {
+      String? imageUrl = '';
+
+      if (imgFile != null) {
         final storageReference =
             storage.ref().child('profile_pictures/$userId.jpg');
         await storageReference.putFile(imgFile);
         imageUrl = await storageReference.getDownloadURL();
+      } else {
+        imageUrl = null;
       }
 
       await _firestore

@@ -32,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
           .checkInternetConnectivity();
     }
 
+// BŁĄDPRZY LOGOWANIU, CO NAJMNIEJ JEDNA WIELKA LITERA, JAK KILKNIE SIE 2 RAZY TO LOGUJE
     bool hasInternet = false;
 
     return Stack(children: [

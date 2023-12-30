@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/providers/edituser.dart';
-import 'package:prakty/widgets/backbutton.dart';
+import 'package:prakty/widgets/topbuttons.dart';
 import 'package:prakty/widgets/noticecard.dart';
 import 'package:provider/provider.dart';
 

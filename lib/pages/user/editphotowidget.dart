@@ -15,28 +15,13 @@ const String basicPPUrl =
     'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.';
 
 class _EditPhotoState extends State<EditPhoto> {
-  ImageProvider<Object>? pictureToShow = const NetworkImage(basicPPUrl);
-
-  void deleteImage() {
-    Provider.of<EditUser>(context, listen: false).removeImage();
-    setState(() {
-      pictureToShow = const NetworkImage(basicPPUrl);
-    });
-  }
-
-  void updatePhoto() {
-    pictureToShow =
-        FileImage(Provider.of<EditUser>(context, listen: false).imgFile!);
-  }
-
   @override
   void initState() {
     if (widget.user.profilePicture != null) {
-      pictureToShow = widget.user.profilePicture!.isNotEmpty
-          ? NetworkImage(widget.user.profilePicture!)
-          : const NetworkImage(basicPPUrl);
+      Provider.of<EditUser>(context, listen: false).setpictureToShow =
+          widget.user.profilePicture;
+      Provider.of<EditUser>(context, listen: false).initialFileSet();
     }
-    Provider.of<EditUser>(context, listen: false).setInitialFile();
     super.initState();
   }
 
@@ -61,13 +46,19 @@ class _EditPhotoState extends State<EditPhoto> {
               child: ClipOval(
                   child: FadeInImage(
                 fit: BoxFit.cover,
-                image: pictureToShow ?? const NetworkImage(basicPPUrl),
+                image: Provider.of<EditUser>(context).pictureToShow ??
+                    const NetworkImage(basicPPUrl),
                 placeholder: const NetworkImage(basicPPUrl),
               )),
             )),
         IconButton(
-            onPressed: () {
-              deleteImage();
+            onPressed: () async {
+              await Provider.of<EditUser>(context, listen: false)
+                  .deleteSelectedImage();
+              if (!mounted) return;
+              Provider.of<EditUser>(context, listen: false).setpictureToShow =
+                  null;
+              // Provider.of<EditUser>(context, listen: false).removeImage();
             },
             icon: const Icon(Icons.delete, color: Colors.white),
             iconSize: 34),
@@ -87,7 +78,6 @@ class _EditPhotoState extends State<EditPhoto> {
         } else {
           await editFunction.getStorageImage();
         }
-        updatePhoto();
       },
       child: SizedBox(
           height: 140,

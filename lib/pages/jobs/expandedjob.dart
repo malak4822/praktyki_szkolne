@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
+import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/view/userpage.dart';
-import 'package:prakty/widgets/backbutton.dart';
+import 'package:prakty/widgets/topbuttons.dart';
 import 'package:prakty/widgets/contactbox.dart';
+import 'package:provider/provider.dart';
 
 class JobAdvertisement extends StatefulWidget {
   const JobAdvertisement({super.key, required this.jobInfo});
@@ -32,7 +34,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
 
   @override
   Widget build(BuildContext context) {
-    final jobInfo = widget.jobInfo;
+    final JobAdModel jobInfo = widget.jobInfo;
     return Scaffold(
       body: SafeArea(
           child: Stack(children: [
@@ -244,17 +246,25 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                           ),
                         ],
                       ))),
-
-              // ZAWÓD
-              const SizedBox(height: 8),
             ])),
         backButton(context),
-        // Align(
-        //   alignment: Alignment.topRight,
-        //   child: HeartWidget(
-        //     offerId: jobInfo[''],
-        //   ),
-        // ),
+        if (Provider.of<GoogleSignInProvider>(context, listen: false)
+            .getCurrentUser
+            .isAccountTypeUser)
+          HeartButton(
+            isOnUserPage: false,
+            noticeId: jobInfo.jobId,
+            userId: Provider.of<GoogleSignInProvider>(context, listen: false)
+                .getCurrentUser
+                .userId,
+            initialValue:
+                Provider.of<GoogleSignInProvider>(context, listen: false)
+                        .getCurrentUser
+                        .likedOffers
+                        .contains(jobInfo.jobId)
+                    ? 1
+                    : 0,
+          ),
       ])),
     );
   }

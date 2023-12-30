@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/pages/user/editcontactinfo.dart';
@@ -78,7 +80,9 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           }
           // UPDATING PHOTO UPDATING PHOTO UPDATING PHOTO
           if (tabToOpen == 0) {
-            if (editUserFunction.imgFile?.path != 'freshImage') {
+            print('PICTURE TO SHOW => ${editUserFunction.pictureToShow}');
+            print('IMG FILE => ${editUserFunction.imgFile}');
+            if (editUserFunction.imgFile != File('fresh')) {
               var uploadUrl = await myDb.uploadImageToStorage(
                   user.userId, editUserFunction.imgFile);
 

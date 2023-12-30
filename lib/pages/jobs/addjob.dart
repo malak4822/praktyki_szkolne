@@ -6,7 +6,7 @@ import 'package:prakty/pages/user/choselocation.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
-import 'package:prakty/widgets/backbutton.dart';
+import 'package:prakty/widgets/topbuttons.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
 
