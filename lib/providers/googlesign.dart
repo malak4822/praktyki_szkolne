@@ -51,9 +51,6 @@ class GoogleSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void refreshJobAd(List jobInfo) {
-    notifyListeners();
-  }
 
   MyUser _currentUser = MyUser(
       userId: '',
@@ -224,11 +221,9 @@ class GoogleSignInProvider extends ChangeNotifier {
 
   set addNoticeToFav(String noticeId) {
     _currentUser.likedOffers.add(noticeId);
-    print(_currentUser.likedOffers);
   }
 
   set removeNoticeFromFav(String noticeId) {
     _currentUser.likedOffers.remove(noticeId);
-    print(_currentUser.likedOffers);
   }
 }

@@ -77,29 +77,18 @@ class UserPage extends StatelessWidget {
                                 icon: FaIcon(FontAwesomeIcons.userPen,
                                     color: gradient[1]),
                                 onPressed: () {
-                                  if (isOwnProfile) {
-                                    Provider.of<EditUser>(context,
-                                            listen: false)
-                                        .checkEmptiness(
-                                            userData.username,
-                                            userData.description ?? '',
-                                            userData.isAccountTypeUser
-                                                ? userData.age
-                                                : 1,
-                                            userData.isAccountTypeUser
-                                                ? userData.location
-                                                : 'a');
+                                  Provider.of<EditUser>(context, listen: false)
+                                      .checkEmptiness(
+                                          userData.username,
+                                          userData.description ?? '',
+                                          userData.isAccountTypeUser
+                                              ? userData.age
+                                              : 1,
+                                          userData.isAccountTypeUser
+                                              ? userData.location
+                                              : 'a');
 
-                                    Navigator.pushNamed(context, '/editUser');
-                                  } else {
-                                    GestureDetector(
-                                      onTap: () {
-                                        Provider.of<EditUser>(context,
-                                                listen: false)
-                                            .toogleAddToFav(shownUser.userId);
-                                      },
-                                    );
-                                  }
+                                  Navigator.pushNamed(context, '/editUser');
                                 }),
                           if (!isOwnProfile &&
                               !Provider.of<GoogleSignInProvider>(context,

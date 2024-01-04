@@ -4,11 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class EditUser extends ChangeNotifier {
-  void toogleAddToFav(String userId) {
-    _favList.contains(userId) ? _favList.remove(userId) : _favList.add(userId);
-    notifyListeners();
-  }
-
   void initialFileSet() => _imgFile = File('fresh');
 
   set setpictureToShow(currentImage) {
@@ -19,9 +14,6 @@ class EditUser extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  List<String> _favList = [];
-  List<String> get favList => _favList;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;

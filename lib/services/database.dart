@@ -19,12 +19,10 @@ class MyDb {
       var doc = _firestore.collection('users').doc(userId);
 
       if (isAddedToFav) {
-        print('esas');
         doc.update({
           'likedOffers': FieldValue.arrayRemove([noticeId]),
         });
       } else {
-        print('esasadasdadasdsa');
         doc.update({
           'likedOffers': FieldValue.arrayUnion([noticeId]),
         });
@@ -169,16 +167,16 @@ class MyDb {
     }
   }
 
-  Future<List<JobAdModel>?> downloadJobAds() async {
+  Future<List<JobAdModel>> downloadJobAds() async {
     try {
+      List<JobAdModel> advertInfo = [];
+
       final collection = _firestore.collection('/jobAd');
       final QuerySnapshot jobCards = await collection.get();
 
       final List<Map<String, dynamic>> myJobList = jobCards.docs
           .map((doc) => doc.data() as Map<String, dynamic>)
           .toList();
-
-      List<JobAdModel> advertInfo = [];
 
       for (int i = 0; i < myJobList.length; i++) {
         advertInfo.add(JobAdModel(
@@ -198,7 +196,7 @@ class MyDb {
       return advertInfo;
     } catch (e) {
       debugPrint(e.toString());
-      return null;
+      return [];
     }
   }
 
@@ -241,6 +239,74 @@ class MyDb {
     }
   }
 
+  Future<List<JobAdModel>?> downloadFavJobNotices(
+      List<String> favNoticesIds) async {
+    try {
+      List<JobAdModel> jobNotices = [];
+
+      for (String element in favNoticesIds) {
+        DocumentSnapshot favJob =
+            await _firestore.collection('jobAd').doc(element).get();
+        Map<String, dynamic> docSnapshot =
+            favJob.data() as Map<String, dynamic>;
+
+        jobNotices.add(JobAdModel(
+          jobId: docSnapshot['jobId'],
+          belongsToUser: docSnapshot['belongsToUser'],
+          jobName: docSnapshot['jobName'],
+          companyName: docSnapshot['companyName'],
+          jobEmail: docSnapshot['jobEmail'],
+          jobImage: docSnapshot['jobImage'],
+          jobPhone: docSnapshot['jobPhone'],
+          jobLocation: docSnapshot['jobLocation'],
+          jobQualification: docSnapshot['jobQualification'],
+          jobDescription: docSnapshot['jobDescription'],
+          canRemotely: docSnapshot['canRemotely'],
+        ));
+      }
+      return jobNotices;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  Future<List<MyUser>?> downloadFavUsersNotices(
+      List<String> favNoticesIds) async {
+    try {
+      List<MyUser> usersNotices = [];
+
+      for (String element in favNoticesIds) {
+        DocumentSnapshot favJob =
+            await _firestore.collection('users').doc(element).get();
+
+        Map<String, dynamic> docSnapshot =
+            favJob.data() as Map<String, dynamic>;
+
+        usersNotices.add(MyUser(
+            userId: docSnapshot['userId'],
+            username: docSnapshot['username'],
+            age: docSnapshot['age'],
+            description: docSnapshot['description'],
+            phoneNum: docSnapshot['phoneNum'],
+            location: docSnapshot['location'],
+            isAccountTypeUser: docSnapshot['isAccountTypeUser'],
+            skillsSet: (docSnapshot['skillsSet'] as List<dynamic>)
+                .map((item) => Map<String, int>.from(item))
+                .toList(),
+            email: docSnapshot['email'],
+            profilePicture: docSnapshot['profilePicture'],
+            likedOffers: List.from(docSnapshot['likedOffers']),
+            jobVacancy: docSnapshot['jobVacancy'],
+            accountCreated: docSnapshot['accountCreated']));
+      }
+      return usersNotices;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
   Future<bool> addUserJobNotice(userId, newValue) async {
     try {
       await _firestore
@@ -254,9 +320,9 @@ class MyDb {
     }
   }
 
-  Future<List?> addFirestoreJobAd(
+  Future<void> addFirestoreJobAd(
       String userId,
-      noticePhoto,
+      File? noticePhoto,
       String jobName,
       String companyName,
       String jobEmail,
@@ -265,7 +331,7 @@ class MyDb {
       String jobQualification,
       String jobDescription,
       bool canRemotely) async {
-    late String code;
+    late String jobId;
     String generateRandomCode() {
       const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -276,17 +342,18 @@ class MyDb {
       return 'j0bNum${randomChars.join()}';
     }
 
-    code = generateRandomCode();
+    jobId = generateRandomCode();
 
     try {
       String? imageUrl;
-      if (noticePhoto != 'no_image') {
+      if (noticePhoto != null) {
         final storageReference =
-            FirebaseStorage.instance.ref().child('job_ad_pictures/$code.jpg');
+            FirebaseStorage.instance.ref().child('job_ad_pictures/$jobId.jpg');
         await storageReference.putFile(noticePhoto);
         imageUrl = await storageReference.getDownloadURL();
       }
-      await _firestore.collection("jobAd").doc(code).set({
+      await _firestore.collection("jobAd").doc(jobId).set({
+        'jobId': jobId,
         'belongsToUser': userId,
         'jobImage': imageUrl,
         'jobName': jobName,
@@ -298,19 +365,8 @@ class MyDb {
         'jobDescription': jobDescription,
         'canRemotely': canRemotely
       });
-      return [
-        jobName,
-        companyName,
-        jobEmail,
-        jobPhone,
-        companyName,
-        jobLocation,
-        jobDescription,
-        canRemotely
-      ];
     } catch (e) {
       debugPrint(e.toString());
-      return null;
     }
   }
 

@@ -4,7 +4,9 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/jobs/expandedjob.dart';
+import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/view/userpage.dart';
+import 'package:provider/provider.dart';
 
 class NoticeCard extends StatelessWidget {
   const NoticeCard(
@@ -48,7 +50,9 @@ class NoticeCard extends StatelessWidget {
                 builder: (context) => isUserNoticePage
                     ? UserPage(isOwnProfile: false, shownUser: userNoticeInfo!)
                     : JobAdvertisement(jobInfo: jobNoticeInfo!),
-              ));
+              )).then((value) => Provider.of<GoogleSignInProvider>(context,
+                  listen: false)
+              .setState());
         },
         child: Container(
             margin: const EdgeInsets.symmetric(vertical: 4),

@@ -27,6 +27,7 @@ class _AddJobState extends State<AddJob> {
   TextEditingController jobDescription = TextEditingController();
   bool canRemotely = false;
   File? noticePhoto;
+  bool isLocationFilled = false;
   final _formKey = GlobalKey<FormState>();
 
   Future<void> pickImg() async {
@@ -89,27 +90,15 @@ class _AddJobState extends State<AddJob> {
                     updateValues(companyName, 'Nazwa Firmy', 1, 24,
                         Icons.business, TextInputType.text, null),
                     const SizedBox(height: 12),
-                    updateValues(jobEmail, 'Email', 1, null, Icons.email,
-                        TextInputType.emailAddress, null),
+                    updateValues(jobQualification, 'Nazwa Kwalifikacji', 1, 28,
+                        Icons.text_fields_rounded, TextInputType.text, null),
                     const SizedBox(height: 12),
                     updateValues(jobPhone, 'Numer Telefonu', 1, 9, Icons.phone,
                         TextInputType.phone, null),
                     const SizedBox(height: 12),
-                    updateValues(jobQualification, 'Nazwa Kwalifikacji', 1, 28,
-                        Icons.text_fields_rounded, TextInputType.text, null),
-                    const SizedBox(height: 12),
-                    // updateValues(jobLocation, 'Miejsce', null, null,
-                    //     Icons.location_on_rounded, null, () {
-                    //   Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //           builder: (context) =>
-                    //               FindOnMap(callBack: (String val) {
-                    //                 setState(() {
-                    //                   jobLocation.text = val;
-                    //                 });
-                    //               })));
-                    // }),
+                    updateValues(jobEmail, 'Email', 1, null, Icons.email,
+                        TextInputType.emailAddress, null),
+                    const SizedBox(height: 22),
                     Row(
                       children: [
                         const Icon(Icons.location_on_sharp,
@@ -150,6 +139,14 @@ class _AddJobState extends State<AddJob> {
                         )
                       ],
                     ),
+                    Visibility(
+                        visible: isLocationFilled,
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 52),
+                            Text('Proszę Uzupełnić Miejsce', style: fontSize16)
+                          ],
+                        )),
                     const SizedBox(height: 20),
                     updateValues(jobDescription, 'Opis Stanowiska', 10, 600,
                         Icons.description_outlined, TextInputType.text, null),
@@ -173,24 +170,27 @@ class _AddJobState extends State<AddJob> {
                     const SizedBox(height: 16),
                     ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.all(8),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            backgroundColor: Colors.white,
-                            elevation: 20),
+                                side: const BorderSide(
+                                    color: Colors.white, width: 2),
+                                borderRadius: BorderRadius.circular(14)),
+                            elevation: 16),
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             if (jobLocation.text != '') {
+                              setState(() {
+                                isLocationFilled = false;
+                              });
                               if (await Provider.of<EditUser>(context,
                                       listen: false)
                                   .checkInternetConnectivity()) {
                                 if (!mounted) return;
-                                List? eee = await MyDb().addFirestoreJobAd(
+                                await MyDb().addFirestoreJobAd(
                                     Provider.of<GoogleSignInProvider>(context,
                                             listen: false)
                                         .getCurrentUser
                                         .userId,
-                                    noticePhoto ?? 'no_image',
+                                    noticePhoto,
                                     jobName.text,
                                     companyName.text,
                                     jobEmail.text,
@@ -199,23 +199,18 @@ class _AddJobState extends State<AddJob> {
                                     jobQualification.text,
                                     jobDescription.text,
                                     canRemotely);
-                                if (eee != null) {
-                                  if (!mounted) return;
-                                  Provider.of<GoogleSignInProvider>(context,
-                                          listen: false)
-                                      .refreshJobAd(eee);
-                                }
                               }
                               if (!mounted) return;
                               Navigator.pop(context);
+                            } else {
+                              setState(() {
+                                isLocationFilled = true;
+                              });
                             }
                           }
                         },
-                        child: Icon(
-                          Icons.done_outline_rounded,
-                          color: gradient[1],
-                          size: 24,
-                        )),
+                        child: const Icon(Icons.done_outline_rounded,
+                            color: Colors.white, size: 24)),
                   ])))),
       backButton(context),
     ])));

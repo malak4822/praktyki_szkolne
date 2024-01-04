@@ -63,7 +63,8 @@ class _NoticesPageState extends State<NoticesPage> {
               backgroundColor: gradient[1],
               foregroundColor: Colors.white,
               splashColor: gradient[0],
-              onPressed: () => Navigator.pushNamed(context, '/addJob'),
+              onPressed: () => Navigator.pushNamed(context, '/addJob')
+                  .then((value) => setState(() {})),
               child: const Icon(Icons.add))
           : null,
       body: SafeArea(

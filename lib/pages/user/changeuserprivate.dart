@@ -33,34 +33,37 @@ class EditPrivUserInfo extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CheckboxListTile(
-                            checkboxShape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)),
-                            activeColor: Colors.white,
-                            side: MaterialStateBorderSide.resolveWith(
-                                (states) => const BorderSide(
-                                    width: 2, color: Colors.white)),
-                            title: Text("Ogłaszaj Mnie Jako Szukającego Pracy",
-                                style: fontSize16),
-                            value: Provider.of<GoogleSignInProvider>(context)
-                                .getCurrentUser
-                                .jobVacancy,
-                            dense: true,
-                            controlAffinity: ListTileControlAffinity.trailing,
-                            onChanged: (newValue) async {
-                              try {
-                                var hasVacancy = await MyDb().addUserJobNotice(
-                                    currentUser.userId, newValue);
-                                if (hasVacancy == false) {
-                                  if (!context.mounted) return;
-                                  Provider.of<GoogleSignInProvider>(context,
-                                          listen: false)
-                                      .userSearchingToogle(newValue);
+                        if (currentUser.isAccountTypeUser)
+                          CheckboxListTile(
+                              checkboxShape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              activeColor: Colors.white,
+                              side: MaterialStateBorderSide.resolveWith(
+                                  (states) => const BorderSide(
+                                      width: 2, color: Colors.white)),
+                              title: Text(
+                                  "Ogłaszaj Mnie Jako Szukającego Pracy",
+                                  style: fontSize16),
+                              value: Provider.of<GoogleSignInProvider>(context)
+                                  .getCurrentUser
+                                  .jobVacancy,
+                              dense: true,
+                              controlAffinity: ListTileControlAffinity.trailing,
+                              onChanged: (newValue) async {
+                                try {
+                                  var hasVacancy = await MyDb()
+                                      .addUserJobNotice(
+                                          currentUser.userId, newValue);
+                                  if (hasVacancy == false) {
+                                    if (!context.mounted) return;
+                                    Provider.of<GoogleSignInProvider>(context,
+                                            listen: false)
+                                        .userSearchingToogle(newValue);
+                                  }
+                                } catch (e) {
+                                  debugPrint(e.toString());
                                 }
-                              } catch (e) {
-                                debugPrint(e.toString());
-                              }
-                            }),
+                              }),
                       ],
                     )),
                 button(Icons.favorite_border, 'Ulubione', () {
