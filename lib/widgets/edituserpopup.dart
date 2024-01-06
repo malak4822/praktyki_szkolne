@@ -22,7 +22,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
   var ageCont = 0;
   @override
   Widget build(BuildContext context) {
-    int tabToOpen = Provider.of<EditUser>(context).tabToOpen;
+    int tabToOpen = Provider.of<EditUser>(context, listen: false).tabToOpen;
 
     var editUserFunction = Provider.of<EditUser>(context, listen: false);
 
@@ -61,7 +61,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           descriptionCont,
           locationCont,
           emailCont,
-          ageCont!,
+          ageCont,
           (newVal) => ageCont = newVal,
           user.isAccountTypeUser,
           formKeyDesc),
@@ -80,7 +80,17 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           }
           // UPDATING PHOTO UPDATING PHOTO UPDATING PHOTO
           if (tabToOpen == 0) {
-            if (editUserFunction.imgFile != File('fresh')) {
+            if (editUserFunction.imgFile != null) {
+              if (editUserFunction.imgFile!.path == 'fresh') {
+              } else {
+                var uploadUrl = await myDb.uploadImageToStorage(
+                    user.userId, editUserFunction.imgFile);
+
+                googleSignFunction.refreshProfilePicture(uploadUrl);
+
+                editUserFunction.deleteSelectedImage();
+              }
+            } else {
               var uploadUrl = await myDb.uploadImageToStorage(
                   user.userId, editUserFunction.imgFile);
 
@@ -94,15 +104,20 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           if (tabToOpen == 1) {
             if (formKeyDesc.currentState?.validate() ?? false) {
               editUserFunction.changeLoading();
-              List<String>? infoFields = await myDb.updateInfoFields(
+              List<String?>? infoFields = await myDb.updateInfoFields(
+                  user.isAccountTypeUser,
                   user.userId,
                   nameCont.text,
                   descriptionCont.text,
                   locationCont.text,
-                  ageCont!);
+                  ageCont);
               if (infoFields != null) {
                 googleSignFunction.refreshNameAndDesc(
-                    infoFields[0], infoFields[1], infoFields[2], infoFields[3]);
+                    user.isAccountTypeUser,
+                    infoFields[0]!,
+                    infoFields[1]!,
+                    infoFields[2],
+                    infoFields[3]);
                 editUserFunction.toogleEditingPopUp(3);
               }
               if (user.isAccountTypeUser) {

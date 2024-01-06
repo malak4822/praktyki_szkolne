@@ -92,16 +92,29 @@ class MyDb {
     }
   }
 
-  Future<List<String>?> updateInfoFields(String userId, String newUsername,
-      String newDescription, String newLocation, int newAge) async {
+  Future<List<String?>?> updateInfoFields(
+      bool isAccountTypeUser,
+      String userId,
+      String newUsername,
+      String newDescription,
+      String? newLocation,
+      int? newAge) async {
     try {
-      await _firestore.collection('users').doc(userId).update({
-        'username': newUsername,
-        'description': newDescription,
-        'location': newLocation,
-        'age': newAge,
-      });
-      return [newUsername, newDescription, newLocation, newAge.toString()];
+      if (isAccountTypeUser) {
+        await _firestore.collection('users').doc(userId).update({
+          'username': newUsername,
+          'description': newDescription,
+          'location': newLocation,
+          'age': newAge,
+        });
+        return [newUsername, newDescription, newLocation!, newAge.toString()];
+      } else {
+        await _firestore.collection('users').doc(userId).update({
+          'username': newUsername,
+          'description': newDescription,
+        });
+        return [newUsername, newDescription, null, null];
+      }
     } catch (e) {
       debugPrint(e.toString());
       return null;

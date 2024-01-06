@@ -93,8 +93,8 @@ class EditUser extends ChangeNotifier {
 
   Future<void> deleteSelectedImage() async {
     try {
-      await _imgFile?.delete();
       _imgFile = null;
+      await _imgFile?.delete();
       notifyListeners();
     } catch (e) {
       debugPrint('Error deleting image: $e');

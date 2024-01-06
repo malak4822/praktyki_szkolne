@@ -23,7 +23,7 @@ class EditNameAndDesc extends StatefulWidget {
   final TextEditingController locationCont;
   final GlobalKey<FormState> formKey;
 
-  final int ageCont;
+  final int? ageCont;
   final Function callback;
 
   @override
@@ -45,9 +45,8 @@ class _EditNameAndDescState extends State<EditNameAndDesc> {
             updateValues(widget.descriptionCont, 'Opis', 8, 500,
                 Icons.description_rounded, TextInputType.text, null),
             const SizedBox(height: 10),
-            Visibility(
-              visible: widget.isAccountTypeUser,
-              child: Row(
+            if (widget.isAccountTypeUser)
+              Row(
                 children: [
                   const Icon(Icons.location_on_sharp, color: Colors.white),
                   const SizedBox(width: 16),
@@ -86,32 +85,32 @@ class _EditNameAndDescState extends State<EditNameAndDesc> {
                   )
                 ],
               ),
-            ),
             const SizedBox(height: 16),
-            Visibility(
-                visible: widget.isAccountTypeUser,
-                child: Row(children: [
-                  const Icon(Icons.person, color: Colors.white),
-                  const SizedBox(width: 16),
-                  Expanded(
-                      child: Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 2),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: CupertinoPicker(
-                              itemExtent: 18,
-                              scrollController: FixedExtentScrollController(
-                                  initialItem: widget.ageCont - 14),
-                              onSelectedItemChanged: (int newVal) =>
-                                  widget.callback(newVal + 14),
-                              children: List.generate(
-                                  14 + 27,
-                                  (index) => Text(
-                                      '${(14 + index).toString()} lat',
-                                      style: fontSize16))))),
-                ])),
+            if (widget.isAccountTypeUser)
+              Row(children: [
+                const Icon(Icons.person, color: Colors.white),
+                const SizedBox(width: 16),
+                Expanded(
+                    child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white, width: 2),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: CupertinoPicker(
+                            itemExtent: 18,
+                            scrollController: FixedExtentScrollController(
+                                initialItem: widget.ageCont != null
+                                    ? widget.ageCont! - 14
+                                    : 0),
+                            onSelectedItemChanged: (int newVal) =>
+                                widget.callback(newVal + 14),
+                            children: List.generate(
+                                14 + 27,
+                                (index) => Text(
+                                    '${(14 + index).toString()} lat',
+                                    style: fontSize16))))),
+              ]),
           ]))),
     );
   }

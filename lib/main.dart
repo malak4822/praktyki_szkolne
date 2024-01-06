@@ -5,13 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/loggedparent.dart';
 import 'package:prakty/pages/jobs/addjob.dart';
-import 'package:prakty/pages/user/edituserpage.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/widgets/error.dart';
 import 'package:prakty/loginpage.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:provider/provider.dart';
-import 'widgets/loadingscreen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,12 +30,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           routes: {
-            '/editUser': (context) => Stack(children: [
-                  const EditUserPage(),
-                  Visibility(
-                      visible: Provider.of<EditUser>(context).isLoading,
-                      child: const LoadingWidget()),
-                ]),
+            //  '/userPage' : (context) => const UserPage(shownUser: shownUser, isOwnProfile: isOwnProfile)
             '/addJob': (context) => const AddJob(),
           },
           debugShowCheckedModeBanner: false,

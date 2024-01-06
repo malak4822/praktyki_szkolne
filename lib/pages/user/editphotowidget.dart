@@ -40,9 +40,8 @@ class _EditPhotoState extends State<EditPhoto> {
               height: 240,
               width: 240,
               decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(colors: gradient),
-              ),
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(colors: gradient)),
               child: ClipOval(
                   child: FadeInImage(
                 fit: BoxFit.cover,

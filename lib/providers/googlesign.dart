@@ -27,15 +27,21 @@ class GoogleSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void refreshNameAndDesc(newUsername, newDescription, newLocation, newAge) {
-    _currentUser.username = newUsername;
-    _currentUser.description = newDescription;
-    _currentUser.location = newLocation;
-    _currentUser.age = int.parse(newAge);
+  void refreshNameAndDesc(bool isAccountTypeUser, String newUsername,
+      String newDescription, String? newLocation, String? newAge) {
+    if (isAccountTypeUser) {
+      _currentUser.username = newUsername;
+      _currentUser.description = newDescription;
+      _currentUser.location = newLocation;
+      _currentUser.age = int.parse(newAge!);
+    } else {
+      _currentUser.username = newUsername;
+      _currentUser.description = newDescription;
+    }
     notifyListeners();
   }
 
-  void refreshContactInfo(newEmail, newPhone) {
+  void refreshContactInfo(String newEmail, String newPhone) {
     _currentUser.email = newEmail;
     _currentUser.phoneNum = newPhone;
     notifyListeners();
@@ -50,7 +56,6 @@ class GoogleSignInProvider extends ChangeNotifier {
     _currentUser.profilePicture = newPictureUrl;
     notifyListeners();
   }
-
 
   MyUser _currentUser = MyUser(
       userId: '',
