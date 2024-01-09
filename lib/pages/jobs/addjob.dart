@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/pages/user/choselocation.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
@@ -10,14 +11,18 @@ import 'package:prakty/widgets/topbuttons.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
 
-class AddJob extends StatefulWidget {
-  const AddJob({super.key});
+class AddEditJob extends StatefulWidget {
+  const AddEditJob({super.key, required this.initialEditingVal});
+  final JobAdModel? initialEditingVal;
 
   @override
-  State<AddJob> createState() => _AddJobState();
+  State<AddEditJob> createState() => _AddEditJobState();
 }
 
-class _AddJobState extends State<AddJob> {
+class _AddEditJobState extends State<AddEditJob> {
+  JobAdModel? initialJobData;
+  bool isNoticeOwner = false;
+
   TextEditingController jobName = TextEditingController();
   TextEditingController companyName = TextEditingController();
   TextEditingController jobEmail = TextEditingController();
@@ -42,8 +47,39 @@ class _AddJobState extends State<AddJob> {
     }
   }
 
+  ImageProvider<Object> pictureToShow = const NetworkImage(
+      'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fcompany_icon.png?alt=media&token=7c9796bf-2b8b-40d4-bc71-b85aeb82c269');
+
+  @override
+  void initState() {
+    if (widget.initialEditingVal != null) {
+      initialJobData = widget.initialEditingVal!;
+      jobName.text = initialJobData!.jobName;
+      companyName.text = initialJobData!.companyName;
+      jobEmail.text = initialJobData!.jobEmail;
+      jobPhone.text = initialJobData!.jobPhone.toString();
+      jobLocation.text = initialJobData!.jobLocation;
+      jobQualification.text = initialJobData!.jobQualification;
+      jobDescription.text = initialJobData!.jobDescription;
+      isNoticeOwner = true;
+      if (noticePhoto != null) {
+        pictureToShow = FileImage(noticePhoto!);
+      }
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // print(isNoticeOwner
+    //     ? initialJobData!.jobImage != null
+    //         ? NetworkImage(initialJobData!.jobImage!)
+    //         : FileImage(noticePhoto) as ImageProvider<Object>
+    //     : noticePhoto != null
+    //         ? FileImage(noticePhoto!)
+    //         : const NetworkImage(
+    //                 'https://clipart-library.com/new_gallery/1-15633_no-sign-png-no-symbol-white-png.png')
+    //             as ImageProvider<Object>);
     return Scaffold(
         body: SafeArea(
             child: Stack(children: [
@@ -57,32 +93,24 @@ class _AddJobState extends State<AddJob> {
               child: Form(
                   key: _formKey,
                   child: ListView(padding: const EdgeInsets.all(20), children: [
-                    if (noticePhoto != null)
-                      GestureDetector(
-                        onTap: () async {
-                          await pickImg();
-                        },
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: SizedBox(
-                                width: double.infinity,
-                                height: 220,
-                                child: Image(
-                                  fit: BoxFit.cover,
-                                  image: noticePhoto != null
-                                      ? FileImage(noticePhoto!)
-                                      : const NetworkImage(
-                                              'https://clipart-library.com/new_gallery/1-15633_no-sign-png-no-symbol-white-png.png')
-                                          as ImageProvider<Object>,
-                                ))),
-                      ),
-                    if (noticePhoto == null)
-                      IconButton(
-                          iconSize: 42,
-                          icon: const Icon(Icons.photo, color: Colors.white),
-                          onPressed: () async {
-                            await pickImg();
-                          }),
+                    // if (isNoticeOwner)
+                    GestureDetector(
+                      onTap: () async => await pickImg(),
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: SizedBox(
+                              width: double.infinity,
+                              height: 220,
+                              child: Image(
+                                  fit: BoxFit.cover, image: pictureToShow))),
+                    ),
+                    // if (false)
+                    // IconButton(
+                    //     iconSize: 42,
+                    //     icon: const Icon(Icons.photo, color: Colors.white),
+                    //     onPressed: () async {
+                    //       await pickImg();
+                    //     }),
                     const SizedBox(height: 12),
                     updateValues(jobName, 'Nazwa Stanowiska', 1, 28,
                         Icons.person, TextInputType.name, null),
@@ -158,7 +186,7 @@ class _AddJobState extends State<AddJob> {
                         activeColor: Colors.white,
                         side: MaterialStateBorderSide.resolveWith((states) =>
                             const BorderSide(width: 2, color: Colors.white)),
-                        title: Text("Praca Zdalna", style: fontSize16),
+                        title: Text("Praktyki Zdalne", style: fontSize16),
                         value: canRemotely,
                         dense: true,
                         controlAffinity: ListTileControlAffinity.leading,
@@ -181,24 +209,39 @@ class _AddJobState extends State<AddJob> {
                               setState(() {
                                 isLocationFilled = false;
                               });
+
                               if (await Provider.of<EditUser>(context,
                                       listen: false)
                                   .checkInternetConnectivity()) {
-                                if (!mounted) return;
-                                await MyDb().addFirestoreJobAd(
-                                    Provider.of<GoogleSignInProvider>(context,
-                                            listen: false)
-                                        .getCurrentUser
-                                        .userId,
-                                    noticePhoto,
-                                    jobName.text,
-                                    companyName.text,
-                                    jobEmail.text,
-                                    int.parse(jobPhone.text),
-                                    jobLocation.text,
-                                    jobQualification.text,
-                                    jobDescription.text,
-                                    canRemotely);
+                                if (isNoticeOwner) {
+                                  MyDb().updateJob(
+                                      initialJobData!.jobId,
+                                      noticePhoto,
+                                      jobName.text,
+                                      companyName.text,
+                                      jobEmail.text,
+                                      int.parse(jobPhone.text),
+                                      jobLocation.text,
+                                      jobQualification.text,
+                                      jobDescription.text,
+                                      canRemotely);
+                                } else {
+                                  if (!mounted) return;
+                                  await MyDb().addFirestoreJobAd(
+                                      Provider.of<GoogleSignInProvider>(context,
+                                              listen: false)
+                                          .getCurrentUser
+                                          .userId,
+                                      noticePhoto,
+                                      jobName.text,
+                                      companyName.text,
+                                      jobEmail.text,
+                                      int.parse(jobPhone.text),
+                                      jobLocation.text,
+                                      jobQualification.text,
+                                      jobDescription.text,
+                                      canRemotely);
+                                }
                               }
                               if (!mounted) return;
                               Navigator.pop(context);

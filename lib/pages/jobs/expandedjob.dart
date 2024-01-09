@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
+import 'package:prakty/models/user_model.dart';
+import 'package:prakty/pages/jobs/addjob.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/view/userpage.dart';
@@ -17,6 +20,26 @@ class JobAdvertisement extends StatefulWidget {
 }
 
 class _JobAdvertisementState extends State<JobAdvertisement> {
+  Future<MyUser?>? ownerData;
+  @override
+  void initState() {
+    ownerData = MyDb().takeAdOwnersData(widget.jobInfo.belongsToUser);
+    if (ownerData != null) {
+      ownerData!.then((value) {
+        if (Provider.of<GoogleSignInProvider>(context, listen: false)
+                .getCurrentUser
+                .userId ==
+            value!.userId) {
+          setState(() {
+            isOwnNotice = true;
+          });
+        }
+      });
+    }
+    super.initState();
+  }
+
+  bool isOwnNotice = false;
   void showSnackBar(BuildContext context, String text) {
     final snackBar = SnackBar(
       padding: const EdgeInsets.fromLTRB(46, 4, 0, 4),
@@ -27,7 +50,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
         style: fontSize16,
         textAlign: TextAlign.center,
       ),
-      duration: const Duration(seconds: 2), // Optional: Set the duration
+      duration: const Duration(seconds: 2),
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
@@ -170,84 +193,123 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                           const Divider(color: Colors.white, thickness: 2),
                           const SizedBox(height: 8),
                           FutureBuilder(
-                            future:
-                                MyDb().takeAdOwnersData(jobInfo.belongsToUser),
-                            builder: (context, snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return CircularProgressIndicator(
-                                    backgroundColor: gradient[0],
-                                    color: gradient[1],
-                                    strokeWidth: 10);
-                              } else if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              } else if (!snapshot.hasData) {
-                                return Center(
-                                    child: Text('Brak Informacji',
-                                        style: fontSize16));
-                              } else {
-                                String employerName = snapshot.data!.username;
-                                String? employerImage =
-                                    snapshot.data!.profilePicture;
-                                return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => UserPage(
-                                                    isOwnProfile: false,
-                                                    shownUser: snapshot.data!,
-                                                  )));
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                            child: Container(
-                                                height: 90,
-                                                decoration: BoxDecoration(
-                                                    gradient:
-                                                        const LinearGradient(
-                                                            colors: gradient),
-                                                    border: Border.all(
-                                                        width: 2,
-                                                        color: Colors.white),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            16)),
-                                                child: Center(
-                                                    child: Text(
-                                                  'Dodane Przez \n $employerName',
-                                                  style: fontSize16,
-                                                  textAlign: TextAlign.center,
-                                                  overflow: TextOverflow.clip,
-                                                )))),
-                                        const SizedBox(width: 8),
-                                        Container(
-                                            width: 90,
+                              future: ownerData,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Expanded(
+                                      child: Center(
+                                          child: CircularProgressIndicator(
+                                              backgroundColor: gradient[0],
+                                              color: gradient[1],
+                                              strokeWidth: 10)));
+                                } else if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}',
+                                        style: fontSize16);
+                                  } else if (snapshot.data == null) {
+                                    return Center(
+                                        child: Text('Brak Informacji',
+                                            style: fontSize16));
+                                  } else {
+                                    String employerName =
+                                        snapshot.data!.username;
+                                    String? employerImage =
+                                        snapshot.data!.profilePicture;
+
+                                    return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UserPage(
+                                                        isOwnProfile: false,
+                                                        shownUser:
+                                                            snapshot.data!,
+                                                      )));
+                                        },
+                                        child: SizedBox(
                                             height: 90,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              border: Border.all(
-                                                  color: Colors.white,
-                                                  width: 2),
-                                            ),
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(16),
-                                                child: Image.network(
-                                                    employerImage ??
-                                                        'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
-                                                    fit: BoxFit.cover))),
-                                      ],
-                                    ));
-                              }
-                            },
-                          ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                    child: Container(
+                                                        decoration: BoxDecoration(
+                                                            gradient:
+                                                                const LinearGradient(
+                                                                    colors:
+                                                                        gradient),
+                                                            border: Border.all(
+                                                                width: 2,
+                                                                color: Colors
+                                                                    .white),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        16)),
+                                                        child: Center(
+                                                            child: Text(
+                                                          'Dodane Przez \n $employerName',
+                                                          style: fontSize16,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          overflow:
+                                                              TextOverflow.clip,
+                                                        )))),
+                                                const SizedBox(width: 8),
+                                                Container(
+                                                    height: 90,
+                                                    width: 90,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20),
+                                                      border: Border.all(
+                                                          color: Colors.white,
+                                                          width: 2),
+                                                    ),
+                                                    child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(16),
+                                                        child: Image.network(
+                                                            employerImage ??
+                                                                'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*1dz5x65*_ga*MTA3NzgyMTMyOS4xNjg5OTUwMTkx*_ga_CW55HF8NVT*MTY5Njk2NTIzNy45MS4xLjE2OTY5NjUzOTkuNjAuMC4w',
+                                                            fit:
+                                                                BoxFit.cover))),
+                                              ],
+                                            )));
+                                  }
+                                } else {
+                                  return const SizedBox();
+                                }
+                              }),
                         ],
                       ))),
             ])),
         backButton(context),
+        if (isOwnNotice)
+          Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              AddEditJob(initialEditingVal: jobInfo))),
+                  child: Container(
+                      width: 62,
+                      height: 62,
+                      alignment: Alignment.topRight,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: gradient[1],
+                          borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(62))),
+                      child: const FaIcon(Icons.edit_document,
+                          color: Colors.white, size: 28)))),
         if (Provider.of<GoogleSignInProvider>(context, listen: false)
             .getCurrentUser
             .isAccountTypeUser)

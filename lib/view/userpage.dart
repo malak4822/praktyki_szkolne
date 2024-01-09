@@ -8,7 +8,6 @@ import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/widgets/topbuttons.dart';
 import 'package:prakty/widgets/contactbox.dart';
-import 'package:prakty/widgets/loadingscreen.dart';
 import 'package:provider/provider.dart';
 import '../widgets/skillboxes.dart';
 
@@ -44,72 +43,78 @@ class UserPage extends StatelessWidget {
                       gradient: LinearGradient(colors: gradient),
                       borderRadius: BorderRadius.vertical(
                           bottom: Radius.elliptical(200, 30)))),
-              Align(
-                alignment: Alignment.topRight,
-                child: Stack(
+              if (isOwnProfile ||
+                  Provider.of<GoogleSignInProvider>(context, listen: false)
+                          .getCurrentUser
+                          .userId !=
+                      shownUser.userId)
+                Align(
                   alignment: Alignment.topRight,
-                  children: [
-                    if (isOwnProfile)
-                      GestureDetector(
-                          onTap: () {
-                            Provider.of<EditUser>(context, listen: false)
-                                .checkEmptiness(
-                                    userData.username,
-                                    userData.description ?? '',
-                                    userData.isAccountTypeUser
-                                        ? userData.age
-                                        : 1,
-                                    userData.isAccountTypeUser
-                                        ? userData.location
-                                        : 'a');
+                  child: Stack(
+                    alignment: Alignment.topRight,
+                    children: [
+                      if (isOwnProfile)
+                        GestureDetector(
+                            onTap: () {
+                              Provider.of<EditUser>(context, listen: false)
+                                  .checkEmptiness(
+                                      userData.username,
+                                      userData.description ?? '',
+                                      userData.isAccountTypeUser
+                                          ? userData.age
+                                          : 1,
+                                      userData.isAccountTypeUser
+                                          ? userData.location
+                                          : 'a');
 
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const EditUserPage())).then((value) =>
-                                Provider.of<GoogleSignInProvider>(context,
-                                        listen: false)
-                                    .setState());
-                          },
-                          child: Container(
-                            width: 64,
-                            height: 54,
-                            padding: const EdgeInsets.all(10),
-                            alignment: Alignment.topRight,
-                            decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(56)),
-                                color: Colors.white),
-                            child: FaIcon(
-                              FontAwesomeIcons.userPen,
-                              color: gradient[1],
-                              size: isOwnProfile ? 22 : 26,
-                            ),
-                          )),
-                    if (!isOwnProfile &&
-                        !Provider.of<GoogleSignInProvider>(context,
-                                listen: false)
-                            .getCurrentUser
-                            .isAccountTypeUser)
-                      HeartButton(
-                        isOnUserPage: true,
-                        noticeId: shownUser.userId,
-                        userId: Provider.of<GoogleSignInProvider>(context,
-                                listen: false)
-                            .getCurrentUser
-                            .userId,
-                        initialValue: Provider.of<GoogleSignInProvider>(context,
-                                    listen: false)
-                                .getCurrentUser
-                                .likedOffers
-                                .contains(shownUser.userId)
-                            ? 1
-                            : 0,
-                      )
-                  ],
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const EditUserPage())).then((value) =>
+                                  Provider.of<GoogleSignInProvider>(context,
+                                          listen: false)
+                                      .setState());
+                            },
+                            child: Container(
+                              width: 64,
+                              height: 54,
+                              padding: const EdgeInsets.all(10),
+                              alignment: Alignment.topRight,
+                              decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(56)),
+                                  color: Colors.white),
+                              child: FaIcon(
+                                FontAwesomeIcons.userPen,
+                                color: gradient[1],
+                                size: isOwnProfile ? 22 : 26,
+                              ),
+                            )),
+                      if (!isOwnProfile &&
+                          !Provider.of<GoogleSignInProvider>(context,
+                                  listen: false)
+                              .getCurrentUser
+                              .isAccountTypeUser)
+                        HeartButton(
+                          isOnUserPage: true,
+                          noticeId: shownUser.userId,
+                          userId: Provider.of<GoogleSignInProvider>(context,
+                                  listen: false)
+                              .getCurrentUser
+                              .userId,
+                          initialValue: Provider.of<GoogleSignInProvider>(
+                                      context,
+                                      listen: false)
+                                  .getCurrentUser
+                                  .likedOffers
+                                  .contains(shownUser.userId)
+                              ? 1
+                              : 0,
+                        )
+                    ],
+                  ),
                 ),
-              ),
               Center(
                   child: CircleAvatar(
                       radius: 85,

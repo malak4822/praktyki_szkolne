@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -89,6 +90,36 @@ class MyDb {
       }
     } catch (e) {
       debugPrint(e.toString());
+    }
+  }
+
+  Future<bool> updateJob(
+      String jobId,
+      File? noticePhoto,
+      String jobName,
+      String companyName,
+      String jobEmail,
+      int jobPhone,
+      String jobLocation,
+      String jobQualification,
+      String jobDescription,
+      bool canRemotely) async {
+    try {
+      await _firestore.collection('jobAd').doc(jobId).update({
+        'jobImage': noticePhoto,
+        'jobName': jobName,
+        'companyName': companyName,
+        'jobEmail': jobEmail,
+        'jobPhone': jobPhone,
+        'jobLocation': jobLocation,
+        'jobQualification': jobQualification,
+        'jobDescription': jobDescription,
+        'canRemotely': canRemotely
+      });
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
     }
   }
 
@@ -252,14 +283,49 @@ class MyDb {
     }
   }
 
+  Future<List<JobAdModel>?> downloadMyOffers(String userId) async {
+    try {
+      List<JobAdModel> myJobNotices = [];
+      QuerySnapshot<Map<String, dynamic>> myNotices = await _firestore
+          .collection('jobAd')
+          .where('belongsToUser', isEqualTo: userId)
+          .get();
+
+      final List<Map<String, dynamic>> myUsersList =
+          myNotices.docs.map((doc) => doc.data()).toList();
+
+      for (var element in myUsersList) {
+        myJobNotices.add(JobAdModel(
+          jobId: element['jobId'],
+          belongsToUser: element['belongsToUser'],
+          jobName: element['jobName'],
+          companyName: element['companyName'],
+          jobEmail: element['jobEmail'],
+          jobImage: element['jobImage'],
+          jobPhone: element['jobPhone'],
+          jobLocation: element['jobLocation'],
+          jobQualification: element['jobQualification'],
+          jobDescription: element['jobDescription'],
+          canRemotely: element['canRemotely'],
+        ));
+      }
+
+      return myJobNotices;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
   Future<List<JobAdModel>?> downloadFavJobNotices(
       List<String> favNoticesIds) async {
     try {
       List<JobAdModel> jobNotices = [];
 
+      CollectionReference collectionRef = _firestore.collection('jobAd');
+
       for (String element in favNoticesIds) {
-        DocumentSnapshot favJob =
-            await _firestore.collection('jobAd').doc(element).get();
+        DocumentSnapshot favJob = await collectionRef.doc(element).get();
         Map<String, dynamic> docSnapshot =
             favJob.data() as Map<String, dynamic>;
 
@@ -289,9 +355,9 @@ class MyDb {
     try {
       List<MyUser> usersNotices = [];
 
+      CollectionReference collRef = _firestore.collection('users');
       for (String element in favNoticesIds) {
-        DocumentSnapshot favJob =
-            await _firestore.collection('users').doc(element).get();
+        DocumentSnapshot favJob = await collRef.doc(element).get();
 
         Map<String, dynamic> docSnapshot =
             favJob.data() as Map<String, dynamic>;

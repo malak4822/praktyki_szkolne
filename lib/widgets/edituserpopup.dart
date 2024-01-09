@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/pages/user/editcontactinfo.dart';

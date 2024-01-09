@@ -31,7 +31,8 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           routes: {
             //  '/userPage' : (context) => const UserPage(shownUser: shownUser, isOwnProfile: isOwnProfile)
-            '/addJob': (context) => const AddJob(),
+            '/AddEditJob': (context) =>
+                const AddEditJob(initialEditingVal: null),
           },
           debugShowCheckedModeBanner: false,
           title: 'Prakty',

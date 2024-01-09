@@ -39,11 +39,6 @@ class EditUser extends ChangeNotifier {
   File? _imgFile;
   File? get imgFile => _imgFile;
 
-  void removeImage() {
-    _pictureToShow = null;
-    notifyListeners();
-  }
-
   Future<void> getStorageImage() async {
     final imagePicker = ImagePicker();
 

@@ -57,7 +57,6 @@ class _EditPhotoState extends State<EditPhoto> {
               if (!mounted) return;
               Provider.of<EditUser>(context, listen: false).setpictureToShow =
                   null;
-              // Provider.of<EditUser>(context, listen: false).removeImage();
             },
             icon: const Icon(Icons.delete, color: Colors.white),
             iconSize: 34),

@@ -3,6 +3,7 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
+import 'package:prakty/widgets/myoffers.dart';
 import 'package:prakty/widgets/savedoffers.dart';
 import 'package:provider/provider.dart';
 
@@ -66,6 +67,18 @@ class EditPrivUserInfo extends StatelessWidget {
                               }),
                       ],
                     )),
+                if (!currentUser.isAccountTypeUser)
+                  button(Icons.ad_units, 'Moje Ogłoszenia', () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MyOffers(
+                                  isAccountTypeUser:
+                                      currentUser.isAccountTypeUser,
+                                  userId: currentUser.userId,
+                                )));
+                  }),
+                const SizedBox(height: 6),
                 button(Icons.favorite_border, 'Ulubione', () {
                   Navigator.push(
                       context,

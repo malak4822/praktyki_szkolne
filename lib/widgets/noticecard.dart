@@ -15,6 +15,7 @@ class NoticeCard extends StatelessWidget {
   final dynamic info;
   final bool isUserNoticePage;
 
+
   String showCorrectImage() {
     if (isUserNoticePage) {
       if (info.profilePicture == null || info.profilePicture == '') {
@@ -49,7 +50,8 @@ class NoticeCard extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => isUserNoticePage
                     ? UserPage(isOwnProfile: false, shownUser: userNoticeInfo!)
-                    : JobAdvertisement(jobInfo: jobNoticeInfo!),
+                    : JobAdvertisement(
+                        jobInfo: jobNoticeInfo!),
               )).then((value) => Provider.of<GoogleSignInProvider>(context,
                   listen: false)
               .setState());
