@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/services/database.dart';
 import '../models/user_model.dart';
 
@@ -56,6 +57,21 @@ class GoogleSignInProvider extends ChangeNotifier {
     _currentUser.profilePicture = newPictureUrl;
     notifyListeners();
   }
+
+  JobAdModel _currentJob = JobAdModel(
+      jobId: 'jobId',
+      belongsToUser: '',
+      jobName: '',
+      companyName: '',
+      jobEmail: '',
+      jobImage: '',
+      jobPhone: 0,
+      jobLocation: '',
+      jobQualification: '',
+      jobDescription: '',
+      canRemotely: false);
+
+  JobAdModel get getCurrentJob => _currentJob;
 
   MyUser _currentUser = MyUser(
       userId: '',
@@ -206,6 +222,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       _currentUser.email = email;
       _currentUser.userId = authResult.user!.uid;
       _currentUser.accountCreated = Timestamp.now();
+
       await MyDb().addFirestoreUser(_currentUser);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

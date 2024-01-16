@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
-import 'package:prakty/pages/jobs/addjob.dart';
+import 'package:prakty/pages/jobs/addeditjob.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/view/userpage.dart';
@@ -57,6 +57,8 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
 
   @override
   Widget build(BuildContext context) {
+
+
     final JobAdModel jobInfo = widget.jobInfo;
     return Scaffold(
       body: SafeArea(
@@ -158,10 +160,10 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                           boxShadow: myOutlineBoxShadow,
                           borderRadius: BorderRadius.circular(16)),
                       child: Column(children: [
-                        if (jobInfo.canRemotely == true)
+                        if (jobInfo.jobQualification.isNotEmpty)
                           Text(jobInfo.jobQualification,
                               style: fontSize16, textAlign: TextAlign.center),
-                        if (jobInfo.canRemotely == true)
+                        if (jobInfo.jobQualification.isNotEmpty)
                           const Divider(color: Colors.white, thickness: 2),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -295,10 +297,13 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
               alignment: Alignment.topRight,
               child: GestureDetector(
                   onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              AddEditJob(initialEditingVal: jobInfo))),
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddEditJob(
+                                    initialEditingVal: jobInfo,
+                                  ))).then((value) {
+                        setState(() {});
+                      }),
                   child: Container(
                       width: 62,
                       height: 62,

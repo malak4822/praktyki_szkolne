@@ -4,8 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/loggedparent.dart';
-import 'package:prakty/pages/jobs/addjob.dart';
+import 'package:prakty/pages/jobs/addeditjob.dart';
 import 'package:prakty/providers/edituser.dart';
+import 'package:prakty/view/userpage.dart';
 import 'package:prakty/widgets/error.dart';
 import 'package:prakty/loginpage.dart';
 import 'package:prakty/providers/googlesign.dart';
@@ -29,11 +30,10 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (c) => EditUser())
         ],
         child: MaterialApp(
-          routes: {
-            //  '/userPage' : (context) => const UserPage(shownUser: shownUser, isOwnProfile: isOwnProfile)
-            '/AddEditJob': (context) =>
-                const AddEditJob(initialEditingVal: null),
-          },
+          // routes: {
+          //  '/userPage' : (context) => const UserPage(shownUser: shownUser, isOwnProfile: isOwnProfile)
+
+          // },
           debugShowCheckedModeBanner: false,
           title: 'Prakty',
           theme: ThemeData(

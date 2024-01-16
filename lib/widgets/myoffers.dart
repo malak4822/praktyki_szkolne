@@ -45,6 +45,7 @@ class MyOffers extends StatelessWidget {
                             style: fontSize20, textAlign: TextAlign.center)
                       ]));
                 } else {
+
                   List<JobAdModel> jobList = [];
                   jobList = List.from(snapshot.data!);
                   return ListView.builder(

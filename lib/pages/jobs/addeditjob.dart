@@ -99,8 +99,8 @@ class _AddEditJobState extends State<AddEditJob> {
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: SizedBox(
-                              width: double.infinity,
-                              height: 220,
+                              width: 150,
+                              height: 150,
                               child: Image(
                                   fit: BoxFit.cover, image: pictureToShow))),
                     ),
@@ -214,7 +214,7 @@ class _AddEditJobState extends State<AddEditJob> {
                                       listen: false)
                                   .checkInternetConnectivity()) {
                                 if (isNoticeOwner) {
-                                  MyDb().updateJob(
+                                  bool isOkay = await MyDb().updateJob(
                                       initialJobData!.jobId,
                                       noticePhoto,
                                       jobName.text,
@@ -225,6 +225,18 @@ class _AddEditJobState extends State<AddEditJob> {
                                       jobQualification.text,
                                       jobDescription.text,
                                       canRemotely);
+                                  if (isOkay) {
+                                    // widget.callBack(
+                                    //     noticePhoto,
+                                    //     jobName.text,
+                                    //     companyName.text,
+                                    //     jobEmail.text,
+                                    //     int.parse(jobPhone.text),
+                                    //     jobLocation.text,
+                                    //     jobQualification.text,
+                                    //     jobDescription.text,
+                                    //     canRemotely);
+                                  }
                                 } else {
                                   if (!mounted) return;
                                   await MyDb().addFirestoreJobAd(
