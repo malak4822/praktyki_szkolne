@@ -19,61 +19,46 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 
   void toogleAccountType(newType) {
-    _currentUser.isAccountTypeUser = newType;
+    _loggedUser.isAccountTypeUser = newType;
     notifyListeners();
   }
 
   void userSearchingToogle(newValue) {
-    _currentUser.jobVacancy = newValue;
+    _loggedUser.jobVacancy = newValue;
     notifyListeners();
   }
 
   void refreshNameAndDesc(bool isAccountTypeUser, String newUsername,
       String newDescription, String? newLocation, String? newAge) {
     if (isAccountTypeUser) {
-      _currentUser.username = newUsername;
-      _currentUser.description = newDescription;
-      _currentUser.location = newLocation;
-      _currentUser.age = int.parse(newAge!);
+      _loggedUser.username = newUsername;
+      _loggedUser.description = newDescription;
+      _loggedUser.location = newLocation;
+      _loggedUser.age = int.parse(newAge!);
     } else {
-      _currentUser.username = newUsername;
-      _currentUser.description = newDescription;
+      _loggedUser.username = newUsername;
+      _loggedUser.description = newDescription;
     }
     notifyListeners();
   }
 
   void refreshContactInfo(String newEmail, String newPhone) {
-    _currentUser.email = newEmail;
-    _currentUser.phoneNum = newPhone;
+    _loggedUser.email = newEmail;
+    _loggedUser.phoneNum = newPhone;
     notifyListeners();
   }
 
   void refreshSkillSet(newSkillSet) {
-    _currentUser.skillsSet = newSkillSet;
+    _loggedUser.skillsSet = newSkillSet;
     notifyListeners();
   }
 
   void refreshProfilePicture(newPictureUrl) {
-    _currentUser.profilePicture = newPictureUrl;
+    _loggedUser.profilePicture = newPictureUrl;
     notifyListeners();
   }
 
-  JobAdModel _currentJob = JobAdModel(
-      jobId: 'jobId',
-      belongsToUser: '',
-      jobName: '',
-      companyName: '',
-      jobEmail: '',
-      jobImage: '',
-      jobPhone: 0,
-      jobLocation: '',
-      jobQualification: '',
-      jobDescription: '',
-      canRemotely: false);
-
-  JobAdModel get getCurrentJob => _currentJob;
-
-  MyUser _currentUser = MyUser(
+  MyUser _loggedUser = MyUser(
       userId: '',
       username: '',
       description: null,
@@ -87,7 +72,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       jobVacancy: false,
       accountCreated: Timestamp(0, 0),
       skillsSet: []);
-  MyUser get getCurrentUser => _currentUser;
+  MyUser get getCurrentUser => _loggedUser;
 
   Future<void> authenticateUser(
       String actualPassword, String newEmail, Function callBack) async {
@@ -97,7 +82,7 @@ class GoogleSignInProvider extends ChangeNotifier {
         try {
           await user.reauthenticateWithCredential(
             EmailAuthProvider.credential(
-              email: _currentUser.email,
+              email: _loggedUser.email,
               password: actualPassword,
             ),
           );
@@ -121,7 +106,7 @@ class GoogleSignInProvider extends ChangeNotifier {
   Future<void> logout() async {
     try {
       await auth.signOut();
-      _currentUser = MyUser(
+      _loggedUser = MyUser(
           userId: '',
           username: '',
           description: null,
@@ -158,12 +143,12 @@ class GoogleSignInProvider extends ChangeNotifier {
       var authResult = await auth.signInWithCredential(credentialTokens);
 
       if (authResult.additionalUserInfo!.isNewUser) {
-        _currentUser.username = authResult.user!.displayName!;
-        _currentUser.email = authResult.user!.email!;
-        _currentUser.profilePicture = authResult.user!.photoURL!;
-        _currentUser.userId = authResult.user!.uid;
+        _loggedUser.username = authResult.user!.displayName!;
+        _loggedUser.email = authResult.user!.email!;
+        _loggedUser.profilePicture = authResult.user!.photoURL!;
+        _loggedUser.userId = authResult.user!.uid;
 
-        await MyDb().addFirestoreUser(_currentUser);
+        await MyDb().addFirestoreUser(_loggedUser);
       }
     } catch (error) {
       debugPrint(error.toString());
@@ -189,7 +174,7 @@ class GoogleSignInProvider extends ChangeNotifier {
       UserCredential userCredentials =
           await auth.signInWithEmailAndPassword(email: email, password: pass);
 
-      await MyDb().getUserInfo(_currentUser, userCredentials.user!.uid);
+      await MyDb().getUserInfo(_loggedUser, userCredentials.user!.uid);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
@@ -218,12 +203,12 @@ class GoogleSignInProvider extends ChangeNotifier {
       UserCredential authResult = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
 
-      _currentUser.username = username;
-      _currentUser.email = email;
-      _currentUser.userId = authResult.user!.uid;
-      _currentUser.accountCreated = Timestamp.now();
+      _loggedUser.username = username;
+      _loggedUser.email = email;
+      _loggedUser.userId = authResult.user!.uid;
+      _loggedUser.accountCreated = Timestamp.now();
 
-      await MyDb().addFirestoreUser(_currentUser);
+      await MyDb().addFirestoreUser(_loggedUser);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'email-already-in-use':
@@ -242,10 +227,10 @@ class GoogleSignInProvider extends ChangeNotifier {
   }
 
   set addNoticeToFav(String noticeId) {
-    _currentUser.likedOffers.add(noticeId);
+    _loggedUser.likedOffers.add(noticeId);
   }
 
   set removeNoticeFromFav(String noticeId) {
-    _currentUser.likedOffers.remove(noticeId);
+    _loggedUser.likedOffers.remove(noticeId);
   }
 }

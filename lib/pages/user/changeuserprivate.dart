@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/models/user_model.dart';
+import 'package:prakty/providers/editjobprov.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
-import 'package:prakty/widgets/myoffers.dart';
+import 'package:prakty/pages/jobs/myoffers.dart';
 import 'package:prakty/widgets/savedoffers.dart';
 import 'package:provider/provider.dart';
 
@@ -72,11 +73,13 @@ class EditPrivUserInfo extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => MyOffers(
-                                  isAccountTypeUser:
-                                      currentUser.isAccountTypeUser,
-                                  userId: currentUser.userId,
-                                )));
+                            builder: (context) => ChangeNotifierProvider(
+                                create: (value) => EditJobProvider(),
+                                builder: (context, child) => MyOffers(
+                                      isAccountTypeUser:
+                                          currentUser.isAccountTypeUser,
+                                      userId: currentUser.userId,
+                                    ))));
                   }),
                 const SizedBox(height: 6),
                 button(Icons.favorite_border, 'Ulubione', () {

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
@@ -42,7 +43,7 @@ class _AddEditJobState extends State<AddEditJob> {
         source: ImageSource.gallery, imageQuality: 18);
     if (pickedImage != null) {
       setState(() {
-        noticePhoto = File(pickedImage.path);
+        pictureToShow = FileImage(File(pickedImage.path));
       });
     }
   }
@@ -94,24 +95,36 @@ class _AddEditJobState extends State<AddEditJob> {
                   key: _formKey,
                   child: ListView(padding: const EdgeInsets.all(20), children: [
                     // if (isNoticeOwner)
-                    GestureDetector(
-                      onTap: () async => await pickImg(),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: SizedBox(
-                              width: 150,
-                              height: 150,
-                              child: Image(
-                                  fit: BoxFit.cover, image: pictureToShow))),
+                    Align(
+                      child: Container(
+                          width: 160,
+                          height: 160,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                          child: GestureDetector(
+                              onTap: () async => await pickImg(),
+                              child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Stack(children: [
+                                    Image(
+                                        width: 160,
+                                        height: 160,
+                                        fit: BoxFit.cover,
+                                        image: pictureToShow),
+                                    SizedBox.expand(
+                                      child: Container(
+                                        color: Colors.black45,
+                                        child: const Center(
+                                            child: Icon(Icons.edit,
+                                                color: Colors.white, size: 46)),
+                                      ),
+                                    )
+                                  ])))),
                     ),
-                    // if (false)
-                    // IconButton(
-                    //     iconSize: 42,
-                    //     icon: const Icon(Icons.photo, color: Colors.white),
-                    //     onPressed: () async {
-                    //       await pickImg();
-                    //     }),
-                    const SizedBox(height: 12),
+
+                    const SizedBox(height: 24),
                     updateValues(jobName, 'Nazwa Stanowiska', 1, 28,
                         Icons.person, TextInputType.name, null),
                     const SizedBox(height: 12),

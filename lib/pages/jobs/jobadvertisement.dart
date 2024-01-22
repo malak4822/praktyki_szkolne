@@ -4,6 +4,7 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/jobs/addeditjob.dart';
+import 'package:prakty/providers/editjobprov.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/view/userpage.dart';
@@ -21,6 +22,11 @@ class JobAdvertisement extends StatefulWidget {
 
 class _JobAdvertisementState extends State<JobAdvertisement> {
   Future<MyUser?>? ownerData;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
   @override
   void initState() {
     ownerData = MyDb().takeAdOwnersData(widget.jobInfo.belongsToUser);
@@ -57,10 +63,15 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
 
   @override
   Widget build(BuildContext context) {
-
-
     final JobAdModel jobInfo = widget.jobInfo;
-    return Scaffold(
+    return
+        // Consumer<EditJobProvider>(builder: (context, value, child) {
+        // var curerntJob =
+        //     Provider.of<EditJobProvider>(context, listen: false).getCurrentJob;
+        // print(value.getCurrentJob.belongsToUser);
+
+        // return
+        Scaffold(
       body: SafeArea(
           child: Stack(children: [
         Container(
@@ -333,6 +344,9 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                     : 0,
           ),
       ])),
+      // )
+      // ;
+      // }
     );
   }
 }
