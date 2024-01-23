@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
@@ -8,13 +7,14 @@ import 'package:prakty/pages/user/choselocation.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
+import 'package:prakty/widgets/loadingscreen.dart';
 import 'package:prakty/widgets/topbuttons.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
 
 class AddEditJob extends StatefulWidget {
   const AddEditJob({super.key, required this.initialEditingVal});
-  final JobAdModel? initialEditingVal;
+  final JobAdModel initialEditingVal;
 
   @override
   State<AddEditJob> createState() => _AddEditJobState();
@@ -23,6 +23,7 @@ class AddEditJob extends StatefulWidget {
 class _AddEditJobState extends State<AddEditJob> {
   JobAdModel? initialJobData;
   bool isNoticeOwner = false;
+  bool showDeleteConfirmation = false;
 
   TextEditingController jobName = TextEditingController();
   TextEditingController companyName = TextEditingController();
@@ -36,6 +37,8 @@ class _AddEditJobState extends State<AddEditJob> {
   bool isLocationFilled = false;
   final _formKey = GlobalKey<FormState>();
 
+  bool isLoadingVis = false;
+
   Future<void> pickImg() async {
     final imagePicker = ImagePicker();
 
@@ -43,6 +46,7 @@ class _AddEditJobState extends State<AddEditJob> {
         source: ImageSource.gallery, imageQuality: 18);
     if (pickedImage != null) {
       setState(() {
+        noticePhoto = File(pickedImage.path);
         pictureToShow = FileImage(File(pickedImage.path));
       });
     }
@@ -53,34 +57,65 @@ class _AddEditJobState extends State<AddEditJob> {
 
   @override
   void initState() {
-    if (widget.initialEditingVal != null) {
-      initialJobData = widget.initialEditingVal!;
-      jobName.text = initialJobData!.jobName;
-      companyName.text = initialJobData!.companyName;
-      jobEmail.text = initialJobData!.jobEmail;
-      jobPhone.text = initialJobData!.jobPhone.toString();
-      jobLocation.text = initialJobData!.jobLocation;
-      jobQualification.text = initialJobData!.jobQualification;
-      jobDescription.text = initialJobData!.jobDescription;
-      isNoticeOwner = true;
-      if (noticePhoto != null) {
-        pictureToShow = FileImage(noticePhoto!);
-      }
+    if (widget.initialEditingVal.jobImage != null) {
+      noticePhoto = File('fresh');
+      pictureToShow = NetworkImage(widget.initialEditingVal.jobImage!);
     }
+    initialJobData = widget.initialEditingVal;
+    jobName.text = initialJobData!.jobName;
+    companyName.text = initialJobData!.companyName;
+    jobEmail.text = initialJobData!.jobEmail;
+    jobPhone.text = initialJobData!.jobPhone.toString();
+    jobLocation.text = initialJobData!.jobLocation;
+    jobQualification.text = initialJobData!.jobQualification;
+    jobDescription.text = initialJobData!.jobDescription;
+    isNoticeOwner = true;
     super.initState();
+  }
+
+  void showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: gradient[1],
+          elevation: 8,
+          titleTextStyle: fontSize16,
+          title: const Text('Czy Na Pewno Chcesz Usunąć Ogłoszenie?',
+              textAlign: TextAlign.center),
+          actionsAlignment: MainAxisAlignment.spaceAround,
+          actions: [
+            ElevatedButton.icon(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon:
+                  const Icon(Icons.arrow_back_ios_rounded, color: Colors.white),
+              label: Text('Wróć', style: fontSize16),
+            ),
+            ElevatedButton.icon(
+              onPressed: () async {
+                isLoadingVis = true;
+                bool isOkay = await MyDb()
+                    .deleteJobAdvert(widget.initialEditingVal.jobId);
+                isLoadingVis = false;
+                if (isOkay) {
+                  if (!mounted) return;
+                  Navigator.pop(context);
+                }
+              },
+              icon:
+                  const Icon(Icons.delete_outline_rounded, color: Colors.white),
+              label: Text('Usuń', style: fontSize16),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // print(isNoticeOwner
-    //     ? initialJobData!.jobImage != null
-    //         ? NetworkImage(initialJobData!.jobImage!)
-    //         : FileImage(noticePhoto) as ImageProvider<Object>
-    //     : noticePhoto != null
-    //         ? FileImage(noticePhoto!)
-    //         : const NetworkImage(
-    //                 'https://clipart-library.com/new_gallery/1-15633_no-sign-png-no-symbol-white-png.png')
-    //             as ImageProvider<Object>);
     return Scaffold(
         body: SafeArea(
             child: Stack(children: [
@@ -94,36 +129,38 @@ class _AddEditJobState extends State<AddEditJob> {
               child: Form(
                   key: _formKey,
                   child: ListView(padding: const EdgeInsets.all(20), children: [
-                    // if (isNoticeOwner)
                     Align(
                       child: Container(
-                          width: 160,
-                          height: 160,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white, width: 2),
+                        width: 160,
+                        height: 160,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(14),
+                          child: Stack(
+                            children: [
+                              Image(
+                                  width: 160,
+                                  height: 160,
+                                  fit: BoxFit.cover,
+                                  image: pictureToShow),
+                              imageButtons(() {
+                                noticePhoto = null;
+                                setState(() {
+                                  pictureToShow = const NetworkImage(
+                                      'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fcompany_icon.png?alt=media&token=7c9796bf-2b8b-40d4-bc71-b85aeb82c269');
+                                });
+                              }, Icons.delete_outline_rounded,
+                                  Alignment.topLeft),
+                              imageButtons(() async => await pickImg(),
+                                  Icons.edit, Alignment.topRight),
+                            ],
                           ),
-                          child: GestureDetector(
-                              onTap: () async => await pickImg(),
-                              child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(16),
-                                  child: Stack(children: [
-                                    Image(
-                                        width: 160,
-                                        height: 160,
-                                        fit: BoxFit.cover,
-                                        image: pictureToShow),
-                                    SizedBox.expand(
-                                      child: Container(
-                                        color: Colors.black45,
-                                        child: const Center(
-                                            child: Icon(Icons.edit,
-                                                color: Colors.white, size: 46)),
-                                      ),
-                                    )
-                                  ])))),
+                        ),
+                      ),
                     ),
-
                     const SizedBox(height: 24),
                     updateValues(jobName, 'Nazwa Stanowiska', 1, 28,
                         Icons.person, TextInputType.name, null),
@@ -227,7 +264,7 @@ class _AddEditJobState extends State<AddEditJob> {
                                       listen: false)
                                   .checkInternetConnectivity()) {
                                 if (isNoticeOwner) {
-                                  bool isOkay = await MyDb().updateJob(
+                                  String? imageUrl = await MyDb().updateJob(
                                       initialJobData!.jobId,
                                       noticePhoto,
                                       jobName.text,
@@ -238,17 +275,21 @@ class _AddEditJobState extends State<AddEditJob> {
                                       jobQualification.text,
                                       jobDescription.text,
                                       canRemotely);
-                                  if (isOkay) {
-                                    // widget.callBack(
-                                    //     noticePhoto,
-                                    //     jobName.text,
-                                    //     companyName.text,
-                                    //     jobEmail.text,
-                                    //     int.parse(jobPhone.text),
-                                    //     jobLocation.text,
-                                    //     jobQualification.text,
-                                    //     jobDescription.text,
-                                    //     canRemotely);
+                                  if (imageUrl != null) {
+                                    if (!mounted) return;
+                                    Provider.of<GoogleSignInProvider>(context,
+                                            listen: false)
+                                        .refreshJobInfo(
+                                            initialJobData!.jobId,
+                                            imageUrl,
+                                            jobName.text,
+                                            companyName.text,
+                                            jobEmail.text,
+                                            int.parse(jobPhone.text),
+                                            jobLocation.text,
+                                            jobQualification.text,
+                                            jobDescription.text,
+                                            canRemotely);
                                   }
                                 } else {
                                   if (!mounted) return;
@@ -281,6 +322,62 @@ class _AddEditJobState extends State<AddEditJob> {
                             color: Colors.white, size: 24)),
                   ])))),
       backButton(context),
+      Align(
+          alignment: Alignment.topRight,
+          child: GestureDetector(
+              onTap: () => showDeleteConfirmationDialog(context),
+              child: Container(
+                  width: 62,
+                  height: 62,
+                  alignment: Alignment.topRight,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: gradient[1],
+                      borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(62))),
+                  child: const Icon(Icons.delete_outline_rounded,
+                      color: Colors.white, size: 28)))),
+      Visibility(visible: isLoadingVis, child: const LoadingWidget())
     ])));
+  }
+
+  Widget imageButtons(Function() function, IconData icon, Alignment align) =>
+      Align(
+          alignment: align,
+          child: GestureDetector(
+              onTap: function,
+              child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                      color: Colors.black38,
+                      borderRadius: (align == Alignment.topLeft)
+                          ? const BorderRadius.only(
+                              bottomRight: Radius.circular(16))
+                          : const BorderRadius.only(
+                              bottomLeft: Radius.circular(16)),
+                      border: (align == Alignment.topLeft)
+                          ? const Border(
+                              right:
+                                  BorderSide(width: 2.0, color: Colors.white),
+                              bottom:
+                                  BorderSide(width: 2.0, color: Colors.white),
+                            )
+                          : const Border(
+                              left: BorderSide(width: 2.0, color: Colors.white),
+                              bottom:
+                                  BorderSide(width: 2.0, color: Colors.white),
+                            )),
+                  child: Icon(icon, size: 28, color: Colors.white))));
+
+  @override
+  void dispose() {
+    jobName.dispose();
+    jobEmail.dispose();
+    jobPhone.dispose();
+    jobLocation.dispose();
+    jobDescription.dispose();
+    companyName.dispose();
+    jobQualification.dispose();
+    super.dispose();
   }
 }

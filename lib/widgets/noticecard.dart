@@ -4,7 +4,6 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/jobs/jobadvertisement.dart';
-import 'package:prakty/providers/editjobprov.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/view/userpage.dart';
 import 'package:provider/provider.dart';
@@ -43,6 +42,7 @@ class NoticeCard extends StatelessWidget {
     } else {
       jobNoticeInfo = info;
     }
+
     return InkWell(
         onTap: () {
           Navigator.push(
@@ -50,7 +50,7 @@ class NoticeCard extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => isUserNoticePage
                     ? UserPage(isOwnProfile: false, shownUser: userNoticeInfo!)
-                    : JobAdvertisement(jobInfo: jobNoticeInfo!),
+                    : JobAdvertisement(jobId: jobNoticeInfo!.jobId),
               )).then((value) {
             Provider.of<GoogleSignInProvider>(context, listen: false)
                 .setState();

@@ -105,7 +105,7 @@ class _EditSkillSetState extends State<EditSkillSet> {
             iconSize: 38,
             onPressed: () =>
                 Provider.of<EditUser>(context, listen: false).removeSkillBox(),
-            icon: const Icon(Icons.delete, color: Colors.white),
+            icon: const Icon(Icons.delete_outline_rounded, color: Colors.white),
           ),
           SizedBox(height: MediaQuery.of(context).size.width * 3 / 11),
           SizedBox(
@@ -154,4 +154,5 @@ class _EditSkillSetState extends State<EditSkillSet> {
       ),
     );
   }
+
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
+import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
 import 'package:prakty/widgets/topbuttons.dart';
 import 'package:prakty/widgets/noticecard.dart';
+import 'package:provider/provider.dart';
 
 class MyOffers extends StatelessWidget {
   const MyOffers(
@@ -47,8 +49,11 @@ class MyOffers extends StatelessWidget {
                 } else {
                   List<JobAdModel> jobList = [];
                   jobList = List.from(snapshot.data!);
+                  Provider.of<GoogleSignInProvider>(context, listen: false)
+                      .setMyOffersList = jobList;
+
                   return ListView.builder(
-                    padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(12),
                       itemCount: jobList.length,
                       itemBuilder: (context, index) {
                         return NoticeCard(

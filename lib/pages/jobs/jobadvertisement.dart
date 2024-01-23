@@ -4,7 +4,6 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/jobs/addeditjob.dart';
-import 'package:prakty/providers/editjobprov.dart';
 import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/view/userpage.dart';
@@ -13,23 +12,26 @@ import 'package:prakty/widgets/contactbox.dart';
 import 'package:provider/provider.dart';
 
 class JobAdvertisement extends StatefulWidget {
-  const JobAdvertisement({super.key, required this.jobInfo});
+  const JobAdvertisement({super.key, required this.jobId});
 
-  final JobAdModel jobInfo;
+  final String jobId;
   @override
   State<JobAdvertisement> createState() => _JobAdvertisementState();
 }
 
 class _JobAdvertisementState extends State<JobAdvertisement> {
   Future<MyUser?>? ownerData;
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
+  late JobAdModel jobInfo;
 
   @override
   void initState() {
-    ownerData = MyDb().takeAdOwnersData(widget.jobInfo.belongsToUser);
+    jobInfo = Provider.of<GoogleSignInProvider>(context, listen: false)
+        .myOffersList
+        .firstWhere(
+          (element) => element.jobId == widget.jobId,
+        );
+
+    ownerData = MyDb().takeAdOwnersData(jobInfo.belongsToUser);
     if (ownerData != null) {
       ownerData!.then((value) {
         if (Provider.of<GoogleSignInProvider>(context, listen: false)
@@ -63,15 +65,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
 
   @override
   Widget build(BuildContext context) {
-    final JobAdModel jobInfo = widget.jobInfo;
-    return
-        // Consumer<EditJobProvider>(builder: (context, value, child) {
-        // var curerntJob =
-        //     Provider.of<EditJobProvider>(context, listen: false).getCurrentJob;
-        // print(value.getCurrentJob.belongsToUser);
-
-        // return
-        Scaffold(
+    return Scaffold(
       body: SafeArea(
           child: Stack(children: [
         Container(
@@ -308,11 +302,11 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
               alignment: Alignment.topRight,
               child: GestureDetector(
                   onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddEditJob(
-                                    initialEditingVal: jobInfo,
-                                  ))).then((value) {
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddEditJob(initialEditingVal: jobInfo)))
+                          .then((value) {
                         setState(() {});
                       }),
                   child: Container(

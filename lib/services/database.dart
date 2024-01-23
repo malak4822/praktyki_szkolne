@@ -93,36 +93,6 @@ class MyDb {
     }
   }
 
-  Future<bool> updateJob(
-      String jobId,
-      File? noticePhoto,
-      String jobName,
-      String companyName,
-      String jobEmail,
-      int jobPhone,
-      String jobLocation,
-      String jobQualification,
-      String jobDescription,
-      bool canRemotely) async {
-    try {
-      await _firestore.collection('jobAd').doc(jobId).update({
-        'jobImage': noticePhoto,
-        'jobName': jobName,
-        'companyName': companyName,
-        'jobEmail': jobEmail,
-        'jobPhone': jobPhone,
-        'jobLocation': jobLocation,
-        'jobQualification': jobQualification,
-        'jobDescription': jobDescription,
-        'canRemotely': canRemotely
-      });
-      return true;
-    } catch (e) {
-      debugPrint(e.toString());
-      return false;
-    }
-  }
-
   Future<List<String?>?> updateInfoFields(
       bool isAccountTypeUser,
       String userId,
@@ -399,6 +369,38 @@ class MyDb {
     }
   }
 
+  Future<MyUser?> takeAdOwnersData(ownerId) async {
+    try {
+      DocumentSnapshot docSnapshot =
+          await _firestore.collection('users').doc(ownerId).get();
+      Map<String, dynamic> ownerInfo =
+          docSnapshot.data() as Map<String, dynamic>;
+
+      MyUser usersList = MyUser(
+          userId: ownerInfo['userId'],
+          username: ownerInfo['username'],
+          age: ownerInfo['age'],
+          description: ownerInfo['description'],
+          phoneNum: ownerInfo['phoneNum'],
+          location: ownerInfo['location'],
+          isAccountTypeUser: ownerInfo['isAccountTypeUser'],
+          skillsSet: (ownerInfo['skillsSet'] as List<dynamic>)
+              .map((item) => Map<String, int>.from(item))
+              .toList(),
+          email: ownerInfo['email'],
+          profilePicture: ownerInfo['profilePicture'],
+          likedOffers: List.from(ownerInfo['likedOffers']),
+          jobVacancy: ownerInfo['jobVacancy'],
+          accountCreated: ownerInfo['accountCreated']);
+      return usersList;
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+// JOB FUNCTIONS // JOB FUNCTIONS // JOB FUNCTIONS // JOB FUNCTIONS // JOB FUNCTIONS
+
   Future<void> addFirestoreJobAd(
       String userId,
       File? noticePhoto,
@@ -449,33 +451,50 @@ class MyDb {
     }
   }
 
-  Future<MyUser?> takeAdOwnersData(ownerId) async {
+  Future<String?> updateJob(
+      String jobId,
+      File? noticePhoto,
+      String jobName,
+      String companyName,
+      String jobEmail,
+      int jobPhone,
+      String jobLocation,
+      String jobQualification,
+      String jobDescription,
+      bool canRemotely) async {
     try {
-      DocumentSnapshot docSnapshot =
-          await _firestore.collection('users').doc(ownerId).get();
-      Map<String, dynamic> ownerInfo =
-          docSnapshot.data() as Map<String, dynamic>;
-
-      MyUser usersList = MyUser(
-          userId: ownerInfo['userId'],
-          username: ownerInfo['username'],
-          age: ownerInfo['age'],
-          description: ownerInfo['description'],
-          phoneNum: ownerInfo['phoneNum'],
-          location: ownerInfo['location'],
-          isAccountTypeUser: ownerInfo['isAccountTypeUser'],
-          skillsSet: (ownerInfo['skillsSet'] as List<dynamic>)
-              .map((item) => Map<String, int>.from(item))
-              .toList(),
-          email: ownerInfo['email'],
-          profilePicture: ownerInfo['profilePicture'],
-          likedOffers: List.from(ownerInfo['likedOffers']),
-          jobVacancy: ownerInfo['jobVacancy'],
-          accountCreated: ownerInfo['accountCreated']);
-      return usersList;
+      String? imageUrl;
+      if (noticePhoto != null) {
+        final storageReference =
+            FirebaseStorage.instance.ref().child('job_ad_pictures/$jobId.jpg');
+        await storageReference.putFile(noticePhoto);
+        imageUrl = await storageReference.getDownloadURL();
+      }
+      await _firestore.collection('jobAd').doc(jobId).update({
+        'jobImage': imageUrl,
+        'jobName': jobName,
+        'companyName': companyName,
+        'jobEmail': jobEmail,
+        'jobPhone': jobPhone,
+        'jobLocation': jobLocation,
+        'jobQualification': jobQualification,
+        'jobDescription': jobDescription,
+        'canRemotely': canRemotely
+      });
+      return imageUrl;
     } catch (e) {
       debugPrint(e.toString());
       return null;
+    }
+  }
+
+  Future<bool> deleteJobAdvert(String jobId) async {
+    try {
+      await _firestore.collection('jobAd').doc(jobId).delete();
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+      return false;
     }
   }
 }

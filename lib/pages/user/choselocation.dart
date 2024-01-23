@@ -281,4 +281,10 @@ class _FindOnMapState extends State<FindOnMap> {
       placesFromLocation = placemarks;
     }
   }
+@override
+  void dispose() {
+    locationController.dispose();
+    super.dispose();
+  }
+
 }

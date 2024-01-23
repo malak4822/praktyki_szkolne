@@ -58,7 +58,7 @@ class _EditPhotoState extends State<EditPhoto> {
               Provider.of<EditUser>(context, listen: false).setpictureToShow =
                   null;
             },
-            icon: const Icon(Icons.delete, color: Colors.white),
+            icon: const Icon(Icons.delete_outline_rounded, color: Colors.white),
             iconSize: 34),
         const Spacer(),
         Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [

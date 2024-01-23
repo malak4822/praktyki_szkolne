@@ -23,9 +23,6 @@ class EditUserPage extends StatelessWidget {
 
     final pageCont = PageController(initialPage: 0);
 
-    TextEditingController emailCont =
-        TextEditingController(text: currentUser.email);
-
     return Scaffold(
         body: PageView(controller: pageCont, children: [
       Stack(children: [
@@ -231,7 +228,7 @@ class EditUserPage extends StatelessWidget {
             visible: editUserProvider.showErrorMessage,
             child: const ErrorMessage()),
       ]),
-      EditPrivUserInfo(currentUser: currentUser, emailCont: emailCont)
+      EditPrivUserInfo(currentUser: currentUser)
     ]));
   }
 }

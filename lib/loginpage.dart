@@ -251,4 +251,12 @@ class _LoginPageState extends State<LoginPage> {
           placeholder: AssetImage((path)),
         ));
   }
+
+  @override
+  void dispose() {
+    nameCont.dispose();
+    mailCont.dispose();
+    passCont.dispose();
+    super.dispose();
+  }
 }

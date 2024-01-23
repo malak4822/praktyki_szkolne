@@ -48,6 +48,37 @@ class GoogleSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  List<JobAdModel> _myOffersList = [];
+  List<JobAdModel> get myOffersList => _myOffersList;
+
+  set setMyOffersList(List<JobAdModel> newList) => _myOffersList = newList;
+
+  void refreshJobInfo(
+      String jobId,
+      String pictureToShow,
+      String jobName,
+      String companyName,
+      String jobEmail,
+      int jobPhone,
+      String jobLocation,
+      String jobQualification,
+      String jobDescription,
+      bool canRemotely) {
+    int offerIndex =
+        _myOffersList.indexWhere((element) => element.jobId == jobId);
+
+    _myOffersList[offerIndex].jobImage = pictureToShow;
+    _myOffersList[offerIndex].jobName = jobName;
+    _myOffersList[offerIndex].companyName = companyName;
+    _myOffersList[offerIndex].jobEmail = jobEmail;
+    _myOffersList[offerIndex].jobPhone = jobPhone;
+    _myOffersList[offerIndex].jobLocation = jobLocation;
+    _myOffersList[offerIndex].jobQualification = jobQualification;
+    _myOffersList[offerIndex].jobDescription = jobDescription;
+    _myOffersList[offerIndex].canRemotely = canRemotely;
+    notifyListeners();
+  }
+
   void refreshSkillSet(newSkillSet) {
     _loggedUser.skillsSet = newSkillSet;
     notifyListeners();

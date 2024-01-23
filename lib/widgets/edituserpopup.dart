@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/user/editcontactinfo.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/pages/user/editskillset.dart';
@@ -17,6 +18,27 @@ class EditPopUpParent extends StatefulWidget {
 }
 
 class _EditPopUpParentState extends State<EditPopUpParent> {
+  late MyUser user;
+  late TextEditingController nameCont;
+  late TextEditingController descriptionCont;
+  late TextEditingController locationCont;
+  late TextEditingController emailCont;
+  late TextEditingController passCont;
+  late TextEditingController phoneCont;
+
+  @override
+  void initState() {
+    user = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
+
+    nameCont = TextEditingController(text: user.username);
+    descriptionCont = TextEditingController(text: user.description);
+    locationCont = TextEditingController(text: user.location);
+    emailCont = TextEditingController(text: user.email);
+    passCont = TextEditingController();
+    phoneCont = TextEditingController(text: user.phoneNum);
+    super.initState();
+  }
+
   var ageCont = 0;
   @override
   Widget build(BuildContext context) {
@@ -27,27 +49,9 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     var googleSignFunction =
         Provider.of<GoogleSignInProvider>(context, listen: false);
 
-    var user = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
-
     int? ageCont = user.age;
 
-    final TextEditingController nameCont =
-        TextEditingController(text: user.username);
-
-    final TextEditingController descriptionCont =
-        TextEditingController(text: user.description);
-
-    final TextEditingController locationCont =
-        TextEditingController(text: user.location);
-
 // CONTACT CONTROLLERS
-    final TextEditingController emailCont =
-        TextEditingController(text: user.email);
-
-    final TextEditingController passCont = TextEditingController();
-
-    final TextEditingController phoneCont =
-        TextEditingController(text: user.phoneNum);
 
     final formKeyPhone = GlobalKey<FormState>();
     final formKeyDesc = GlobalKey<FormState>();
@@ -173,5 +177,16 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
                       BorderRadius.vertical(top: Radius.elliptical(200, 40))),
               child: editWidgetTypes[tabToOpen])),
     ]);
+  }
+
+  @override
+  void dispose() {
+    nameCont.dispose();
+    descriptionCont.dispose();
+    locationCont.dispose();
+    emailCont.dispose();
+    passCont.dispose();
+    phoneCont.dispose();
+    super.dispose();
   }
 }
