@@ -157,7 +157,8 @@ class _NoticesPageState extends State<NoticesPage> {
                             const SizedBox(height: 8),
                             // JOB LIST
                             Expanded(
-                                child: ListView.builder(
+                                child: ListView.separated(
+                                  separatorBuilder: (context, index) => const SizedBox(height: 12,),
                                     clipBehavior: Clip.none,
                                     itemCount: info.length,
                                     shrinkWrap: true,

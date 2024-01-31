@@ -52,6 +52,8 @@ class MyOffers extends StatelessWidget {
                   Provider.of<GoogleSignInProvider>(context, listen: false)
                       .setMyOffersList = jobList;
 
+                  print(jobList[0].jobName);
+
                   return ListView.builder(
                       padding: const EdgeInsets.all(12),
                       itemCount: jobList.length,

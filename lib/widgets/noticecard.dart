@@ -43,110 +43,117 @@ class NoticeCard extends StatelessWidget {
       jobNoticeInfo = info;
     }
 
-    return InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => isUserNoticePage
-                    ? UserPage(isOwnProfile: false, shownUser: userNoticeInfo!)
-                    : JobAdvertisement(jobId: jobNoticeInfo!.jobId),
-              )).then((value) {
-            Provider.of<GoogleSignInProvider>(context, listen: false)
-                .setState();
-          });
-        },
-        child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 4),
-            decoration: BoxDecoration(
-                boxShadow: myBoxShadow,
-                gradient: const LinearGradient(colors: gradient),
-                borderRadius: BorderRadius.circular(10)),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            child: SizedBox(
-                height: 120,
-                child: Row(children: [
-                  Expanded(
-                      flex: 3,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              isUserNoticePage
-                                  ? userNoticeInfo!.username
-                                  : jobNoticeInfo!.companyName,
-                              style: fontSize20,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                            ),
-                            if (isUserNoticePage
-                                ? userNoticeInfo!.description != null
-                                : jobNoticeInfo!.jobDescription != '')
-                              Text(
-                                  isUserNoticePage
-                                      ? userNoticeInfo!.description!
-                                      : jobNoticeInfo!.jobDescription,
-                                  maxLines: 2,
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.overpass(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white)),
-                            Row(
+    return Container(
+        height: 120,
+        decoration: BoxDecoration(
+            boxShadow: myBoxShadow,
+            gradient: const LinearGradient(colors: gradient),
+            borderRadius: BorderRadius.circular(12)),
+        child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+                highlightColor: Colors.blueAccent,
+                splashColor: Colors.blue,
+                splashFactory: InkRipple.splashFactory,
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => isUserNoticePage
+                            ? UserPage(
+                                isOwnProfile: false, shownUser: userNoticeInfo!)
+                            : JobAdvertisement(jobId: jobNoticeInfo!.jobId),
+                      )).then((value) {
+                    Provider.of<GoogleSignInProvider>(context, listen: false)
+                        .setState();
+                  });
+                },
+                child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    child: Row(children: [
+                      Expanded(
+                          flex: 3,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
+                                Text(
+                                  isUserNoticePage
+                                      ? userNoticeInfo!.username
+                                      : jobNoticeInfo!.jobName,
+                                  style: fontSize20,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                ),
                                 if (isUserNoticePage
-                                    ? false
-                                    : jobNoticeInfo!.canRemotely)
-                                  Expanded(
-                                      child: Row(
-                                    children: [
-                                      const Icon(Icons.done_outline_rounded,
-                                          size: 18, color: Colors.white),
-                                      Text(' Zdalne ',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.overpass(
-                                              fontSize: 12,
-                                              color: Colors.white)),
-                                    ],
-                                  )),
-                                if (isUserNoticePage
-                                    ? userNoticeInfo!.location != null
-                                    : true)
-                                  Expanded(
-                                      child: Row(children: [
-                                    const Icon(Icons.location_city,
-                                        size: 18, color: Colors.white),
-                                    Expanded(
-                                        child: Text(
-                                            ' ${isUserNoticePage ? userNoticeInfo!.location : jobNoticeInfo!.jobLocation}',
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: GoogleFonts.overpass(
-                                                fontSize: 12,
-                                                color: Colors.white))),
-                                  ])),
-                              ],
-                            )
-                          ])),
-                  const SizedBox(width: 10),
-                  CircleAvatar(
-                      radius: 53,
-                      backgroundColor: Colors.white,
-                      child: CircleAvatar(
-                        radius: 50,
-                        foregroundImage: NetworkImage(
-                          showCorrectImage(),
-                        ),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(colors: gradient)),
-                        ),
-                      )),
-                  const SizedBox(width: 10),
-                ]))));
+                                    ? userNoticeInfo!.description != null
+                                    : jobNoticeInfo!.jobDescription != '')
+                                  Text(
+                                      isUserNoticePage
+                                          ? userNoticeInfo!.description!
+                                          : jobNoticeInfo!.jobDescription,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.overpass(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                Row(
+                                  children: [
+                                    if (isUserNoticePage
+                                        ? false
+                                        : jobNoticeInfo!.canRemotely)
+                                      Expanded(
+                                          child: Row(
+                                        children: [
+                                          const Icon(Icons.done_outline_rounded,
+                                              size: 18, color: Colors.white),
+                                          Text(' Zdalne ',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.overpass(
+                                                  fontSize: 12,
+                                                  color: Colors.white)),
+                                        ],
+                                      )),
+                                    if (isUserNoticePage
+                                        ? userNoticeInfo!.location != null
+                                        : true)
+                                      Expanded(
+                                          child: Row(children: [
+                                        const Icon(Icons.location_city,
+                                            size: 18, color: Colors.white),
+                                        Expanded(
+                                            child: Text(
+                                                ' ${isUserNoticePage ? userNoticeInfo!.location : jobNoticeInfo!.jobLocation}',
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                style: GoogleFonts.overpass(
+                                                    fontSize: 12,
+                                                    color: Colors.white))),
+                                      ])),
+                                  ],
+                                )
+                              ])),
+                      const SizedBox(width: 10),
+                      CircleAvatar(
+                          radius: 53,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                            radius: 50,
+                            foregroundImage: NetworkImage(
+                              showCorrectImage(),
+                            ),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: LinearGradient(colors: gradient)),
+                            ),
+                          )),
+                      const SizedBox(width: 10),
+                    ])))));
   }
 }

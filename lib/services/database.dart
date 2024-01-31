@@ -451,7 +451,7 @@ class MyDb {
     }
   }
 
-  Future<String?> updateJob(
+  Future<Map<bool, String?>> updateJob(
       String jobId,
       File? noticePhoto,
       String jobName,
@@ -464,10 +464,14 @@ class MyDb {
       bool canRemotely) async {
     try {
       String? imageUrl;
+
       if (noticePhoto != null) {
         final storageReference =
             FirebaseStorage.instance.ref().child('job_ad_pictures/$jobId.jpg');
-        await storageReference.putFile(noticePhoto);
+        if (noticePhoto.path != 'fresh') {
+          await storageReference.putFile(noticePhoto);
+        }
+
         imageUrl = await storageReference.getDownloadURL();
       }
       await _firestore.collection('jobAd').doc(jobId).update({
@@ -481,10 +485,10 @@ class MyDb {
         'jobDescription': jobDescription,
         'canRemotely': canRemotely
       });
-      return imageUrl;
+      return {true: imageUrl};
     } catch (e) {
       debugPrint(e.toString());
-      return null;
+      return {false: null};
     }
   }
 

@@ -55,7 +55,7 @@ class GoogleSignInProvider extends ChangeNotifier {
 
   void refreshJobInfo(
       String jobId,
-      String pictureToShow,
+      String? pictureToShow,
       String jobName,
       String companyName,
       String jobEmail,
@@ -67,7 +67,10 @@ class GoogleSignInProvider extends ChangeNotifier {
     int offerIndex =
         _myOffersList.indexWhere((element) => element.jobId == jobId);
 
-    _myOffersList[offerIndex].jobImage = pictureToShow;
+    if (_myOffersList[offerIndex].jobImage != 'fresh') {
+      print('esa');
+      _myOffersList[offerIndex].jobImage = pictureToShow;
+    }
     _myOffersList[offerIndex].jobName = jobName;
     _myOffersList[offerIndex].companyName = companyName;
     _myOffersList[offerIndex].jobEmail = jobEmail;

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/firebase_options.dart';
 import 'package:prakty/loggedparent.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/widgets/error.dart';
@@ -12,8 +13,11 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await FirebaseAppCheck.instance.activate();
+  
   runApp(const MyApp());
 }
 

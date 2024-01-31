@@ -90,6 +90,7 @@ class _FindOnMapState extends State<FindOnMap> {
       PlaceAutoCompleteResponse result =
           PlaceAutoCompleteResponse.parseAutocompleteResult(response);
       if (result.predictions != null) {
+        print('esaas');
         setState(() {
           placePredictions = result.predictions!;
         });

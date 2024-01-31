@@ -28,8 +28,8 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
 
   @override
   void initState() {
-    user = Provider.of<GoogleSignInProvider>(context).getCurrentUser;
-
+    user = Provider.of<GoogleSignInProvider>(context, listen: false)
+        .getCurrentUser;
     nameCont = TextEditingController(text: user.username);
     descriptionCont = TextEditingController(text: user.description);
     locationCont = TextEditingController(text: user.location);
@@ -83,8 +83,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           // UPDATING PHOTO UPDATING PHOTO UPDATING PHOTO
           if (tabToOpen == 0) {
             if (editUserFunction.imgFile != null) {
-              if (editUserFunction.imgFile!.path == 'fresh') {
-              } else {
+              if (editUserFunction.imgFile!.path != 'fresh') {
                 var uploadUrl = await myDb.uploadImageToStorage(
                     user.userId, editUserFunction.imgFile);
 

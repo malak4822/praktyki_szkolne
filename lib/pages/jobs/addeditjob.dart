@@ -264,24 +264,25 @@ class _AddEditJobState extends State<AddEditJob> {
                                       listen: false)
                                   .checkInternetConnectivity()) {
                                 if (isNoticeOwner) {
-                                  String? imageUrl = await MyDb().updateJob(
-                                      initialJobData!.jobId,
-                                      noticePhoto,
-                                      jobName.text,
-                                      companyName.text,
-                                      jobEmail.text,
-                                      int.parse(jobPhone.text),
-                                      jobLocation.text,
-                                      jobQualification.text,
-                                      jobDescription.text,
-                                      canRemotely);
-                                  if (imageUrl != null) {
+                                  Map<bool, String?> isOkay = await MyDb()
+                                      .updateJob(
+                                          initialJobData!.jobId,
+                                          noticePhoto,
+                                          jobName.text,
+                                          companyName.text,
+                                          jobEmail.text,
+                                          int.parse(jobPhone.text),
+                                          jobLocation.text,
+                                          jobQualification.text,
+                                          jobDescription.text,
+                                          canRemotely);
+                                  if (isOkay.keys.first == true) {
                                     if (!mounted) return;
                                     Provider.of<GoogleSignInProvider>(context,
                                             listen: false)
                                         .refreshJobInfo(
                                             initialJobData!.jobId,
-                                            imageUrl,
+                                            isOkay.values.first,
                                             jobName.text,
                                             companyName.text,
                                             jobEmail.text,
