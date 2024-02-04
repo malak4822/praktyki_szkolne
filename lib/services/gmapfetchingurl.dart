@@ -24,7 +24,6 @@ class PlaceAutoCompleteResponse {
   const PlaceAutoCompleteResponse({this.status, this.predictions});
 
   factory PlaceAutoCompleteResponse.fromJson(Map<String, dynamic> json) {
-    print(json);
     return PlaceAutoCompleteResponse(
       status: json['status'] as String?,
       predictions: (json['predictions'] as List<dynamic>?)

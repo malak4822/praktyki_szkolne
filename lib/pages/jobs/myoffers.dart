@@ -52,14 +52,14 @@ class MyOffers extends StatelessWidget {
                   Provider.of<GoogleSignInProvider>(context, listen: false)
                       .setMyOffersList = jobList;
 
-                  print(jobList[0].jobName);
-
-                  return ListView.builder(
+                  return ListView.separated(
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 12),
                       padding: const EdgeInsets.all(12),
                       itemCount: jobList.length,
                       itemBuilder: (context, index) {
                         return NoticeCard(
-                            isUserNoticePage: false, info: jobList[index]);
+                            noticeType: 'jobNotice', info: jobList[index]);
                       });
                 }
               })),

@@ -13,9 +13,10 @@ import 'package:prakty/widgets/inputwindows.dart';
 import 'package:provider/provider.dart';
 
 class AddEditJob extends StatefulWidget {
-  const AddEditJob({super.key, required this.initialEditingVal});
-  final JobAdModel initialEditingVal;
-
+  const AddEditJob(
+      {super.key, required this.isEditing, required this.initialEditingVal});
+  final JobAdModel? initialEditingVal;
+  final bool isEditing;
   @override
   State<AddEditJob> createState() => _AddEditJobState();
 }
@@ -57,20 +58,22 @@ class _AddEditJobState extends State<AddEditJob> {
 
   @override
   void initState() {
-    if (widget.initialEditingVal.jobImage != null) {
-      noticePhoto = File('fresh');
-      pictureToShow = NetworkImage(widget.initialEditingVal.jobImage!);
+    if (widget.isEditing == true) {
+      if (widget.initialEditingVal!.jobImage != null) {
+        noticePhoto = File('fresh');
+        pictureToShow = NetworkImage(widget.initialEditingVal!.jobImage!);
+      }
+      initialJobData = widget.initialEditingVal;
+      jobName.text = initialJobData!.jobName;
+      companyName.text = initialJobData!.companyName;
+      jobEmail.text = initialJobData!.jobEmail;
+      jobPhone.text = initialJobData!.jobPhone.toString();
+      jobLocation.text = initialJobData!.jobLocation;
+      jobQualification.text = initialJobData!.jobQualification;
+      jobDescription.text = initialJobData!.jobDescription;
+      isNoticeOwner = true;
+      super.initState();
     }
-    initialJobData = widget.initialEditingVal;
-    jobName.text = initialJobData!.jobName;
-    companyName.text = initialJobData!.companyName;
-    jobEmail.text = initialJobData!.jobEmail;
-    jobPhone.text = initialJobData!.jobPhone.toString();
-    jobLocation.text = initialJobData!.jobLocation;
-    jobQualification.text = initialJobData!.jobQualification;
-    jobDescription.text = initialJobData!.jobDescription;
-    isNoticeOwner = true;
-    super.initState();
   }
 
   void showDeleteConfirmationDialog(BuildContext context) {
@@ -97,7 +100,7 @@ class _AddEditJobState extends State<AddEditJob> {
               onPressed: () async {
                 isLoadingVis = true;
                 bool isOkay = await MyDb()
-                    .deleteJobAdvert(widget.initialEditingVal.jobId);
+                    .deleteJobAdvert(widget.initialEditingVal!.jobId);
                 isLoadingVis = false;
                 if (isOkay) {
                   if (!mounted) return;

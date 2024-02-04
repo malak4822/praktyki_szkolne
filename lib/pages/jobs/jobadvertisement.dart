@@ -12,9 +12,11 @@ import 'package:prakty/widgets/contactbox.dart';
 import 'package:provider/provider.dart';
 
 class JobAdvertisement extends StatefulWidget {
-  const JobAdvertisement({super.key, required this.jobId});
+  const JobAdvertisement(
+      {super.key, required this.jobInfo, required this.areMyOffers});
 
-  final String jobId;
+  final bool areMyOffers;
+  final JobAdModel jobInfo;
   @override
   State<JobAdvertisement> createState() => _JobAdvertisementState();
 }
@@ -25,11 +27,17 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
 
   @override
   void initState() {
-    jobInfo = Provider.of<GoogleSignInProvider>(context, listen: false)
-        .myOffersList
-        .firstWhere(
-          (element) => element.jobId == widget.jobId,
-        );
+    // print(
+    //     Provider.of<GoogleSignInProvider>(context, listen: false).myOffersList);
+    if (widget.areMyOffers) {
+      jobInfo = Provider.of<GoogleSignInProvider>(context, listen: false)
+          .myOffersList
+          .firstWhere(
+            (element) => element.jobId == widget.jobInfo.jobId,
+          );
+    } else {
+      jobInfo = widget.jobInfo;
+    }
 
     ownerData = MyDb().takeAdOwnersData(jobInfo.belongsToUser);
     if (ownerData != null) {
@@ -302,11 +310,12 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
               alignment: Alignment.topRight,
               child: GestureDetector(
                   onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddEditJob(initialEditingVal: jobInfo)))
-                          .then((value) {
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddEditJob(
+                                    initialEditingVal: jobInfo,
+                                    isEditing: true,
+                                  ))).then((value) {
                         setState(() {});
                       }),
                   child: Container(

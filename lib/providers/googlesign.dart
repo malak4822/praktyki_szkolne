@@ -68,7 +68,6 @@ class GoogleSignInProvider extends ChangeNotifier {
         _myOffersList.indexWhere((element) => element.jobId == jobId);
 
     if (_myOffersList[offerIndex].jobImage != 'fresh') {
-      print('esa');
       _myOffersList[offerIndex].jobImage = pictureToShow;
     }
     _myOffersList[offerIndex].jobName = jobName;

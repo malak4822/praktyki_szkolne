@@ -9,14 +9,14 @@ import 'package:prakty/view/userpage.dart';
 import 'package:provider/provider.dart';
 
 class NoticeCard extends StatelessWidget {
-  const NoticeCard(
-      {super.key, required this.isUserNoticePage, required this.info});
+  const NoticeCard({super.key, required this.noticeType, required this.info});
 
   final dynamic info;
-  final bool isUserNoticePage;
+  final String noticeType;
+  // String noticeType -> OPTIONS: 'userNotice', 'jobNotice', 'jobOwnNotice'
 
   String showCorrectImage() {
-    if (isUserNoticePage) {
+    if (noticeType == 'userNotice') {
       if (info.profilePicture == null || info.profilePicture == '') {
         return 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*4wskaw*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA';
       } else {
@@ -37,7 +37,7 @@ class NoticeCard extends StatelessWidget {
 
     JobAdModel? jobNoticeInfo;
 
-    if (isUserNoticePage) {
+    if (noticeType == 'userNotice') {
       userNoticeInfo = info;
     } else {
       jobNoticeInfo = info;
@@ -52,7 +52,7 @@ class NoticeCard extends StatelessWidget {
         child: Material(
             color: Colors.transparent,
             child: InkWell(
-              borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12),
                 highlightColor: Colors.blueAccent,
                 splashColor: Colors.blue,
                 splashFactory: InkRipple.splashFactory,
@@ -60,10 +60,14 @@ class NoticeCard extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => isUserNoticePage
+                        builder: (context) => noticeType == 'userNotice'
                             ? UserPage(
                                 isOwnProfile: false, shownUser: userNoticeInfo!)
-                            : JobAdvertisement(jobId: jobNoticeInfo!.jobId),
+                            : JobAdvertisement(
+                                jobInfo: jobNoticeInfo!,
+                                areMyOffers: noticeType == 'jobOwnNotice'
+                                    ? true
+                                    : false),
                       )).then((value) {
                     Provider.of<GoogleSignInProvider>(context, listen: false)
                         .setState();
@@ -79,7 +83,7 @@ class NoticeCard extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  isUserNoticePage
+                                  noticeType == 'userNotice'
                                       ? userNoticeInfo!.username
                                       : jobNoticeInfo!.jobName,
                                   style: fontSize20,
@@ -87,11 +91,11 @@ class NoticeCard extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                 ),
-                                if (isUserNoticePage
+                                if (noticeType == 'userNotice'
                                     ? userNoticeInfo!.description != null
                                     : jobNoticeInfo!.jobDescription != '')
                                   Text(
-                                      isUserNoticePage
+                                      noticeType == 'userNotice'
                                           ? userNoticeInfo!.description!
                                           : jobNoticeInfo!.jobDescription,
                                       maxLines: 2,
@@ -103,7 +107,7 @@ class NoticeCard extends StatelessWidget {
                                           color: Colors.white)),
                                 Row(
                                   children: [
-                                    if (isUserNoticePage
+                                    if (noticeType == 'userNotice'
                                         ? false
                                         : jobNoticeInfo!.canRemotely)
                                       Expanded(
@@ -119,7 +123,7 @@ class NoticeCard extends StatelessWidget {
                                                   color: Colors.white)),
                                         ],
                                       )),
-                                    if (isUserNoticePage
+                                    if (noticeType == 'userNotice'
                                         ? userNoticeInfo!.location != null
                                         : true)
                                       Expanded(
@@ -128,7 +132,7 @@ class NoticeCard extends StatelessWidget {
                                             size: 18, color: Colors.white),
                                         Expanded(
                                             child: Text(
-                                                ' ${isUserNoticePage ? userNoticeInfo!.location : jobNoticeInfo!.jobLocation}',
+                                                ' ${noticeType == 'userNotice' ? userNoticeInfo!.location : jobNoticeInfo!.jobLocation}',
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                                 style: GoogleFonts.overpass(

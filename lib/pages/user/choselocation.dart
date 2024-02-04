@@ -90,7 +90,6 @@ class _FindOnMapState extends State<FindOnMap> {
       PlaceAutoCompleteResponse result =
           PlaceAutoCompleteResponse.parseAutocompleteResult(response);
       if (result.predictions != null) {
-        print('esaas');
         setState(() {
           placePredictions = result.predictions!;
         });
@@ -149,7 +148,7 @@ class _FindOnMapState extends State<FindOnMap> {
                         ),
                       ),
                       separatorBuilder: (BuildContext context, int index) =>
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 8),
                     ),
                   ),
                   Row(

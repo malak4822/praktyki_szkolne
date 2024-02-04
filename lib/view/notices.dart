@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/pages/jobs/addeditjob.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/widgets/noticecard.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
@@ -63,8 +64,11 @@ class _NoticesPageState extends State<NoticesPage> {
               backgroundColor: gradient[1],
               foregroundColor: Colors.white,
               splashColor: gradient[0],
-              onPressed: () => Navigator.pushNamed(context, '/AddEditJob')
-                  .then((value) => setState(() {})),
+              onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AddEditJob(
+                          initialEditingVal: null, isEditing: false))),
               child: const Icon(Icons.add))
           : null,
       body: SafeArea(
@@ -141,41 +145,48 @@ class _NoticesPageState extends State<NoticesPage> {
                         break;
                     }
 
-                    return Container(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          children: [
-                            Row(
+                    return SafeArea(
+                        child: Container(
+                            padding: const EdgeInsets.all(12),
+                            child: Column(
                               children: [
-                                Expanded(
-                                    child: twoButton('Sortuj', Icons.sort, 0)),
-                                Expanded(
-                                    child: twoButton(
-                                        'Filtruj', Icons.filter_alt, 1)),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        child:
+                                            twoButton('Sortuj', Icons.sort, 0)),
+                                    Expanded(
+                                        child: twoButton(
+                                            'Filtruj', Icons.filter_alt, 1)),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                // JOB LIST
+
+                                Flexible(
+                                    child: ListView.separated(
+                                        separatorBuilder: (context, index) =>
+                                            const SizedBox(
+                                              height: 8,
+                                            ),
+                                        // PROBLEM TO FIX
+                                        clipBehavior: Clip.hardEdge,
+                                        itemCount: info.length,
+                                        shrinkWrap: true,
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          if (widget.isUserNoticePage) {
+                                            return NoticeCard(
+                                                info: info[index],
+                                                noticeType: 'userNotice');
+                                          } else {
+                                            return NoticeCard(
+                                                info: info[index],
+                                                noticeType: 'jobNotice');
+                                          }
+                                        }))
                               ],
-                            ),
-                            const SizedBox(height: 8),
-                            // JOB LIST
-                            Expanded(
-                                child: ListView.separated(
-                                  separatorBuilder: (context, index) => const SizedBox(height: 12,),
-                                    clipBehavior: Clip.none,
-                                    itemCount: info.length,
-                                    shrinkWrap: true,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      if (widget.isUserNoticePage) {
-                                        return NoticeCard(
-                                            info: info[index],
-                                            isUserNoticePage: true);
-                                      } else {
-                                        return NoticeCard(
-                                            info: info[index],
-                                            isUserNoticePage: false);
-                                      }
-                                    }))
-                          ],
-                        ));
+                            )));
                   }
                 }),
             ValueListenableBuilder(

@@ -10,18 +10,23 @@ import 'package:prakty/widgets/noticecard.dart';
 import 'package:provider/provider.dart';
 
 class SavedOffers extends StatelessWidget {
-  const SavedOffers(
-      {super.key,
-      required this.isAccountTypeUser,
-      required this.accountFavAds});
+  const SavedOffers({
+    super.key,
+    required this.isAccountTypeUser,
+    required this.accountFavAds,
+    required this.userId,
+  });
 
   final bool isAccountTypeUser;
   final List<String> accountFavAds;
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
     List<String> favList =
-        Provider.of<GoogleSignInProvider>(context).getCurrentUser.likedOffers;
+        Provider.of<GoogleSignInProvider>(context, listen: false)
+            .getCurrentUser
+            .likedOffers;
     return Scaffold(
         body: SafeArea(
             child: Stack(children: [
@@ -35,8 +40,8 @@ class SavedOffers extends StatelessWidget {
           ),
           child: FutureBuilder(
               future: isAccountTypeUser
-                  ? MyDb().downloadFavJobNotices(favList)
-                  : MyDb().downloadFavUsersNotices(favList),
+                  ? MyDb().downloadFavJobNotices(favList, userId)
+                  : MyDb().downloadFavUsersNotices(favList, userId),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const LoadingWidget();
@@ -61,12 +66,16 @@ class SavedOffers extends StatelessWidget {
                   } else {
                     userList = List.from(snapshot.data!);
                   }
-                  return ListView.builder(
+
+                  return ListView.separated(
+                    separatorBuilder: (context, index) => const SizedBox(height: 12),
                       padding: const EdgeInsets.all(12),
-                      itemCount: favList.length,
+                      itemCount:
+                          isAccountTypeUser ? jobList.length : userList.length,
                       itemBuilder: (context, index) {
                         return NoticeCard(
-                            isUserNoticePage: isAccountTypeUser ? false : true,
+                            noticeType:
+                                isAccountTypeUser ? 'jobNotice' : 'userNotice',
                             info: isAccountTypeUser
                                 ? jobList[index]
                                 : userList[index]);

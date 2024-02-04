@@ -288,31 +288,38 @@ class MyDb {
   }
 
   Future<List<JobAdModel>?> downloadFavJobNotices(
-      List<String> favNoticesIds) async {
+      List<String> favNoticesIds, String userId) async {
     try {
       List<JobAdModel> jobNotices = [];
 
       CollectionReference collectionRef = _firestore.collection('jobAd');
-
       for (String element in favNoticesIds) {
         DocumentSnapshot favJob = await collectionRef.doc(element).get();
-        Map<String, dynamic> docSnapshot =
-            favJob.data() as Map<String, dynamic>;
 
-        jobNotices.add(JobAdModel(
-          jobId: docSnapshot['jobId'],
-          belongsToUser: docSnapshot['belongsToUser'],
-          jobName: docSnapshot['jobName'],
-          companyName: docSnapshot['companyName'],
-          jobEmail: docSnapshot['jobEmail'],
-          jobImage: docSnapshot['jobImage'],
-          jobPhone: docSnapshot['jobPhone'],
-          jobLocation: docSnapshot['jobLocation'],
-          jobQualification: docSnapshot['jobQualification'],
-          jobDescription: docSnapshot['jobDescription'],
-          canRemotely: docSnapshot['canRemotely'],
-        ));
+        if (favJob.data() != null) {
+          Map<String, dynamic> docSnapshot =
+              favJob.data() as Map<String, dynamic>;
+
+          jobNotices.add(JobAdModel(
+            jobId: docSnapshot['jobId'],
+            belongsToUser: docSnapshot['belongsToUser'],
+            jobName: docSnapshot['jobName'],
+            companyName: docSnapshot['companyName'],
+            jobEmail: docSnapshot['jobEmail'],
+            jobImage: docSnapshot['jobImage'],
+            jobPhone: docSnapshot['jobPhone'],
+            jobLocation: docSnapshot['jobLocation'],
+            jobQualification: docSnapshot['jobQualification'],
+            jobDescription: docSnapshot['jobDescription'],
+            canRemotely: docSnapshot['canRemotely'],
+          ));
+        } else {
+          await _firestore.collection('users').doc(userId).update({
+            'likedOffers': FieldValue.arrayRemove([element])
+          });
+        }
       }
+
       return jobNotices;
     } catch (e) {
       debugPrint(e.toString());
@@ -321,7 +328,7 @@ class MyDb {
   }
 
   Future<List<MyUser>?> downloadFavUsersNotices(
-      List<String> favNoticesIds) async {
+      List<String> favNoticesIds, String userId) async {
     try {
       List<MyUser> usersNotices = [];
 
@@ -329,26 +336,33 @@ class MyDb {
       for (String element in favNoticesIds) {
         DocumentSnapshot favJob = await collRef.doc(element).get();
 
-        Map<String, dynamic> docSnapshot =
-            favJob.data() as Map<String, dynamic>;
+        if (favJob.data() != null) {
+          Map<String, dynamic> docSnapshot =
+              favJob.data() as Map<String, dynamic>;
 
-        usersNotices.add(MyUser(
-            userId: docSnapshot['userId'],
-            username: docSnapshot['username'],
-            age: docSnapshot['age'],
-            description: docSnapshot['description'],
-            phoneNum: docSnapshot['phoneNum'],
-            location: docSnapshot['location'],
-            isAccountTypeUser: docSnapshot['isAccountTypeUser'],
-            skillsSet: (docSnapshot['skillsSet'] as List<dynamic>)
-                .map((item) => Map<String, int>.from(item))
-                .toList(),
-            email: docSnapshot['email'],
-            profilePicture: docSnapshot['profilePicture'],
-            likedOffers: List.from(docSnapshot['likedOffers']),
-            jobVacancy: docSnapshot['jobVacancy'],
-            accountCreated: docSnapshot['accountCreated']));
+          usersNotices.add(MyUser(
+              userId: docSnapshot['userId'],
+              username: docSnapshot['username'],
+              age: docSnapshot['age'],
+              description: docSnapshot['description'],
+              phoneNum: docSnapshot['phoneNum'],
+              location: docSnapshot['location'],
+              isAccountTypeUser: docSnapshot['isAccountTypeUser'],
+              skillsSet: (docSnapshot['skillsSet'] as List<dynamic>)
+                  .map((item) => Map<String, int>.from(item))
+                  .toList(),
+              email: docSnapshot['email'],
+              profilePicture: docSnapshot['profilePicture'],
+              likedOffers: List.from(docSnapshot['likedOffers']),
+              jobVacancy: docSnapshot['jobVacancy'],
+              accountCreated: docSnapshot['accountCreated']));
+        } else {
+          await _firestore.collection('users').doc(userId).update({
+            'likedOffers': FieldValue.arrayRemove([element]),
+          });
+        }
       }
+
       return usersNotices;
     } catch (e) {
       debugPrint(e.toString());

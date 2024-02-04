@@ -85,6 +85,7 @@ class EditPrivUserInfo extends StatelessWidget {
                                 isAccountTypeUser:
                                     currentUser.isAccountTypeUser,
                                 accountFavAds: currentUser.likedOffers,
+                                userId: currentUser.userId,
                               )));
                 }),
                 const SizedBox(height: 6),
