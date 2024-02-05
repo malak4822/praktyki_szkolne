@@ -173,7 +173,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
               decoration: const BoxDecoration(
                   gradient: LinearGradient(colors: gradient),
                   borderRadius:
-                      BorderRadius.vertical(top: Radius.elliptical(200, 40))),
+                      BorderRadius.vertical(top: Radius.elliptical(300, 20))),
               child: editWidgetTypes[tabToOpen])),
     ]);
   }

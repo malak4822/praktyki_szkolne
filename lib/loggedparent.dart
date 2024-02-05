@@ -48,7 +48,7 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
             } else {
               return Center(
                   child: Text(
-                      'Wystąpił Nie Typowy Błąd, Spróbuj Ponownie Później',
+                      'Wystąpił Błąd, Spróbuj Ponownie Później',
                       style: fontSize20));
             }
           }),
