@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
@@ -6,6 +5,7 @@ import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/jobs/addeditjob.dart';
 import 'package:prakty/services/database.dart';
+import 'package:prakty/services/sort_filter_functions.dart';
 import 'package:prakty/widgets/noticecard.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
 import 'package:prakty/widgets/sortandfilter.dart';
@@ -109,45 +109,18 @@ class _NoticesPageState extends State<NoticesPage> {
                       );
                     } else {
                       List<dynamic> info = snapshot.data!;
-
-                      void countDistanceToSort(bool isJobAdModel) {
-                        List userLocationsList = [];
-                        for (var element in info) {
-                          userLocationsList.add(isJobAdModel
-                              ? element.location
-                              : element.jobLocation);
-                        }
-                        print(userLocationsList);
-                      }
+                      final sortFunctionsInstance = SortFunctions(info);
 
                       if (info is List<JobAdModel>) {
-                        countDistanceToSort(false);
+                        // COMPANY NOTICES
+
                         // sortParticularAlgorytm(correctSearchinPrefs[2]);
                         // sortParticularAlgorytm(correctSearchinPrefs[3]);
                       } else if (info is List<MyUser>) {
-                        countDistanceToSort(true);
+                        // STUDENTS NOTICES
 
-                        void sortParticularAlgorytm(radioValue) {
-                          switch (radioValue) {
-                            case 0:
-                              info.sort((a, b) =>
-                                  b.accountCreated.compareTo(a.accountCreated));
-                              break;
-                            case 1:
-                              // ERROR
-                              // info.sort((a, b) => b.age!.compareTo(a.age!));
-                              break;
-                            case 2:
-                              info.sort((a, b) => b.skillsSet.length
-                                  .compareTo(a.skillsSet.length));
-                              break;
-                            case 3:
-                              // countDistanceToSort();
-                              break;
-                          }
-                        }
-
-                        sortParticularAlgorytm(correctSearchinPrefs[0]);
+                        info = List.from(sortFunctionsInstance
+                            .sortParticularAlgorytm(correctSearchinPrefs[0]));
                         // sortParticularAlgorytm(correctSearchinPrefs[1]);
                       }
 

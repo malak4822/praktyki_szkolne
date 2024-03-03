@@ -48,23 +48,15 @@ class WidgetListGenerator {
   }
 }
 
-List<String> sortUsers() {
-  return [
-    'Od Najnowszych',
-    'Od Najstarszych Wiekiem',
-    'Od Największej Ilości Umiejętności',
-    'Od Najbliżej Położonych'
-  ];
-}
+List<String> sortUsers() => [
+      'Najnowsze',
+      'Najstarsi',
+      'Największa Ilość Umiejętności',
+      'Najbliżej Ciebię'
+    ];
 
-List<String> filterUsers() {
-  return ['filterUser1', 'filterUser2', 'filterUser3'];
-}
+List<String> filterUsers() => ['filterUser1', 'filterUser2', 'filterUser3'];
 
-List<String> sortJobs() {
-  return ['sortJobs1', 'sortJobs2', 'sortJobs3'];
-}
+List<String> sortJobs() => ['sortJobs1', 'sortJobs2', 'sortJobs3'];
 
-List<String> filterJobs() {
-  return ['filterJobs1', 'filterJobs2', 'filterJobs3'];
-}
+List<String> filterJobs() => ['filterJobs1', 'filterJobs2', 'filterJobs3'];

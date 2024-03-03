@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,6 +23,8 @@ class _FindOnMapState extends State<FindOnMap> {
   List<AutoCompletePrediction> placePredictions = [];
 
   List<Placemark> placesFromLocation = [];
+
+// double lat = result.result!.geometry!.location!.lat;
 
   void placeAutoCompleteFromLocation(Placemark querys) async {
     placePredictions = [];
@@ -76,7 +80,7 @@ class _FindOnMapState extends State<FindOnMap> {
     setState(() {});
   }
 
-  void placeAutoComplete(String query) async {
+  Future<void> placeAutoComplete(String query) async {
     Uri uri =
         Uri.https('maps.googleapis.com', 'maps/api/place/autocomplete/json', {
       "input": query,
@@ -89,11 +93,42 @@ class _FindOnMapState extends State<FindOnMap> {
     if (response != null) {
       PlaceAutoCompleteResponse result =
           PlaceAutoCompleteResponse.parseAutocompleteResult(response);
-      if (result.predictions != null) {
-        setState(() {
-          placePredictions = result.predictions!;
-        });
+
+      if (placePredictions.isNotEmpty &&
+          placePredictions.first.placeId != null) {
+        getLatLangFromPlace(placePredictions.first.placeId!);
       }
+
+      // if (result.predictions != null) {
+      //   setState(() {
+      //     placePredictions = result.predictions!;
+      //   });
+      //   print('esa');
+      //   print(placePredictions.first.placeId);
+
+      //   if (placePredictions.isNotEmpty) {
+      //     getLatLangFromPlace(placePredictions.first.placeId!);
+      //   }
+      // }
+    }
+  }
+
+  Future<void> getLatLangFromPlace(String placeId) async {
+    Uri uri = Uri.https('maps.googleapis.com', '/maps/api/place/details/json', {
+      'place_id': placeId,
+      'key': 'AIzaSyD-iZk4gYYy7TO8qGW7e-SgBoXzTvg6-Wo',
+    });
+
+    String? placeDetailsResponse = await NetworkUtility().fetchUrl(uri);
+    if (placeDetailsResponse != null) {
+      PlaceDetailsResponse placeDetails =
+          PlaceDetailsResponse.fromJson(jsonDecode(placeDetailsResponse));
+
+      // Now you have the latitude and longitude
+      double latitude = placeDetails.result.geometry.location.lat;
+      double longitude = placeDetails.result.geometry.location.lng;
+
+      print('Latitude: $latitude, Longitude: $longitude');
     }
   }
 
@@ -281,10 +316,60 @@ class _FindOnMapState extends State<FindOnMap> {
       placesFromLocation = placemarks;
     }
   }
-@override
+
+  @override
   void dispose() {
     locationController.dispose();
     super.dispose();
   }
+}
 
+class PlaceDetailsResponse {
+  final Result result;
+
+  PlaceDetailsResponse({required this.result});
+
+  factory PlaceDetailsResponse.fromJson(Map<String, dynamic> json) {
+    return PlaceDetailsResponse(
+      result: Result.fromJson(json['result']),
+    );
+  }
+}
+
+class Result {
+  final Geometry geometry;
+
+  Result({required this.geometry});
+
+  factory Result.fromJson(Map<String, dynamic> json) {
+    return Result(
+      geometry: Geometry.fromJson(json['geometry']),
+    );
+  }
+}
+
+class Geometry {
+  final Location location;
+
+  Geometry({required this.location});
+
+  factory Geometry.fromJson(Map<String, dynamic> json) {
+    return Geometry(
+      location: Location.fromJson(json['location']),
+    );
+  }
+}
+
+class Location {
+  final double lat;
+  final double lng;
+
+  Location({required this.lat, required this.lng});
+
+  factory Location.fromJson(Map<String, dynamic> json) {
+    return Location(
+      lat: json['lat'],
+      lng: json['lng'],
+    );
+  }
 }

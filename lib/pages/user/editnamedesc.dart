@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
-import 'package:prakty/pages/user/choselocation.dart';
+import 'package:prakty/widgets/choselocation.dart';
 import 'package:prakty/widgets/inputwindows.dart';
 
 class EditNameAndDesc extends StatefulWidget {
