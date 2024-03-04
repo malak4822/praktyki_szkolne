@@ -27,8 +27,6 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
 
   @override
   void initState() {
-    // print(
-    //     Provider.of<GoogleSignInProvider>(context, listen: false).myOffersList);
     if (widget.areMyOffers) {
       jobInfo = Provider.of<GoogleSignInProvider>(context, listen: false)
           .myOffersList
@@ -78,19 +76,18 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
           child: Stack(children: [
         Container(
             margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
                 boxShadow: myBoxShadow,
                 gradient: const LinearGradient(colors: gradient),
                 borderRadius: BorderRadius.circular(16)),
-            child: ListView(children: [
+            child: ListView(clipBehavior: Clip.none, children: [
               SizedBox(
                   height: jobInfo.jobImage == null ? 90 : 150,
                   child: Row(
                     children: [
                       if (jobInfo.jobImage != null)
                         Container(
-                            margin: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                                 boxShadow: myOutlineBoxShadow,
                                 borderRadius: BorderRadius.circular(16)),
@@ -100,13 +97,13 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                                     width: 150,
                                     height: 150,
                                     fit: BoxFit.cover))),
+                      if (jobInfo.jobImage != null) const SizedBox(width: 12),
                       Expanded(
                           child: InkWell(
                               onTap: () =>
                                   showSnackBar(context, 'Nazwa Stanowiska'),
                               child: AnimatedContainer(
                                   height: double.maxFinite,
-                                  margin: const EdgeInsets.all(8),
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                       color: Colors.white12,
@@ -123,11 +120,10 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                                   )))))
                     ],
                   )),
-
+              const SizedBox(height: 12),
               InkWell(
                   onTap: () => showSnackBar(context, 'Opis Stanowiska'),
                   child: Container(
-                      margin: const EdgeInsets.all(8),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                           color: Colors.white12,
@@ -141,6 +137,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   height: 76,
                   child: Center(
                       child: ListView(
+                    padding: const EdgeInsets.all(6),
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     children: [
@@ -166,7 +163,6 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                   onTap: () => showSnackBar(
                       context, 'Kwalifikacja, Informacje dodatkowe'),
                   child: Container(
-                      margin: const EdgeInsets.all(8),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                           color: Colors.white12,
@@ -188,12 +184,13 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                                   textAlign: TextAlign.center)
                             ])
                       ]))),
+              const SizedBox(height: 12),
               InkWell(
                   onTap: () =>
                       showSnackBar(context, 'Nazwa Firmy, Twórca Ogłoszenia'),
                   child: Container(
                       height: 180,
-                      margin: const EdgeInsets.all(8),
+                      // margin: const EdgeInsets.all(8),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                           boxShadow: myOutlineBoxShadow,
@@ -347,9 +344,6 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                     : 0,
           ),
       ])),
-      // )
-      // ;
-      // }
     );
   }
 }

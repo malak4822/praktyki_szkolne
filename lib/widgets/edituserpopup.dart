@@ -25,6 +25,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
   late TextEditingController emailCont;
   late TextEditingController passCont;
   late TextEditingController phoneCont;
+  String placeId = '';
 
   @override
   void initState() {
@@ -53,20 +54,19 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
 
 // CONTACT CONTROLLERS
 
+  // saving placeId for users is error / it doesnt send data do db 
+  
     final formKeyPhone = GlobalKey<FormState>();
     final formKeyDesc = GlobalKey<FormState>();
 
     List<Widget> editWidgetTypes = [
       EditPhoto(user: user),
-      EditNameAndDesc(
-          nameCont,
-          descriptionCont,
-          locationCont,
-          emailCont,
-          ageCont,
-          (newVal) => ageCont = newVal,
-          user.isAccountTypeUser,
-          formKeyDesc),
+      EditNameAndDesc(nameCont, descriptionCont, locationCont, emailCont,
+          ageCont, (newVal) => ageCont = newVal, (placeRef) {
+        placeId = placeRef;
+        print('1');
+        print(placeId);
+      }, user.isAccountTypeUser, formKeyDesc),
       const EditSkillSet(),
       EditContactInfo(
           emailCont, passCont, phoneCont, formKeyPhone, user.isAccountTypeUser)
@@ -100,6 +100,8 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
               editUserFunction.deleteSelectedImage();
             }
           }
+          print('2');
+          print(placeId);
 
           // UDPATING USER INFO UDPATING USER INFO UDPATING
           if (tabToOpen == 1) {
@@ -111,6 +113,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
                   nameCont.text,
                   descriptionCont.text,
                   locationCont.text,
+                  placeId,
                   ageCont);
               if (infoFields != null) {
                 googleSignFunction.refreshNameAndDesc(

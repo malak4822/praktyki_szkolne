@@ -30,7 +30,6 @@ class MyDb {
       }
       return 'success';
     } catch (e) {
-      debugPrint(e.toString());
       return e.toString();
     }
   }
@@ -52,7 +51,6 @@ class MyDb {
         'accountCreated': Timestamp.now()
       });
     } catch (e) {
-      debugPrint(e.toString());
     }
   }
 
@@ -99,6 +97,7 @@ class MyDb {
       String newUsername,
       String newDescription,
       String? newLocation,
+      String? placeId,
       int? newAge) async {
     try {
       if (isAccountTypeUser) {
@@ -106,6 +105,7 @@ class MyDb {
           'username': newUsername,
           'description': newDescription,
           'location': newLocation,
+          'placeId': placeId,
           'age': newAge,
         });
         return [newUsername, newDescription, newLocation!, newAge.toString()];
@@ -234,6 +234,7 @@ class MyDb {
               description: myUsersList[i]['description'],
               phoneNum: myUsersList[i]['phoneNum'],
               location: myUsersList[i]['location'],
+              placeId: myUsersList[i]['placeId'],
               isAccountTypeUser: myUsersList[i]['isAccountTypeUser'],
               skillsSet: (myUsersList[i]['skillsSet'] as List<dynamic>)
                   .map((item) => Map<String, int>.from(item))
@@ -347,6 +348,7 @@ class MyDb {
               description: docSnapshot['description'],
               phoneNum: docSnapshot['phoneNum'],
               location: docSnapshot['location'],
+              placeId: docSnapshot['placeId'],
               isAccountTypeUser: docSnapshot['isAccountTypeUser'],
               skillsSet: (docSnapshot['skillsSet'] as List<dynamic>)
                   .map((item) => Map<String, int>.from(item))
@@ -397,6 +399,7 @@ class MyDb {
           description: ownerInfo['description'],
           phoneNum: ownerInfo['phoneNum'],
           location: ownerInfo['location'],
+          placeId: ownerInfo['placeId'],
           isAccountTypeUser: ownerInfo['isAccountTypeUser'],
           skillsSet: (ownerInfo['skillsSet'] as List<dynamic>)
               .map((item) => Map<String, int>.from(item))
@@ -473,6 +476,7 @@ class MyDb {
       String jobEmail,
       int jobPhone,
       String jobLocation,
+      String placeId,
       String jobQualification,
       String jobDescription,
       bool canRemotely) async {
@@ -495,6 +499,7 @@ class MyDb {
         'jobEmail': jobEmail,
         'jobPhone': jobPhone,
         'jobLocation': jobLocation,
+        'placeId': placeId,
         'jobQualification': jobQualification,
         'jobDescription': jobDescription,
         'canRemotely': canRemotely

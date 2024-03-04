@@ -11,7 +11,8 @@ class EditNameAndDesc extends StatefulWidget {
       this.locationCont,
       this.emailCont,
       this.ageCont,
-      this.callback,
+      this.ageCallback,
+      this.placeCallBack,
       this.isAccountTypeUser,
       this.formKey,
       {super.key});
@@ -24,13 +25,16 @@ class EditNameAndDesc extends StatefulWidget {
   final GlobalKey<FormState> formKey;
 
   final int? ageCont;
-  final Function callback;
+  final Function placeCallBack;
+  final Function ageCallback;
 
   @override
   State<EditNameAndDesc> createState() => _EditNameAndDescState();
 }
 
 class _EditNameAndDescState extends State<EditNameAndDesc> {
+  String placeId = '';
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -65,11 +69,13 @@ class _EditNameAndDescState extends State<EditNameAndDesc> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          FindOnMap(callBack: (String val) {
+                                      builder: (context) => FindOnMap(callBack:
+                                              (String val, String placeRef) {
                                             setState(() {
                                               widget.locationCont.text = val;
                                             });
+
+                                            widget.placeCallBack(placeRef);
                                           })));
                             },
                             child: Center(
@@ -104,7 +110,7 @@ class _EditNameAndDescState extends State<EditNameAndDesc> {
                                     ? widget.ageCont! - 14
                                     : 0),
                             onSelectedItemChanged: (int newVal) =>
-                                widget.callback(newVal + 14),
+                                widget.ageCallback(newVal + 14),
                             children: List.generate(
                                 14 + 27,
                                 (index) => Text(

@@ -80,7 +80,7 @@ class _FindOnMapState extends State<FindOnMap> {
     setState(() {});
   }
 
-  Future<void> placeAutoComplete(String query) async {
+  Future<void> placeAutoCompleteFromText(String query) async {
     Uri uri =
         Uri.https('maps.googleapis.com', 'maps/api/place/autocomplete/json', {
       "input": query,
@@ -94,22 +94,13 @@ class _FindOnMapState extends State<FindOnMap> {
       PlaceAutoCompleteResponse result =
           PlaceAutoCompleteResponse.parseAutocompleteResult(response);
 
-      if (placePredictions.isNotEmpty &&
-          placePredictions.first.placeId != null) {
-        getLatLangFromPlace(placePredictions.first.placeId!);
+      if (result.predictions != null) {
+        if (result.predictions!.isNotEmpty) {
+          setState(() {
+            placePredictions = result.predictions!;
+          });
+        }
       }
-
-      // if (result.predictions != null) {
-      //   setState(() {
-      //     placePredictions = result.predictions!;
-      //   });
-      //   print('esa');
-      //   print(placePredictions.first.placeId);
-
-      //   if (placePredictions.isNotEmpty) {
-      //     getLatLangFromPlace(placePredictions.first.placeId!);
-      //   }
-      // }
     }
   }
 
@@ -159,7 +150,8 @@ class _FindOnMapState extends State<FindOnMap> {
                                 borderRadius: BorderRadius.circular(16)),
                             backgroundColor: Colors.white24),
                         onPressed: () {
-                          widget.callBack(placePredictions[index].description);
+                          widget.callBack(placePredictions[index].description,
+                              placePredictions[index].reference);
 
                           Navigator.pop(context);
                         },
@@ -196,7 +188,7 @@ class _FindOnMapState extends State<FindOnMap> {
                         ),
                         child: TextFormField(
                           onChanged: (val) {
-                            placeAutoComplete(val);
+                            placeAutoCompleteFromText(val);
                           },
                           textAlign: TextAlign.center,
                           cursorColor: Colors.white,
@@ -211,7 +203,7 @@ class _FindOnMapState extends State<FindOnMap> {
                                 setState(() {
                                   locationController.text = '';
                                 });
-                                widget.callBack('');
+                                widget.callBack('', '');
                                 Navigator.pop(context);
                                 //
                               },

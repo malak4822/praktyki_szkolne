@@ -31,6 +31,7 @@ class _AddEditJobState extends State<AddEditJob> {
   TextEditingController jobEmail = TextEditingController();
   TextEditingController jobPhone = TextEditingController();
   TextEditingController jobLocation = TextEditingController();
+  String placeId = '';
   TextEditingController jobQualification = TextEditingController();
   TextEditingController jobDescription = TextEditingController();
   bool canRemotely = false;
@@ -201,10 +202,14 @@ class _AddEditJobState extends State<AddEditJob> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) => FindOnMap(
-                                                    callBack: (String val) {
+                                                    callBack:
+                                                        (String locationText,
+                                                            String placeRef) {
                                                   setState(() {
-                                                    jobLocation.text = val;
+                                                    jobLocation.text =
+                                                        locationText;
                                                   });
+                                                  placeId = placeRef;
                                                 })));
                                   },
                                   child: Center(
@@ -276,6 +281,7 @@ class _AddEditJobState extends State<AddEditJob> {
                                           jobEmail.text,
                                           int.parse(jobPhone.text),
                                           jobLocation.text,
+                                          placeId,
                                           jobQualification.text,
                                           jobDescription.text,
                                           canRemotely);

@@ -26,6 +26,12 @@ class _EditPhotoState extends State<EditPhoto> {
   }
 
   @override
+  void dispose() {
+    Provider.of<EditUser>(context, listen: false).deleteSelectedImage();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     EditUser editFunction = Provider.of<EditUser>(context, listen: false);
 

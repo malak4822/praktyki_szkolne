@@ -6,6 +6,7 @@ class MyUser {
   String? description;
   String? phoneNum;
   String? location;
+  String? placeId;
   int? age;
   bool isAccountTypeUser;
   List<Map<String, int>> skillsSet;
@@ -22,6 +23,7 @@ class MyUser {
     required this.description,
     required this.phoneNum,
     required this.location,
+    required this.placeId,
     required this.isAccountTypeUser,
     required this.skillsSet,
     required this.likedOffers,

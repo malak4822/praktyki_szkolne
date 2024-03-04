@@ -32,6 +32,8 @@ class MyTextFormField extends StatelessWidget {
                   .errorMessage;
         }
 
+        // BUG - REJESTREUJE LUDZI KTÓRZY MAJĄ MNIEJ NIŻ 7 LITER W IMIENIU I NAZWISKU
+
         getMessage();
         if (value == null || value.isEmpty) {
           return 'Uzupełnij Pole';
@@ -163,5 +165,4 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
           fontWeight: FontWeight.bold, color: Colors.white),
     ),
   );
-  
 }

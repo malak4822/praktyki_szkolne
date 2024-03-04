@@ -4,8 +4,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../constants.dart';
 
 Widget contactBox(icon, String command, bool notToEdit) => Container(
-      height: 72,
-      width: 72,
       decoration: BoxDecoration(
           gradient: const LinearGradient(colors: gradient),
           borderRadius: BorderRadius.circular(16),
@@ -18,11 +16,11 @@ Widget contactBox(icon, String command, bool notToEdit) => Container(
           }
         },
         style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.only(left: 20, right: 12),
+          padding: const EdgeInsets.only(left: 8),
             backgroundColor: notToEdit ? Colors.transparent : Colors.black45,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16))),
         icon: Icon(icon,
-            size: 30, color: notToEdit ? Colors.white : Colors.white38),
+            size: 28, color: notToEdit ? Colors.white : Colors.white38),
       ),
     );
