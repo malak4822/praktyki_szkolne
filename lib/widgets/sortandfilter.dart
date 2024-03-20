@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 
-// class SortUsers  {
-
-//   @override
-//   List<Widget> lis =>Container();
-// }
 class WidgetListGenerator {
   WidgetListGenerator(this.listToOpen, this.searchingPrefs, this.callBack);
 

@@ -4,19 +4,27 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/jobs/addeditjob.dart';
+import 'package:prakty/pages/user/edituserpage.dart';
+import 'package:prakty/providers/edituser.dart';
+import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
 import 'package:prakty/services/sort_filter_functions.dart';
 import 'package:prakty/widgets/noticecard.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
 import 'package:prakty/widgets/sortandfilter.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NoticesPage extends StatefulWidget {
   const NoticesPage(
-      {super.key, this.isAccountTypeUser, required this.isUserNoticePage});
+      {super.key,
+      this.isAccountTypeUser,
+      required this.isUserNoticePage,
+      required this.currentUserPlaceId});
 
   final bool? isAccountTypeUser;
   final bool isUserNoticePage;
+  final String? currentUserPlaceId;
 
   @override
   State<NoticesPage> createState() => _NoticesPageState();
@@ -109,7 +117,8 @@ class _NoticesPageState extends State<NoticesPage> {
                       );
                     } else {
                       List<dynamic> info = snapshot.data!;
-                      final sortFunctionsInstance = SortFunctions(info);
+                      final sortFunctionsInstance =
+                          SortFunctions(info, widget.currentUserPlaceId);
 
                       if (info is List<JobAdModel>) {
                         // COMPANY NOTICES
@@ -118,9 +127,16 @@ class _NoticesPageState extends State<NoticesPage> {
                         // sortParticularAlgorytm(correctSearchinPrefs[3]);
                       } else if (info is List<MyUser>) {
                         // STUDENTS NOTICES
+                        sortFunctionsInstance
+                            .sortParticularAlgorytm(correctSearchinPrefs[0])
+                            .then((value) {
+                          info = List.from(value);
+                          print(info[0].username);
+                          print(info[1].username);
+                          print(info[2].username);
+                        });
+                        // PROBLEM NOT UPDATING LIST
 
-                        info = List.from(sortFunctionsInstance
-                            .sortParticularAlgorytm(correctSearchinPrefs[0]));
                         // sortParticularAlgorytm(correctSearchinPrefs[1]);
                       }
 
@@ -236,12 +252,74 @@ class _NoticesPageState extends State<NoticesPage> {
                                   child: const Icon(Icons.done_outline_rounded,
                                       size: 32, color: Colors.white),
                                   onPressed: () async {
-                                    correctSearchinPrefs =
-                                        tempSearchingPrefs.value;
-                                    setSearchingPrefs();
-                                    setState(() {});
+                                    print('MY PLACEID:');
+                                    print(Provider.of<GoogleSignInProvider>(
+                                            context,
+                                            listen: false)
+                                        .getCurrentUser
+                                        .placeId);
 
-                                    isTabVisible.value = false;
+                                    if (tempSearchingPrefs.value[0] == 3 &&
+                                        Provider.of<GoogleSignInProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .getCurrentUser
+                                                .placeId ==
+                                            null) {
+                                      print('esa');
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                                backgroundColor: gradient[1],
+                                                elevation: 8,
+                                                iconColor: Colors.white,
+                                                icon: const Icon(
+                                                    Icons.location_pin,
+                                                    size: 32),
+                                                titleTextStyle: fontSize20,
+                                                contentTextStyle: fontSize16,
+                                                title: const Text(
+                                                    "Brak Lokalizacji"),
+                                                content: const Text(
+                                                  "Aby Sortować Po Lokalizacji Najpierw Musisz Dodać Swoją",
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                actionsAlignment:
+                                                    MainAxisAlignment.center,
+                                                actions: [
+                                                  ElevatedButton.icon(
+                                                      onPressed: () {
+                                                        isTabVisible.value =
+                                                            false;
+                                                        Provider.of<EditUser>(
+                                                                context,
+                                                                listen: false)
+                                                            .toogleEditingPopUp(
+                                                                1);
+                                                        Navigator.pop(context);
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        const EditUserPage()));
+                                                      },
+                                                      icon: const Icon(
+                                                          Icons.arrow_right_alt,
+                                                          color: Colors.white),
+                                                      label: Text(
+                                                          'Ustaw Lokalizację',
+                                                          style: fontSize16))
+                                                ],
+                                              ));
+                                    } else {
+                                      print('esaaaa');
+                                      correctSearchinPrefs =
+                                          tempSearchingPrefs.value;
+                                      setSearchingPrefs();
+                                      isTabVisible.value = false;
+                                      setState(() {});
+                                    }
                                   },
                                 ))
                           ]),

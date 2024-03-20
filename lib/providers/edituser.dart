@@ -160,7 +160,7 @@ class EditUser extends ChangeNotifier {
 
   Future<bool> checkInternetConnectivity() async {
     final customInstance = InternetConnectionChecker.createInstance(
-        checkTimeout: const Duration(seconds: 1));
+        checkTimeout: const Duration(seconds: 2));
     if (await customInstance.hasConnection == true) {
       _showErrorMessage = false;
       return true;

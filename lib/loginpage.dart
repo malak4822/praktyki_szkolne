@@ -22,15 +22,18 @@ class _LoginPageState extends State<LoginPage> {
   bool isTextObscured = true;
   final _formKey = GlobalKey<FormState>();
 
+
+   Future<bool> isInternet() async {
+      return await Provider.of<EditUser>(context, listen: false)
+          .checkInternetConnectivity();
+    }
+
+
+
   @override
   Widget build(BuildContext context) {
     final signInProvider =
         Provider.of<GoogleSignInProvider>(context, listen: false);
-
-    Future<bool> isInternet() async {
-      return await Provider.of<EditUser>(context, listen: false)
-          .checkInternetConnectivity();
-    }
 
 // BŁĄDPRZY LOGOWANIU, CO NAJMNIEJ JEDNA WIELKA LITERA, JAK KILKNIE SIE 2 RAZY TO LOGUJE
     bool hasInternet = false;

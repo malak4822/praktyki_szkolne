@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
 import 'package:prakty/view/notices.dart';
@@ -16,6 +18,20 @@ class LoggedParentWidget extends StatefulWidget {
 class _LoggedParentWidgetState extends State<LoggedParentWidget> {
   int _currentIndex = 1;
 
+  Completer<void> setUserOnStartVal = Completer<void>();
+
+  @override
+  void initState() {
+    setUpUser();
+    super.initState();
+  }
+
+  void setUpUser() async {
+    await Provider.of<GoogleSignInProvider>(context, listen: false)
+        .setUserOnStart(context)
+        .then((value) => setUserOnStartVal.complete());
+  }
+
   void changePage(int newIndex) {
     setState(() {
       _currentIndex = newIndex;
@@ -25,17 +41,25 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
   @override
   Widget build(BuildContext context) {
     List<Widget> pages = [
-      const NoticesPage(isUserNoticePage: true),
+      NoticesPage(
+          isUserNoticePage: true,
+          currentUserPlaceId:
+              Provider.of<GoogleSignInProvider>(context, listen: false)
+                  .getCurrentUser
+                  .placeId),
       NoticesPage(
         isAccountTypeUser:
             Provider.of<GoogleSignInProvider>(context, listen: false)
                 .getCurrentUser
                 .isAccountTypeUser,
         isUserNoticePage: false,
+        currentUserPlaceId:
+            Provider.of<GoogleSignInProvider>(context, listen: false)
+                .getCurrentUser
+                .placeId,
       ),
       FutureBuilder(
-          future: Provider.of<GoogleSignInProvider>(context, listen: false)
-              .setUserOnStart(context),
+          future: setUserOnStartVal.future,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const LoadingWidget();
@@ -47,8 +71,7 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
                   isOwnProfile: true);
             } else {
               return Center(
-                  child: Text(
-                      'Wystąpił Błąd, Spróbuj Ponownie Później',
+                  child: Text('Wystąpił Błąd, Spróbuj Ponownie Później',
                       style: fontSize20));
             }
           }),

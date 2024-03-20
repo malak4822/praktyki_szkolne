@@ -51,6 +51,7 @@ class MyDb {
         'accountCreated': Timestamp.now()
       });
     } catch (e) {
+      debugPrint(e.toString());
     }
   }
 
@@ -70,6 +71,7 @@ class MyDb {
         currentUser.description = data['description'];
         currentUser.phoneNum = data['phoneNum'];
         currentUser.age = data['age'];
+        currentUser.placeId = data['placeId'];
         currentUser.skillsSet =
             (data['skillsSet'] as List<dynamic>?)?.map((dynamic item) {
                   final Map<String, int> skill = Map<String, int>.from(item);

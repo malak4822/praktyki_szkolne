@@ -17,7 +17,7 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await FirebaseAppCheck.instance.activate();
-  
+
   runApp(const MyApp());
 }
 
@@ -60,7 +60,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    bool loginConstrAccess = Provider.of<EditUser>(context).showErrorMessage;
+    bool loginConstrAccess =
+        Provider.of<EditUser>(context).showErrorMessage;
     return Scaffold(
       body: Container(
           decoration: const BoxDecoration(
