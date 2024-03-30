@@ -76,12 +76,12 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
           child: Stack(children: [
         Container(
             margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
                 boxShadow: myBoxShadow,
                 gradient: const LinearGradient(colors: gradient),
                 borderRadius: BorderRadius.circular(16)),
-            child: ListView(clipBehavior: Clip.none, children: [
+            child: SizedBox(
+                child: ListView(padding: const EdgeInsets.all(16), children: [
               SizedBox(
                   height: jobInfo.jobImage == null ? 90 : 150,
                   child: Row(
@@ -300,7 +300,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                               }),
                         ],
                       ))),
-            ])),
+            ]))),
         backButton(context),
         if (isOwnNotice)
           Align(

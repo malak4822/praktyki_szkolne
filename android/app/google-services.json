@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "38387700535-81lcp2bihbj8b646h5b5ndpa47odo50c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.praktykiszkolne.malaq",
+            "certificate_hash": "cce28939a1c290dedaa256c6db3988e82eaedadd"
+          }
+        },
+        {
           "client_id": "38387700535-jef7a6hkc41mki0f0hnfdou63ts2b41g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
