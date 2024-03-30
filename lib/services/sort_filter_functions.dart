@@ -10,7 +10,7 @@ class SortFunctions {
   final List info;
   final String? currentUserPlaceId;
 
-  Future<List> sortParticularAlgorytm(radioValue) async {
+  Future<List<MyUser>> sortParticularAlgorytm(radioValue) async {
     List<MyUser> noticesInfo = List.from(info);
     switch (radioValue) {
       case 0:
@@ -131,7 +131,7 @@ class SortFunctions {
         return LatLng(latitude, longitude);
       }
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
     }
     return null;
   }

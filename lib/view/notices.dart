@@ -31,10 +31,29 @@ class NoticesPage extends StatefulWidget {
 }
 
 class _NoticesPageState extends State<NoticesPage> {
+  bool wasInfoDownloaded = false;
+
+  Future<List<MyUser>>? usersData;
+  Future<List<JobAdModel>>? jobsData;
+
   @override
   void initState() {
     readSearchingPrefs();
+
+    getAndSortUsers();
+    getAndSortJobs();
+
     super.initState();
+  }
+
+  Future<void> getAndSortUsers() async {
+    usersData = MyDb().downloadUsersStates().then((value) =>
+        SortFunctions(value, widget.currentUserPlaceId)
+            .sortParticularAlgorytm(correctSearchinPrefs[0]));
+  }
+
+  Future<void> getAndSortJobs() async {
+    jobsData = MyDb().downloadJobAds();
   }
 
   List<int> correctSearchinPrefs = [0, 0, 0, 0];
@@ -88,9 +107,7 @@ class _NoticesPageState extends State<NoticesPage> {
           child: Stack(
             children: [
               FutureBuilder(
-                  future: widget.isUserNoticePage
-                      ? MyDb().downloadUsersStates()
-                      : MyDb().downloadJobAds(),
+                  future: widget.isUserNoticePage ? usersData : jobsData,
                   builder: (BuildContext context,
                       AsyncSnapshot<List<Object>?> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -117,28 +134,6 @@ class _NoticesPageState extends State<NoticesPage> {
                       );
                     } else {
                       List<dynamic> info = snapshot.data!;
-                      final sortFunctionsInstance =
-                          SortFunctions(info, widget.currentUserPlaceId);
-
-                      if (info is List<JobAdModel>) {
-                        // COMPANY NOTICES
-
-                        // sortParticularAlgorytm(correctSearchinPrefs[2]);
-                        // sortParticularAlgorytm(correctSearchinPrefs[3]);
-                      } else if (info is List<MyUser>) {
-                        // STUDENTS NOTICES
-                        sortFunctionsInstance
-                            .sortParticularAlgorytm(correctSearchinPrefs[0])
-                            .then((value) {
-                          info = List.from(value);
-                          print(info[0].username);
-                          print(info[1].username);
-                          print(info[2].username);
-                        });
-                        // PROBLEM NOT UPDATING LIST
-
-                        // sortParticularAlgorytm(correctSearchinPrefs[1]);
-                      }
 
                       return CustomScrollView(
                         clipBehavior: Clip.none,
@@ -171,7 +166,7 @@ class _NoticesPageState extends State<NoticesPage> {
                                     child: Column(
                                       children: [
                                         NoticeCard(
-                                            info: info[index],
+                                            info: info[index] as MyUser,
                                             noticeType: 'userNotice'),
                                         const SizedBox(height: 8),
                                       ],
@@ -183,7 +178,7 @@ class _NoticesPageState extends State<NoticesPage> {
                                     child: Column(
                                       children: [
                                         NoticeCard(
-                                            info: info[index],
+                                            info: info[index] as JobAdModel,
                                             noticeType: 'jobNotice'),
                                         const SizedBox(height: 8),
                                       ],
