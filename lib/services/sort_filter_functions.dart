@@ -2,55 +2,59 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/services/gmapfetchingurl.dart';
 
 class SortFunctions {
-  const SortFunctions(this.info, this.currentUserPlaceId);
+  const SortFunctions(this.info);
   final List info;
-  final String? currentUserPlaceId;
 
-  Future<List<MyUser>> sortParticularAlgorytm(radioValue) async {
-    List<MyUser> noticesInfo = List.from(info);
-    switch (radioValue) {
-      case 0:
-        noticesInfo
-            .sort((a, b) => b.accountCreated.compareTo(a.accountCreated));
-      case 1:
-        noticesInfo.sort((a, b) {
-          if (a.age == null || b.age == null) {
-            return 0;
-          } else {
-            return b.age!.compareTo(a.age!);
+  Future<List<dynamic>?> sortParticularAlgorytm(
+      bool isUserNoticePage, int radioValue, String? currentUserPlaceId) async {
+    List<dynamic>? noticesInfo = List.from(info);
+
+    if (isUserNoticePage) {
+      noticesInfo.whereType<MyUser>().toList();
+      switch (radioValue) {
+        case 0:
+          noticesInfo
+              .sort((a, b) => b.accountCreated.compareTo(a.accountCreated));
+          break;
+        case 1:
+          noticesInfo.sort((a, b) {
+            if (a.age == null || b.age == null) {
+              return 0;
+            } else {
+              return b.age!.compareTo(a.age!);
+            }
+          });
+          break;
+        case 2:
+          noticesInfo
+              .sort((a, b) => b.skillsSet.length.compareTo(a.skillsSet.length));
+          break;
+        case 3:
+          if (currentUserPlaceId != null || currentUserPlaceId!.isNotEmpty) {
+            Map<String, int>? places =
+                await countDistanceToSort(true, currentUserPlaceId);
+            if (places != null) {
+              noticesInfo.sort((a, b) => (places[a.userId] ?? double.infinity)
+                  .compareTo(places[b.userId] ?? double.infinity));
+            } else {
+              noticesInfo = null;
+            }
           }
-        });
-        break;
-      case 2:
-        noticesInfo
-            .sort((a, b) => b.skillsSet.length.compareTo(a.skillsSet.length));
-        break;
-      case 3:
-        // if (callBack()) {
-
-        // if (currentUserPlaceId != null || currentUserPlaceId != '') {
-        Map<String, int>? places = await countDistanceToSort(true);
-        if (places != null) {
-          noticesInfo.sort((a, b) =>
-              places[a.userId] ??
-              double.infinity.compareTo(places[b.userId] ?? double.infinity));
-
-          // noticesInfo.sort((a, b) => ,)
-        }
-
-        // }
-        // }
-        break;
+          break;
+      }
+    } else {
+      noticesInfo.whereType<JobAdModel>().toList();
     }
-
     return noticesInfo;
   }
 
-  Future<Map<String, int>?> countDistanceToSort(bool isJobAdModel) async {
+  Future<Map<String, int>?> countDistanceToSort(
+      bool isJobAdModel, String currentUserPlaceId) async {
     List userLocationsList = [];
     LatLng? myLatLang;
 
@@ -82,9 +86,7 @@ class SortFunctions {
       return null;
     }
     // RETREIVING CURRENT USER LAT & LNGS
-    if (currentUserPlaceId != null) {
-      myLatLang = await getLatLangFromPlace(takeUri(currentUserPlaceId!));
-    }
+    myLatLang = await getLatLangFromPlace(takeUri(currentUserPlaceId));
 
 // CALUCALTING DISTANCE BEETWEEN USERS AND CURRENT USER
     if (myLatLang != null) {
@@ -106,7 +108,6 @@ class SortFunctions {
     for (int i = 0; i < sortedDistances.length; i++) {
       places[sortedDistances[i].key] = i + 1; // Assign ranks starting from 1
     }
-
     return places;
   }
 

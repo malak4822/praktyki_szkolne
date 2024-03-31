@@ -31,32 +31,20 @@ class NoticesPage extends StatefulWidget {
 }
 
 class _NoticesPageState extends State<NoticesPage> {
-  bool wasInfoDownloaded = false;
-
   Future<List<MyUser>>? usersData;
   Future<List<JobAdModel>>? jobsData;
+  List<MyUser>? usersSortedByLocation;
+
+  List<int> correctSearchinPrefs = [0, 0, 0, 0];
+  bool wasSortedByLocation = false;
 
   @override
   void initState() {
     readSearchingPrefs();
-
-    getAndSortUsers();
-    getAndSortJobs();
-
+    usersData = MyDb().downloadUsersStates();
+    jobsData = MyDb().downloadJobAds();
     super.initState();
   }
-
-  Future<void> getAndSortUsers() async {
-    usersData = MyDb().downloadUsersStates().then((value) =>
-        SortFunctions(value, widget.currentUserPlaceId)
-            .sortParticularAlgorytm(correctSearchinPrefs[0]));
-  }
-
-  Future<void> getAndSortJobs() async {
-    jobsData = MyDb().downloadJobAds();
-  }
-
-  List<int> correctSearchinPrefs = [0, 0, 0, 0];
 
   ValueNotifier<List<int>> tempSearchingPrefs =
       ValueNotifier<List<int>>([0, 0, 0, 0]);
@@ -107,12 +95,27 @@ class _NoticesPageState extends State<NoticesPage> {
           child: Stack(
             children: [
               FutureBuilder(
-                  future: widget.isUserNoticePage ? usersData : jobsData,
+                  future: (widget.isUserNoticePage ? usersData : jobsData)
+                      ?.then((value) {
+                    if (widget.isUserNoticePage &&
+                        correctSearchinPrefs[0] == 3 &&
+                        wasSortedByLocation) {
+                      // RENEWED USERS SORTED BY LOCATION;
+                      return Future(() => usersSortedByLocation);
+                    } else {
+                      // NORMAL SORTING
+                      return SortFunctions(value).sortParticularAlgorytm(
+                          widget.isUserNoticePage,
+                          correctSearchinPrefs[0],
+                          widget.currentUserPlaceId);
+                    }
+                  }),
                   builder: (BuildContext context,
-                      AsyncSnapshot<List<Object>?> snapshot) {
+                      AsyncSnapshot<List<dynamic>?> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const LoadingWidget();
                     } else if (snapshot.hasError) {
+                      print('Error: ${snapshot.error}');
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return Center(
@@ -134,6 +137,14 @@ class _NoticesPageState extends State<NoticesPage> {
                       );
                     } else {
                       List<dynamic> info = snapshot.data!;
+                      if (widget.isUserNoticePage &&
+                          correctSearchinPrefs[0] == 3 &&
+                          wasSortedByLocation == false &&
+                          info.isNotEmpty) {
+                        // SAVING SORTED BY LOCATION DATA
+                        usersSortedByLocation = List.from(info);
+                        wasSortedByLocation = true;
+                      }
 
                       return CustomScrollView(
                         clipBehavior: Clip.none,
@@ -247,13 +258,6 @@ class _NoticesPageState extends State<NoticesPage> {
                                   child: const Icon(Icons.done_outline_rounded,
                                       size: 32, color: Colors.white),
                                   onPressed: () async {
-                                    print('MY PLACEID:');
-                                    print(Provider.of<GoogleSignInProvider>(
-                                            context,
-                                            listen: false)
-                                        .getCurrentUser
-                                        .placeId);
-
                                     if (tempSearchingPrefs.value[0] == 3 &&
                                         Provider.of<GoogleSignInProvider>(
                                                     context,
@@ -261,7 +265,6 @@ class _NoticesPageState extends State<NoticesPage> {
                                                 .getCurrentUser
                                                 .placeId ==
                                             null) {
-                                      print('esa');
                                       showDialog(
                                           context: context,
                                           builder: (context) => AlertDialog(
@@ -308,7 +311,6 @@ class _NoticesPageState extends State<NoticesPage> {
                                                 ],
                                               ));
                                     } else {
-                                      print('esaaaa');
                                       correctSearchinPrefs =
                                           tempSearchingPrefs.value;
                                       setSearchingPrefs();
