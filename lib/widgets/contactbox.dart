@@ -4,6 +4,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../constants.dart';
 
 Widget contactBox(icon, String command, bool notToEdit) => Container(
+  width: 62,
+  height: 62,
       decoration: BoxDecoration(
           gradient: const LinearGradient(colors: gradient),
           borderRadius: BorderRadius.circular(16),

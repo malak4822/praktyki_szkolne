@@ -6,6 +6,7 @@ import 'package:prakty/providers/googlesign.dart';
 
 import 'package:prakty/widgets/contactbox.dart';
 import 'package:prakty/widgets/error.dart';
+import 'package:prakty/widgets/loadingscreen.dart';
 import 'package:provider/provider.dart';
 import '../../providers/edituser.dart';
 import '../../widgets/edituserpopup.dart';
@@ -227,8 +228,18 @@ class EditUserPage extends StatelessWidget {
         Visibility(
             visible: editUserProvider.showErrorMessage,
             child: const ErrorMessage()),
+        Visibility(
+            visible: editUserProvider.isLoading, child: const LoadingWidget()),
       ]),
-      EditPrivUserInfo(currentUser: currentUser)
+      EditPrivUserInfo(
+          currentUser: currentUser,
+          ifNoInternetGoBack: () {
+            pageCont.animateToPage(
+              0,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          })
     ]));
   }
 }

@@ -6,8 +6,12 @@ import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/services/database.dart';
 import 'package:provider/provider.dart';
 
-Widget backButton(context) => GestureDetector(
-    onTap: () => Navigator.pop(context),
+Widget backButton(BuildContext context) => GestureDetector(
+    onTap: () {
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+    },
     child: Container(
         width: 62,
         height: 62,
@@ -93,9 +97,10 @@ class HeartButtonState extends State<HeartButton>
                   }
                 });
               } else {
-                if (!mounted) return;
-                Provider.of<EditUser>(context)
-                    .showErrorBox(successfullyToggled);
+                if (context.mounted) {
+                  Provider.of<EditUser>(context)
+                      .showErrorBox(successfullyToggled);
+                }
               }
             }
           },
@@ -103,7 +108,7 @@ class HeartButtonState extends State<HeartButton>
               alignment: Alignment.topRight,
               width: 62,
               height: 62,
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                   borderRadius:
                       const BorderRadius.only(bottomLeft: Radius.circular(72)),
@@ -131,3 +136,4 @@ class HeartButtonState extends State<HeartButton>
     super.dispose();
   }
 }
+

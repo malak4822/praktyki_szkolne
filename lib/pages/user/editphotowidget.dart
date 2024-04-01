@@ -60,9 +60,10 @@ class _EditPhotoState extends State<EditPhoto> {
             onPressed: () async {
               await Provider.of<EditUser>(context, listen: false)
                   .deleteSelectedImage();
-              if (!mounted) return;
-              Provider.of<EditUser>(context, listen: false).setpictureToShow =
-                  null;
+              if (context.mounted) {
+                Provider.of<EditUser>(context, listen: false).setpictureToShow =
+                    null;
+              }
             },
             icon: const Icon(Icons.delete_outline_rounded, color: Colors.white),
             iconSize: 34),

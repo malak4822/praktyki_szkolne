@@ -104,8 +104,9 @@ class _AddEditJobState extends State<AddEditJob> {
                     .deleteJobAdvert(widget.initialEditingVal!.jobId);
                 isLoadingVis = false;
                 if (isOkay) {
-                  if (!mounted) return;
-                  Navigator.pop(context);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
                 }
               },
               icon:
@@ -286,41 +287,44 @@ class _AddEditJobState extends State<AddEditJob> {
                                           jobDescription.text,
                                           canRemotely);
                                   if (isOkay.keys.first == true) {
-                                    if (!mounted) return;
-                                    Provider.of<GoogleSignInProvider>(context,
-                                            listen: false)
-                                        .refreshJobInfo(
-                                            initialJobData!.jobId,
-                                            isOkay.values.first,
-                                            jobName.text,
-                                            companyName.text,
-                                            jobEmail.text,
-                                            int.parse(jobPhone.text),
-                                            jobLocation.text,
-                                            jobQualification.text,
-                                            jobDescription.text,
-                                            canRemotely);
-                                  }
-                                } else {
-                                  if (!mounted) return;
-                                  await MyDb().addFirestoreJobAd(
+                                    if (context.mounted) {
                                       Provider.of<GoogleSignInProvider>(context,
                                               listen: false)
-                                          .getCurrentUser
-                                          .userId,
-                                      noticePhoto,
-                                      jobName.text,
-                                      companyName.text,
-                                      jobEmail.text,
-                                      int.parse(jobPhone.text),
-                                      jobLocation.text,
-                                      jobQualification.text,
-                                      jobDescription.text,
-                                      canRemotely);
+                                          .refreshJobInfo(
+                                              initialJobData!.jobId,
+                                              isOkay.values.first,
+                                              jobName.text,
+                                              companyName.text,
+                                              jobEmail.text,
+                                              int.parse(jobPhone.text),
+                                              jobLocation.text,
+                                              jobQualification.text,
+                                              jobDescription.text,
+                                              canRemotely);
+                                    }
+                                  }
+                                } else {
+                                  if (context.mounted) {
+                                    await MyDb().addFirestoreJobAd(
+                                        Provider.of<GoogleSignInProvider>(
+                                                context,
+                                                listen: false)
+                                            .getCurrentUser
+                                            .userId,
+                                        noticePhoto,
+                                        jobName.text,
+                                        companyName.text,
+                                        jobEmail.text,
+                                        int.parse(jobPhone.text),
+                                        jobLocation.text,
+                                        jobQualification.text,
+                                        jobDescription.text,
+                                        canRemotely);
+                                  }
                                 }
                               }
-                              if (!mounted) return;
-                              Navigator.pop(context);
+                             if (context.mounted) {
+                              Navigator.pop(context);}
                             } else {
                               setState(() {
                                 isLocationFilled = true;

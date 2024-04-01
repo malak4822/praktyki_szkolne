@@ -134,7 +134,7 @@ class MyDb {
         'phoneNum': phoneNum,
       });
       if (providerId == 'password') {
-        user.updateEmail(email);
+        user.verifyBeforeUpdateEmail(email);
       }
       return [email, phoneNum];
     } catch (e) {
@@ -374,16 +374,16 @@ class MyDb {
     }
   }
 
-  Future<bool> addUserJobNotice(userId, newValue) async {
+  Future<bool?> addUserJobNotice(String userId, bool isEagerToWork) async {
     try {
       await _firestore
           .collection('/users')
           .doc(userId)
-          .update({'jobVacancy': newValue});
-      return false;
+          .update({'jobVacancy': isEagerToWork});
+      return isEagerToWork;
     } catch (e) {
       debugPrint(e.toString());
-      return true;
+      return null;
     }
   }
 

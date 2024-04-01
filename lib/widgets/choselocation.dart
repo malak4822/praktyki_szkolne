@@ -230,13 +230,15 @@ class _FindOnMapState extends State<FindOnMap> {
                           ),
                           onPressed: () async {
                             await findMe();
+
                             if (placesFromLocation.isNotEmpty) {
                               placeAutoCompleteFromLocation(
                                   placesFromLocation[0]);
                             } else {
-                              if (!mounted) return;
-                              showSnackBar(context,
-                                  'Nie Znaleziono Żadnych Lokalizacji');
+                              if (context.mounted) {
+                                showSnackBar(context,
+                                    'Nie Znaleziono Żadnych Lokalizacji');
+                              }
                             }
                           },
                         ),
@@ -277,14 +279,13 @@ class _FindOnMapState extends State<FindOnMap> {
         if (!mounted) return;
         showSnackBar(context, 'Odmówiono Dostępu Do Lokalizacji');
       }
-
+    } else {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.medium);
       LatLng currentLocation = LatLng(position.latitude, position.longitude);
-
       List<Placemark> placemarks = await placemarkFromCoordinates(
           currentLocation.latitude, currentLocation.longitude);
-      placesFromLocation = placemarks;
+      placesFromLocation = List.from(placemarks);
     }
   }
 

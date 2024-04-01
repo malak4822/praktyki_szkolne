@@ -115,7 +115,6 @@ class _NoticesPageState extends State<NoticesPage> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const LoadingWidget();
                     } else if (snapshot.hasError) {
-                      print('Error: ${snapshot.error}');
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return Center(
@@ -238,8 +237,10 @@ class _NoticesPageState extends State<NoticesPage> {
                                     (int newValue) {
                                   List<int> temporarySearchingPrefs =
                                       List.from(tempSearchingPrefs.value);
+
                                   temporarySearchingPrefs[listToOpen] =
                                       newValue;
+                                      
                                   tempSearchingPrefs.value =
                                       temporarySearchingPrefs;
                                 }).generateWidgetList(),

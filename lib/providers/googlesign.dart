@@ -23,8 +23,8 @@ class GoogleSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void userSearchingToogle(newValue) {
-    _loggedUser.jobVacancy = newValue;
+  void userSearchingToogle(bool isEagerToWork) {
+    _loggedUser.jobVacancy = isEagerToWork;
     notifyListeners();
   }
 

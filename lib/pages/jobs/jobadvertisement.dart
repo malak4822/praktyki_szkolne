@@ -347,3 +347,4 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
     );
   }
 }
+

@@ -54,8 +54,8 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
 
 // CONTACT CONTROLLERS
 
-  // saving placeId for users is error / it doesnt send data do db 
-  
+    // saving placeId for users is error / it doesnt send data do db
+
     final formKeyPhone = GlobalKey<FormState>();
     final formKeyDesc = GlobalKey<FormState>();
 
@@ -64,8 +64,6 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
       EditNameAndDesc(nameCont, descriptionCont, locationCont, emailCont,
           ageCont, (newVal) => ageCont = newVal, (placeRef) {
         placeId = placeRef;
-        print('1');
-        print(placeId);
       }, user.isAccountTypeUser, formKeyDesc),
       const EditSkillSet(),
       EditContactInfo(
@@ -100,8 +98,6 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
               editUserFunction.deleteSelectedImage();
             }
           }
-          print('2');
-          print(placeId);
 
           // UDPATING USER INFO UDPATING USER INFO UDPATING
           if (tabToOpen == 1) {
@@ -146,27 +142,27 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
             if (formKeyPhone.currentState?.validate() ?? false) {
               editUserFunction.changeLoading();
 
-              if (!mounted) return;
-              var userCredentials =
-                  Provider.of<GoogleSignInProvider>(context, listen: false)
-                      .auth
-                      .currentUser;
+              if (context.mounted) {
+                var userCredentials =
+                    Provider.of<GoogleSignInProvider>(context, listen: false)
+                        .auth
+                        .currentUser;
+                List<String>? infoFields = await myDb.updateContactInfo(
+                    emailCont.text, phoneCont.text, userCredentials!);
+                if (infoFields != null) {
+                  googleSignFunction.refreshContactInfo(
+                      infoFields[0], infoFields[1]);
+                }
 
-              List<String>? infoFields = await myDb.updateContactInfo(
-                  emailCont.text, phoneCont.text, userCredentials!);
-              if (infoFields != null) {
-                googleSignFunction.refreshContactInfo(
-                    infoFields[0], infoFields[1]);
+                editUserFunction.toogleEditingPopUp(3);
+                editUserFunction.changeLoading();
               }
-
-              editUserFunction.toogleEditingPopUp(3);
-              editUserFunction.changeLoading();
             }
           }
-        }
-        if (tabToOpen != 3 && tabToOpen != 1) {
-          editUserFunction.changeLoading();
-          editUserFunction.toogleEditingPopUp(3);
+          if (tabToOpen != 3 && tabToOpen != 1) {
+            editUserFunction.changeLoading();
+            editUserFunction.toogleEditingPopUp(3);
+          }
         }
       })),
       Expanded(

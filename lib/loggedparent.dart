@@ -38,6 +38,7 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     List<Widget> pages = [
@@ -91,18 +92,9 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
           fixedColor: Colors.white,
           elevation: 0,
           items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.people),
-              label: "",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.business),
-              label: "",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: "",
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.people), label: ""),
+            BottomNavigationBarItem(icon: Icon(Icons.business), label: ""),
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
           ],
         ),
       ),
