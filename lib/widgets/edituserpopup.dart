@@ -117,7 +117,8 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
                     infoFields[0]!,
                     infoFields[1]!,
                     infoFields[2],
-                    infoFields[3]);
+                    infoFields[3],
+                    infoFields[4]);
                 editUserFunction.toogleEditingPopUp(3);
               }
               if (user.isAccountTypeUser) {

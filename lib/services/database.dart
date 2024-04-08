@@ -110,7 +110,13 @@ class MyDb {
           'placeId': placeId,
           'age': newAge,
         });
-        return [newUsername, newDescription, newLocation!, newAge.toString()];
+        return [
+          newUsername,
+          newDescription,
+          newLocation,
+          placeId,
+          newAge.toString()
+        ];
       } else {
         await _firestore.collection('users').doc(userId).update({
           'username': newUsername,

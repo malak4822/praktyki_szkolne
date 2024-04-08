@@ -18,6 +18,7 @@ class LoggedParentWidget extends StatefulWidget {
 
 class _LoggedParentWidgetState extends State<LoggedParentWidget> {
   List<MyUser>? usersSortedByLocation;
+
   bool wasSortedByLocation = false;
 
   int _currentIndex = 1;
@@ -40,9 +41,12 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
       _currentIndex = newIndex;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    
+    wasSortedByLocation =
+        Provider.of<GoogleSignInProvider>(context, listen: false)
+            .wasSortedByLocation;
     List<Widget> pages = [
       NoticesPage(
         isUserNoticePage: true,
@@ -52,7 +56,8 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
                 .placeId,
         wasSortedByLocation: wasSortedByLocation,
         callBack: (info) {
-          wasSortedByLocation = true;
+          Provider.of<GoogleSignInProvider>(context, listen: false)
+              .changeSortedLoc = true;
           usersSortedByLocation = List.from(info);
         },
         usersSortedByLocation: usersSortedByLocation,

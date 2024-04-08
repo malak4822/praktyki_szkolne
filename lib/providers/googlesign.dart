@@ -9,6 +9,11 @@ import '../models/user_model.dart';
 class GoogleSignInProvider extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
+  bool _wasSortedByLocation = false;
+  bool get wasSortedByLocation => _wasSortedByLocation;
+
+  set changeSortedLoc(bool newVal) => _wasSortedByLocation = newVal;
+
   final bool _isLiked = false;
   bool get isLiked => _isLiked;
 
@@ -28,13 +33,20 @@ class GoogleSignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void refreshNameAndDesc(bool isAccountTypeUser, String newUsername,
-      String newDescription, String? newLocation, String? newAge) {
+  void refreshNameAndDesc(
+      bool isAccountTypeUser,
+      String newUsername,
+      String newDescription,
+      String? newLocation,
+      String? newPlaceId,
+      String? newAge) {
     if (isAccountTypeUser) {
       _loggedUser.username = newUsername;
       _loggedUser.description = newDescription;
       _loggedUser.location = newLocation;
+      _loggedUser.placeId = newPlaceId;
       _loggedUser.age = int.parse(newAge!);
+      _wasSortedByLocation = false;
     } else {
       _loggedUser.username = newUsername;
       _loggedUser.description = newDescription;

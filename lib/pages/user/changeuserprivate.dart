@@ -40,7 +40,7 @@ class _EditPrivUserInfoState extends State<EditPrivUserInfo> {
           decoration: const BoxDecoration(
             gradient: LinearGradient(colors: [
               Color.fromARGB(255, 0, 82, 156),
-              Color.fromARGB(255, 1, 192, 209),
+              Color.fromARGB(255, 1, 192, 209)
             ]),
             boxShadow: [
               BoxShadow(
@@ -52,14 +52,11 @@ class _EditPrivUserInfoState extends State<EditPrivUserInfo> {
             borderRadius: BorderRadius.only(bottomRight: Radius.circular(112)),
           ),
           child: IconButton(
-            alignment: Alignment.topLeft,
-            // padding: const EdgeInsets.all(22),
-            iconSize: 28,
-            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-            onPressed: () => widget.ifNoInternetGoBack(),
-          ),
+              alignment: Alignment.topLeft,
+              iconSize: 28,
+              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+              onPressed: () => widget.ifNoInternetGoBack()),
         ),
-        // backButton(context),
         Align(
           alignment: Alignment.centerRight,
           child: Container(
@@ -75,13 +72,14 @@ class _EditPrivUserInfoState extends State<EditPrivUserInfo> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (widget.currentUser.isAccountTypeUser)
-                  button(Icons.work,
+                  button(Icons.work_outline_rounded,
                       isEagerToWork ? 'Nie Szukam Praktyk' : 'Szukam Praktyk',
                       () async {
                     if (!await Provider.of<EditUser>(context, listen: false)
                         .checkInternetConnectivity()) {
                       widget.ifNoInternetGoBack();
                     }
+
                     late bool tempEagerValue = isEagerToWork;
 
                     tempEagerValue = !isEagerToWork;

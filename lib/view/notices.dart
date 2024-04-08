@@ -102,35 +102,31 @@ class _NoticesPageState extends State<NoticesPage> {
                   future: (widget.isUserNoticePage ? usersData : jobsData)
                       ?.then((value) {
                     if (widget.isUserNoticePage &&
-                        correctSearchinPrefs[0] == 3 &&
-                        widget.wasSortedByLocation) {
+                        correctSearchinPrefs[0] == 3) {
                       if (widget.currentUserPlaceId == null ||
                           widget.currentUserPlaceId!.isEmpty) {
-                        // RENEWED USERS SORTED BY LOCATION;
-                        print('renreww');
-
-                        print(widget.currentUserPlaceId.runtimeType);
-                        print(widget.currentUserPlaceId);
-
+                        // THERE IS NO OUR LOCATION
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          padding: const EdgeInsets.fromLTRB(46, 4, 0, 4),
+                          padding: const EdgeInsets.fromLTRB(46, 12, 0, 12),
                           backgroundColor: gradient[1].withOpacity(0.86),
                           showCloseIcon: true,
                           content: Text(
-                            'Sortowanie Nie Udane, Wpierw Dodaj Swoją Lokalizację',
-                            style: fontSize16,
-                            textAlign: TextAlign.center,
-                          ),
+                              'Aby Sortować Od Najbliszych, Dodaj Swoją Lokalizację',
+                              style: fontSize16,
+                              textAlign: TextAlign.center),
                           duration: const Duration(seconds: 2),
                         ));
                         return usersData;
                       } else {
-                        print('ESA');
-
-                        return SortFunctions(value).sortParticularAlgorytm(
-                            widget.isUserNoticePage,
-                            correctSearchinPrefs[0],
-                            widget.currentUserPlaceId);
+                        if (widget.wasSortedByLocation) {
+                          // RESTORING PREV. SORTING
+                          return widget.usersSortedByLocation;
+                        } else {
+                          return SortFunctions(value).sortParticularAlgorytm(
+                              widget.isUserNoticePage,
+                              correctSearchinPrefs[0],
+                              widget.currentUserPlaceId);
+                        }
                       }
                     } else {
                       // NORMAL SORTING
@@ -139,11 +135,8 @@ class _NoticesPageState extends State<NoticesPage> {
                           correctSearchinPrefs[0],
                           widget.currentUserPlaceId);
                     }
-                    // sporo bugow z tym odswierzaniem po zmianei swojej lokalizavji
                   }),
-                  // Future<List<MyUser>>?
-                  builder: (BuildContext context,
-                      AsyncSnapshot snapshot) {
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const LoadingWidget();
                     } else if (snapshot.hasError || snapshot.data == null) {
