@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/models/user_model.dart';
 import 'package:prakty/view/notices.dart';
 import 'package:prakty/view/userpage.dart';
 import 'package:prakty/providers/googlesign.dart';
@@ -16,8 +17,10 @@ class LoggedParentWidget extends StatefulWidget {
 }
 
 class _LoggedParentWidgetState extends State<LoggedParentWidget> {
-  int _currentIndex = 1;
+  List<MyUser>? usersSortedByLocation;
+  bool wasSortedByLocation = false;
 
+  int _currentIndex = 1;
   Completer<void> setUserOnStartVal = Completer<void>();
 
   @override
@@ -37,17 +40,23 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
       _currentIndex = newIndex;
     });
   }
-
-
   @override
   Widget build(BuildContext context) {
+    
     List<Widget> pages = [
       NoticesPage(
-          isUserNoticePage: true,
-          currentUserPlaceId:
-              Provider.of<GoogleSignInProvider>(context, listen: false)
-                  .getCurrentUser
-                  .placeId),
+        isUserNoticePage: true,
+        currentUserPlaceId:
+            Provider.of<GoogleSignInProvider>(context, listen: false)
+                .getCurrentUser
+                .placeId,
+        wasSortedByLocation: wasSortedByLocation,
+        callBack: (info) {
+          wasSortedByLocation = true;
+          usersSortedByLocation = List.from(info);
+        },
+        usersSortedByLocation: usersSortedByLocation,
+      ),
       NoticesPage(
         isAccountTypeUser:
             Provider.of<GoogleSignInProvider>(context, listen: false)
@@ -58,6 +67,9 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
             Provider.of<GoogleSignInProvider>(context, listen: false)
                 .getCurrentUser
                 .placeId,
+        wasSortedByLocation: false,
+        callBack: () {},
+        usersSortedByLocation: null,
       ),
       FutureBuilder(
           future: setUserOnStartVal.future,

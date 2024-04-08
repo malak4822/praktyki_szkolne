@@ -16,12 +16,18 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NoticesPage extends StatefulWidget {
-  const NoticesPage(
+  NoticesPage(
       {super.key,
       this.isAccountTypeUser,
       required this.isUserNoticePage,
-      required this.currentUserPlaceId});
+      required this.currentUserPlaceId,
+      required this.wasSortedByLocation,
+      required this.callBack,
+      required this.usersSortedByLocation});
 
+  List<MyUser>? usersSortedByLocation;
+  final Function callBack;
+  bool wasSortedByLocation;
   final bool? isAccountTypeUser;
   final bool isUserNoticePage;
   final String? currentUserPlaceId;
@@ -33,10 +39,8 @@ class NoticesPage extends StatefulWidget {
 class _NoticesPageState extends State<NoticesPage> {
   Future<List<MyUser>>? usersData;
   Future<List<JobAdModel>>? jobsData;
-  List<MyUser>? usersSortedByLocation;
 
   List<int> correctSearchinPrefs = [0, 0, 0, 0];
-  bool wasSortedByLocation = false;
 
   @override
   void initState() {
@@ -99,9 +103,35 @@ class _NoticesPageState extends State<NoticesPage> {
                       ?.then((value) {
                     if (widget.isUserNoticePage &&
                         correctSearchinPrefs[0] == 3 &&
-                        wasSortedByLocation) {
-                      // RENEWED USERS SORTED BY LOCATION;
-                      return Future(() => usersSortedByLocation);
+                        widget.wasSortedByLocation) {
+                      if (widget.currentUserPlaceId == null ||
+                          widget.currentUserPlaceId!.isEmpty) {
+                        // RENEWED USERS SORTED BY LOCATION;
+                        print('renreww');
+
+                        print(widget.currentUserPlaceId.runtimeType);
+                        print(widget.currentUserPlaceId);
+
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          padding: const EdgeInsets.fromLTRB(46, 4, 0, 4),
+                          backgroundColor: gradient[1].withOpacity(0.86),
+                          showCloseIcon: true,
+                          content: Text(
+                            'Sortowanie Nie Udane, Wpierw Dodaj Swoją Lokalizację',
+                            style: fontSize16,
+                            textAlign: TextAlign.center,
+                          ),
+                          duration: const Duration(seconds: 2),
+                        ));
+                        return usersData;
+                      } else {
+                        print('ESA');
+
+                        return SortFunctions(value).sortParticularAlgorytm(
+                            widget.isUserNoticePage,
+                            correctSearchinPrefs[0],
+                            widget.currentUserPlaceId);
+                      }
                     } else {
                       // NORMAL SORTING
                       return SortFunctions(value).sortParticularAlgorytm(
@@ -109,12 +139,14 @@ class _NoticesPageState extends State<NoticesPage> {
                           correctSearchinPrefs[0],
                           widget.currentUserPlaceId);
                     }
+                    // sporo bugow z tym odswierzaniem po zmianei swojej lokalizavji
                   }),
+                  // Future<List<MyUser>>?
                   builder: (BuildContext context,
-                      AsyncSnapshot<List<dynamic>?> snapshot) {
+                      AsyncSnapshot snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const LoadingWidget();
-                    } else if (snapshot.hasError) {
+                    } else if (snapshot.hasError || snapshot.data == null) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return Center(
@@ -138,11 +170,10 @@ class _NoticesPageState extends State<NoticesPage> {
                       List<dynamic> info = snapshot.data!;
                       if (widget.isUserNoticePage &&
                           correctSearchinPrefs[0] == 3 &&
-                          wasSortedByLocation == false &&
+                          widget.wasSortedByLocation == false &&
                           info.isNotEmpty) {
                         // SAVING SORTED BY LOCATION DATA
-                        usersSortedByLocation = List.from(info);
-                        wasSortedByLocation = true;
+                        widget.callBack(info);
                       }
 
                       return CustomScrollView(
@@ -240,7 +271,7 @@ class _NoticesPageState extends State<NoticesPage> {
 
                                   temporarySearchingPrefs[listToOpen] =
                                       newValue;
-                                      
+
                                   tempSearchingPrefs.value =
                                       temporarySearchingPrefs;
                                 }).generateWidgetList(),
@@ -364,3 +395,5 @@ class _NoticesPageState extends State<NoticesPage> {
             children: [Text(txt, style: fontSize16), Icon(icon)]),
       );
 }
+
+// TODO NIE DZIALA ZE NIE MASZ LOKALIZACJI TO SOERTUJE PO LOKAZLIZACJI I TAK

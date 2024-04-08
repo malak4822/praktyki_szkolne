@@ -35,16 +35,12 @@ class SortFunctions {
               .sort((a, b) => b.skillsSet.length.compareTo(a.skillsSet.length));
           break;
         case 3:
-          if (currentUserPlaceId != null || currentUserPlaceId!.isNotEmpty) {
             Map<String, int>? places =
-                await countDistanceToSort(true, currentUserPlaceId);
+                await countDistanceToSort(true, currentUserPlaceId!);
             if (places != null) {
               noticesInfo.sort((a, b) => (places[a.userId] ?? double.infinity)
                   .compareTo(places[b.userId] ?? double.infinity));
-            } else {
-              noticesInfo = null;
-            }
-          }
+            } 
           break;
       }
     } else {
