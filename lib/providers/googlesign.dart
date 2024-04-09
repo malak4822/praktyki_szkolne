@@ -11,8 +11,11 @@ class GoogleSignInProvider extends ChangeNotifier {
 
   bool _wasSortedByLocation = false;
   bool get wasSortedByLocation => _wasSortedByLocation;
-
   set changeSortedLoc(bool newVal) => _wasSortedByLocation = newVal;
+
+  bool _needToResetDataList = false;
+  bool get needToResetDataList => _needToResetDataList;
+  set changeResetDataList(bool newLoc) => _needToResetDataList = newLoc;
 
   final bool _isLiked = false;
   bool get isLiked => _isLiked;

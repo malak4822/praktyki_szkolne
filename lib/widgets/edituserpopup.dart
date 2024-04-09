@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/loggedparent.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/user/editcontactinfo.dart';
 import 'package:prakty/providers/edituser.dart';
@@ -160,9 +161,14 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
               }
             }
           }
+
           if (tabToOpen != 3 && tabToOpen != 1) {
             editUserFunction.changeLoading();
             editUserFunction.toogleEditingPopUp(3);
+          }
+          if (context.mounted) {
+            Provider.of<GoogleSignInProvider>(context, listen: false)
+                .changeResetDataList = true;
           }
         }
       })),

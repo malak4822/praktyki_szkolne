@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
+import 'package:prakty/services/database.dart';
 import 'package:prakty/view/notices.dart';
 import 'package:prakty/view/userpage.dart';
 import 'package:prakty/providers/googlesign.dart';
@@ -13,21 +15,35 @@ class LoggedParentWidget extends StatefulWidget {
   const LoggedParentWidget({super.key});
 
   @override
-  State<LoggedParentWidget> createState() => _LoggedParentWidgetState();
+  State<LoggedParentWidget> createState() => LoggedParentWidgetState();
 }
 
-class _LoggedParentWidgetState extends State<LoggedParentWidget> {
+class LoggedParentWidgetState extends State<LoggedParentWidget> {
   List<MyUser>? usersSortedByLocation;
-
   bool wasSortedByLocation = false;
+
+  Future<List<MyUser>>? usersData;
+  Future<List<JobAdModel>>? jobsData;
+  bool wasDataSaved = false;
 
   int _currentIndex = 1;
   Completer<void> setUserOnStartVal = Completer<void>();
 
+  final GlobalKey<LoggedParentWidgetState> widgetKey1 =
+      GlobalKey<LoggedParentWidgetState>();
+
   @override
   void initState() {
+    downloadLists();
     setUpUser();
+
     super.initState();
+  }
+
+  void downloadLists() {
+    print("DOWNLOADING LIST");
+    usersData = MyDb().downloadUsersStates();
+    jobsData = MyDb().downloadJobAds();
   }
 
   void setUpUser() async {
@@ -61,6 +77,8 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
           usersSortedByLocation = List.from(info);
         },
         usersSortedByLocation: usersSortedByLocation,
+        noticesData: usersData,
+        widgetKey1: widgetKey1,
       ),
       NoticesPage(
         isAccountTypeUser:
@@ -75,6 +93,8 @@ class _LoggedParentWidgetState extends State<LoggedParentWidget> {
         wasSortedByLocation: false,
         callBack: () {},
         usersSortedByLocation: null,
+        noticesData: jobsData,
+        widgetKey1: widgetKey1,
       ),
       FutureBuilder(
           future: setUserOnStartVal.future,

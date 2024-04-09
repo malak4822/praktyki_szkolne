@@ -15,26 +15,17 @@ class NoticeCard extends StatelessWidget {
   final String noticeType;
   // String noticeType -> OPTIONS: 'userNotice', 'jobNotice', 'jobOwnNotice'
 
-  String showCorrectImage() {
+  NetworkImage showCorrectImage() {
     if (noticeType == 'userNotice') {
-      if (info.profilePicture == null || info.profilePicture == '') {
-        return 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*4wskaw*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA';
-      } else {
-        return info.profilePicture;
-      }
+      return NetworkImage(info.profilePicture);
     } else {
-      if (info.jobImage == null || info.jobImage == '') {
-        return 'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fcompany_icon.png?alt=media&token=7c9796bf-2b8b-40d4-bc71-b85aeb82c269';
-      } else {
-        return info.jobImage;
-      }
+      return NetworkImage(info.jobImage);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     MyUser? userNoticeInfo;
-
     JobAdModel? jobNoticeInfo;
 
     if (noticeType == 'userNotice') {
@@ -144,19 +135,73 @@ class NoticeCard extends StatelessWidget {
                               ])),
                       const SizedBox(width: 10),
                       CircleAvatar(
-                          radius: 53,
-                          backgroundColor: Colors.white,
-                          child: CircleAvatar(
-                            radius: 50,
-                            foregroundImage: NetworkImage(
-                              showCorrectImage(),
-                            ),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(colors: gradient)),
-                            ),
-                          )),
+                        radius: 58,
+                        backgroundColor: Colors.white,
+                        child: CircleAvatar(
+                            radius: 52,
+                            backgroundColor: Colors.transparent,
+                            child: ClipOval(
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              child: FadeInImage.assetNetwork(
+                                  fit: BoxFit.cover,
+                                  height: 104,
+                                  width: 104,
+                                  filterQuality: FilterQuality.low,
+                                  placeholderFilterQuality: FilterQuality.low,
+                                  placeholder: noticeType == 'userNotice'
+                                      ? 'images/photos/man_praktyki.png'
+                                      : 'images/photos/company_icon.png',
+                                  image: noticeType == 'userNotice'
+                                      ? info.profilePicture ??
+                                          'images/photos/man_praktyki.png'
+                                      : info.jobImage ??
+                                          'images/photos/company_icon.png',
+                                  imageErrorBuilder:
+                                      (context, error, stackTrace) =>
+                                          Image.asset(
+                                            noticeType == 'userNotice'
+                                                ? 'images/photos/man_praktyki.png'
+                                                : 'images/photos/company_icon.png',
+                                          )),
+                            )),
+                      ),
+                      // CircleAvatar(
+                      //     radius: 52,
+                      //     backgroundColor: Colors.white,
+                      // child: CircleAvatar(
+                      //     radius: 48,
+                      //     backgroundColor: Colors.white,
+                      //     child: Container(
+                      //         height: 96,
+                      //         width: 96,
+                      //         decoration: const BoxDecoration(
+                      //             shape: BoxShape.circle,
+                      //             color: Colors.transparent),
+                      //         child: ClipOval(
+                      //             child: FadeInImage(
+                      //                 fit: BoxFit.cover,
+                      //                 fadeInDuration:
+                      //                     const Duration(milliseconds: 500),
+                      //                 image: NetworkImage(
+                      //                     noticeType == 'userNotice'
+                      //                         ? info.profilePicture
+                      //                         : info.jobImage),
+                      //                 placeholder: AssetImage(noticeType ==
+                      //                         'userNotice'
+                      //                     ? 'images/photos/man_praktyki.png'
+                      //                     : 'images/photos/company_icon.png'))))
+                      // CircleAvatar(
+                      //   radius: 50,
+                      //   foregroundImage: NetworkImage(
+                      //     showCorrectImage(),
+                      //   ),
+                      //   child: Container(
+                      //     decoration: const BoxDecoration(
+                      //         shape: BoxShape.circle,
+                      //         gradient: LinearGradient(colors: gradient)),
+                      //   ),
+                      // )
+                      // )),
                       const SizedBox(width: 10),
                     ])))));
   }

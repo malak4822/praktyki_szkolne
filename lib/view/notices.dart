@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
+import 'package:prakty/loggedparent.dart';
 import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/jobs/addeditjob.dart';
 import 'package:prakty/pages/user/edituserpage.dart';
 import 'package:prakty/providers/edituser.dart';
 import 'package:prakty/providers/googlesign.dart';
-import 'package:prakty/services/database.dart';
 import 'package:prakty/services/sort_filter_functions.dart';
 import 'package:prakty/widgets/noticecard.dart';
 import 'package:prakty/widgets/loadingscreen.dart';
@@ -16,38 +16,76 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NoticesPage extends StatefulWidget {
-  NoticesPage(
-      {super.key,
-      this.isAccountTypeUser,
-      required this.isUserNoticePage,
-      required this.currentUserPlaceId,
-      required this.wasSortedByLocation,
-      required this.callBack,
-      required this.usersSortedByLocation});
+  NoticesPage({
+    super.key,
+    this.isAccountTypeUser,
+    required this.isUserNoticePage,
+    required this.currentUserPlaceId,
+    required this.wasSortedByLocation,
+    required this.callBack,
+    required this.usersSortedByLocation,
+    required this.noticesData,
+    required this.widgetKey1,
+  });
 
-  List<MyUser>? usersSortedByLocation;
+  final GlobalKey<LoggedParentWidgetState> widgetKey1;
   final Function callBack;
   bool wasSortedByLocation;
   final bool? isAccountTypeUser;
   final bool isUserNoticePage;
   final String? currentUserPlaceId;
 
+  Future<List<Object>>? noticesData;
+
+  List<MyUser>? usersSortedByLocation;
+
   @override
   State<NoticesPage> createState() => _NoticesPageState();
 }
 
 class _NoticesPageState extends State<NoticesPage> {
-  Future<List<MyUser>>? usersData;
-  Future<List<JobAdModel>>? jobsData;
-
   List<int> correctSearchinPrefs = [0, 0, 0, 0];
 
   @override
   void initState() {
     readSearchingPrefs();
-    usersData = MyDb().downloadUsersStates();
-    jobsData = MyDb().downloadJobAds();
+
     super.initState();
+  }
+
+  void showLocationProblem() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: gradient[1],
+              elevation: 8,
+              iconColor: Colors.white,
+              icon: const Icon(Icons.location_pin, size: 32),
+              titleTextStyle: fontSize20,
+              contentTextStyle: fontSize16,
+              title: const Text("Brak Lokalizacji"),
+              content: const Text(
+                "Aby Sortować Po Lokalizacji Najpierw Musisz Dodać Swoją",
+                textAlign: TextAlign.center,
+              ),
+              actionsAlignment: MainAxisAlignment.center,
+              actions: [
+                ElevatedButton.icon(
+                    onPressed: () {
+                      isTabVisible.value = false;
+                      Provider.of<EditUser>(context, listen: false)
+                          .toogleEditingPopUp(1);
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const EditUserPage()));
+                    },
+                    icon:
+                        const Icon(Icons.arrow_right_alt, color: Colors.white),
+                    label: Text('Ustaw Lokalizację', style: fontSize16))
+              ],
+            ));
   }
 
   ValueNotifier<List<int>> tempSearchingPrefs =
@@ -99,41 +137,40 @@ class _NoticesPageState extends State<NoticesPage> {
           child: Stack(
             children: [
               FutureBuilder(
-                  future: (widget.isUserNoticePage ? usersData : jobsData)
-                      ?.then((value) {
-                    if (widget.isUserNoticePage &&
-                        correctSearchinPrefs[0] == 3) {
-                      if (widget.currentUserPlaceId == null ||
-                          widget.currentUserPlaceId!.isEmpty) {
-                        // THERE IS NO OUR LOCATION
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          padding: const EdgeInsets.fromLTRB(46, 12, 0, 12),
-                          backgroundColor: gradient[1].withOpacity(0.86),
-                          showCloseIcon: true,
-                          content: Text(
-                              'Aby Sortować Od Najbliszych, Dodaj Swoją Lokalizację',
-                              style: fontSize16,
-                              textAlign: TextAlign.center),
-                          duration: const Duration(seconds: 2),
-                        ));
-                        return usersData;
-                      } else {
-                        if (widget.wasSortedByLocation) {
-                          // RESTORING PREV. SORTING
-                          return widget.usersSortedByLocation;
-                        } else {
-                          return SortFunctions(value).sortParticularAlgorytm(
-                              widget.isUserNoticePage,
-                              correctSearchinPrefs[0],
-                              widget.currentUserPlaceId);
-                        }
-                      }
+                  future: (widget.noticesData)?.then((value) {
+                    if (Provider.of<GoogleSignInProvider>(context,
+                            listen: false)
+                        .needToResetDataList) {
+                      widget.widgetKey1.currentState?.initState();
+                      widget.widgetKey1.currentState?.build(context);
+                      return widget.noticesData;
                     } else {
-                      // NORMAL SORTING
-                      return SortFunctions(value).sortParticularAlgorytm(
-                          widget.isUserNoticePage,
-                          correctSearchinPrefs[0],
-                          widget.currentUserPlaceId);
+                      if (widget.isUserNoticePage &&
+                          correctSearchinPrefs[0] == 3) {
+                        if (widget.currentUserPlaceId == null ||
+                            widget.currentUserPlaceId!.isEmpty) {
+                          // THERE IS NO OUR LOCATION
+                          showLocationProblem();
+
+                          return widget.noticesData;
+                        } else {
+                          if (widget.wasSortedByLocation) {
+                            // RESTORING PREV. SORTING
+                            return widget.usersSortedByLocation;
+                          } else {
+                            return SortFunctions(value).sortParticularAlgorytm(
+                                widget.isUserNoticePage,
+                                correctSearchinPrefs[0],
+                                widget.currentUserPlaceId);
+                          }
+                        }
+                      } else {
+                        // NORMAL SORTING
+                        return SortFunctions(value).sortParticularAlgorytm(
+                            widget.isUserNoticePage,
+                            correctSearchinPrefs[0],
+                            widget.currentUserPlaceId);
+                      }
                     }
                   }),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -151,7 +188,8 @@ class _NoticesPageState extends State<NoticesPage> {
                                   Icon(Icons.location_searching_outlined,
                                       color: gradient[0], size: 52),
                                   const SizedBox(height: 30),
-                                  Text('Narazie Niestety Nie Ma Ogłoszeń',
+                                  Text(
+                                      'Nie Ma Ogłoszeń, Spróbuj Ponownie Później',
                                       style: GoogleFonts.overpass(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w900,
@@ -290,51 +328,7 @@ class _NoticesPageState extends State<NoticesPage> {
                                                 .getCurrentUser
                                                 .placeId ==
                                             null) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) => AlertDialog(
-                                                backgroundColor: gradient[1],
-                                                elevation: 8,
-                                                iconColor: Colors.white,
-                                                icon: const Icon(
-                                                    Icons.location_pin,
-                                                    size: 32),
-                                                titleTextStyle: fontSize20,
-                                                contentTextStyle: fontSize16,
-                                                title: const Text(
-                                                    "Brak Lokalizacji"),
-                                                content: const Text(
-                                                  "Aby Sortować Po Lokalizacji Najpierw Musisz Dodać Swoją",
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                                actionsAlignment:
-                                                    MainAxisAlignment.center,
-                                                actions: [
-                                                  ElevatedButton.icon(
-                                                      onPressed: () {
-                                                        isTabVisible.value =
-                                                            false;
-                                                        Provider.of<EditUser>(
-                                                                context,
-                                                                listen: false)
-                                                            .toogleEditingPopUp(
-                                                                1);
-                                                        Navigator.pop(context);
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        const EditUserPage()));
-                                                      },
-                                                      icon: const Icon(
-                                                          Icons.arrow_right_alt,
-                                                          color: Colors.white),
-                                                      label: Text(
-                                                          'Ustaw Lokalizację',
-                                                          style: fontSize16))
-                                                ],
-                                              ));
+                                      print('essa');
                                     } else {
                                       correctSearchinPrefs =
                                           tempSearchingPrefs.value;
@@ -388,5 +382,3 @@ class _NoticesPageState extends State<NoticesPage> {
             children: [Text(txt, style: fontSize16), Icon(icon)]),
       );
 }
-
-// TODO NIE DZIALA ZE NIE MASZ LOKALIZACJI TO SOERTUJE PO LOKAZLIZACJI I TAK
