@@ -165,7 +165,6 @@ class NoticeCard extends StatelessWidget {
                                           )),
                             )),
                       ),
-                      Container(),
                       // CircleAvatar(
                       //     radius: 52,
                       //     backgroundColor: Colors.white,
