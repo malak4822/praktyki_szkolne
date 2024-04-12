@@ -139,7 +139,7 @@ class NoticeCard extends StatelessWidget {
                         backgroundColor: Colors.white,
                         child: CircleAvatar(
                             radius: 52,
-                            backgroundColor: Colors.transparent,
+                            backgroundColor: const Color.fromARGB(255, 88, 231, 244),
                             child: ClipOval(
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               child: FadeInImage.assetNetwork(
@@ -152,10 +152,8 @@ class NoticeCard extends StatelessWidget {
                                       ? 'images/photos/man_praktyki.png'
                                       : 'images/photos/company_icon.png',
                                   image: noticeType == 'userNotice'
-                                      ? info.profilePicture ??
-                                          'images/photos/man_praktyki.png'
-                                      : info.jobImage ??
-                                          'images/photos/company_icon.png',
+                                      ? info.profilePicture ?? ''
+                                      : info.jobImage ?? '',
                                   imageErrorBuilder:
                                       (context, error, stackTrace) =>
                                           Image.asset(

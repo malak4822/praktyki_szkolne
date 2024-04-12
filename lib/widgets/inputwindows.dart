@@ -104,36 +104,40 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
     validator: (val) {
       if (hintTxt == 'Miejsce') {
       } else {
-        if (hintTxt == 'Telefon') {
-          if (val!.isEmpty) {
-          } else if (val.length != 9) {
-            return 'Telefon Nie Ma 9 Cyfr';
-          }
-        } else {
-          if (hintTxt != 'Opis') {
-            if (val!.isEmpty) {
-              return 'Proszę Uzupełnić Puste Pole';
-            } else if (val.length < 7) {
-              return 'Liczba Znaków Jest Za Mała';
-            }
-            if (val == 'Opis Stanowiska') {
-              if (val.length < 40) {
-                return 'Proszę Wpisać Minimum 40 znaków';
-              }
-            }
-            if (hintTxt == 'Email') {
-              if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-                  .hasMatch(val)) {
-                return 'Wpisz Poprawny E-mail';
-              }
-            }
-            if (hintTxt == 'Numer Telefonu') {
+        if (val != null) {
+          if (hintTxt == 'Telefon') {
+            if (val.isNotEmpty) {
               if (val.length != 9) {
-                return 'Telefon Nie ma 9 Cyfr';
+                return 'Telefon Nie Ma 9 Cyfr';
+              }
+            } else {
+              if (hintTxt != 'Opis') {
+                if (val.isEmpty) {
+                  return 'Proszę Uzupełnić Puste Pole';
+                } else if (val.length < 7) {
+                  return 'Liczba Znaków Jest Za Mała';
+                }
+                if (val == 'Opis Stanowiska') {
+                  if (val.length < 40) {
+                    return 'Proszę Wpisać Minimum 40 znaków';
+                  }
+                }
+                if (hintTxt == 'Email') {
+                  if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                      .hasMatch(val)) {
+                    return 'Wpisz Poprawny E-mail';
+                  }
+                }
+                if (hintTxt == 'Numer Telefonu') {
+                  if (val.length != 9) {
+                    return 'Telefon Nie ma 9 Cyfr';
+                  }
+                }
               }
             }
           }
         }
+        return null;
       }
       return null;
     },

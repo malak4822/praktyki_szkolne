@@ -27,7 +27,9 @@ class _EditPhotoState extends State<EditPhoto> {
 
   @override
   void dispose() {
-    Provider.of<EditUser>(context, listen: false).deleteSelectedImage();
+    if (context.mounted) {
+      Provider.of<EditUser>(context, listen: false).deleteSelectedImage();
+    }
     super.dispose();
   }
 
@@ -48,13 +50,15 @@ class _EditPhotoState extends State<EditPhoto> {
               decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(colors: gradient)),
-              child: ClipOval(
-                  child: FadeInImage(
-                fit: BoxFit.cover,
-                image: Provider.of<EditUser>(context).pictureToShow ??
-                    const NetworkImage(basicPPUrl),
-                placeholder: const NetworkImage(basicPPUrl),
-              )),
+              child: SizedBox()
+              // ClipOval(
+              //     child: FadeInImage(
+              //   fit: BoxFit.cover,
+              //   image: Provider.of<EditUser>(context).pictureToShow ??
+              //       const NetworkImage(basicPPUrl),
+              //   placeholder: const NetworkImage(basicPPUrl),
+              // )),
+              
             )),
         IconButton(
             onPressed: () async {

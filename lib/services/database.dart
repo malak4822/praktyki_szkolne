@@ -93,7 +93,7 @@ class MyDb {
     }
   }
 
-  Future<List<String?>?> updateInfoFields(
+  Future<List<dynamic>?> updateInfoFields(
       bool isAccountTypeUser,
       String userId,
       String newUsername,
@@ -115,7 +115,7 @@ class MyDb {
           newDescription,
           newLocation,
           placeId,
-          newAge.toString()
+          newAge
         ];
       } else {
         await _firestore.collection('users').doc(userId).update({

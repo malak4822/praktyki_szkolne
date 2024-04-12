@@ -90,7 +90,6 @@ class EditUser extends ChangeNotifier {
     try {
       _imgFile = null;
       await _imgFile?.delete();
-      notifyListeners();
     } catch (e) {
       debugPrint('Error deleting image: $e');
     }

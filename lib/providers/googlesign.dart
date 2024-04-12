@@ -42,13 +42,15 @@ class GoogleSignInProvider extends ChangeNotifier {
       String newDescription,
       String? newLocation,
       String? newPlaceId,
-      String? newAge) {
+      int? newAge) {
     if (isAccountTypeUser) {
       _loggedUser.username = newUsername;
       _loggedUser.description = newDescription;
       _loggedUser.location = newLocation;
       _loggedUser.placeId = newPlaceId;
-      _loggedUser.age = int.parse(newAge!);
+      if (newAge != null) {
+        _loggedUser.age = newAge;
+      }
       _wasSortedByLocation = false;
     } else {
       _loggedUser.username = newUsername;
@@ -122,6 +124,35 @@ class GoogleSignInProvider extends ChangeNotifier {
       accountCreated: Timestamp(0, 0),
       skillsSet: []);
   MyUser get getCurrentUser => _loggedUser;
+
+  String setAgeAndLocString() {
+    String finalString = '';
+
+    int? age = _loggedUser.age;
+
+    if (_loggedUser.age != null) {
+      finalString += _loggedUser.age.toString();
+      if (age! % 10 == 2 || age % 10 == 3 || age % 10 == 4) {
+        if (age == 14) {
+          finalString += ' lat';
+        }
+        finalString += ' lata';
+      } else {
+        finalString += ' lat';
+      }
+    }
+
+    if (_loggedUser.age != null && _loggedUser.location != null) {
+      if (_loggedUser.location!.isNotEmpty) {
+        finalString += ', ';
+      }
+    }
+
+    if (_loggedUser.location != null) {
+      finalString += _loggedUser.location.toString();
+    }
+    return finalString;
+  }
 
   Future<void> authenticateUser(
       String actualPassword, String newEmail, Function callBack) async {

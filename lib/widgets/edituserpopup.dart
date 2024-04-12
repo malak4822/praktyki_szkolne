@@ -104,7 +104,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           if (tabToOpen == 1) {
             if (formKeyDesc.currentState?.validate() ?? false) {
               editUserFunction.changeLoading();
-              List<String?>? infoFields = await myDb.updateInfoFields(
+              List<dynamic>? infoFields = await myDb.updateInfoFields(
                   user.isAccountTypeUser,
                   user.userId,
                   nameCont.text,
@@ -124,7 +124,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
               }
               if (user.isAccountTypeUser) {
                 editUserFunction.checkEmptiness(descriptionCont.text,
-                    nameCont.text, ageCont!, locationCont.text);
+                    nameCont.text, ageCont, locationCont.text);
               } else {
                 editUserFunction.checkEmptiness(
                     descriptionCont.text, nameCont.text, 1, 'a');

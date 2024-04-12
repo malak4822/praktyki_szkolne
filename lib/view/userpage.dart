@@ -71,10 +71,7 @@ class UserPage extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const EditUserPage())).then((value) =>
-                                  Provider.of<GoogleSignInProvider>(context,
-                                          listen: false)
-                                      .setState());
+                                          const EditUserPage()));
                             },
                             child: Container(
                               width: 64,
@@ -117,24 +114,24 @@ class UserPage extends StatelessWidget {
                 ),
               Center(
                   child: CircleAvatar(
-                      radius: 85,
+                      radius: 86,
                       backgroundColor: Colors.white,
-                      child: Container(
-                          height: 160,
-                          width: 160,
-                          decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(colors: gradient)),
+                      child: CircleAvatar(
+                          backgroundColor:
+                              const Color.fromARGB(255, 88, 231, 244),
+                          radius: 82,
                           child: ClipOval(
-                              child: FadeInImage(
+                              child: FadeInImage.assetNetwork(
                             fit: BoxFit.cover,
+                            height: 160,
+                            width: 160,
+                            filterQuality: FilterQuality.low,
+                            placeholderFilterQuality: FilterQuality.low,
                             fadeInDuration: const Duration(milliseconds: 500),
-                            image: NetworkImage(
-                              userData.profilePicture ??
-                                  'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.',
-                            ),
-                            placeholder: const NetworkImage(
-                                'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.'),
+                            image: userData.profilePicture ?? '',
+                            imageErrorBuilder: (context, error, stackTrace) =>
+                                Image.asset('images/photos/man_praktyki.png'),
+                            placeholder: 'images/photos/man_praktyki.png',
                           ))))),
               if (!isOwnProfile)
                 IconButton(
@@ -169,9 +166,9 @@ class UserPage extends StatelessWidget {
                       child: Center(
                           child: Text(
                         textAlign: TextAlign.center,
-                        userData.age != null
-                            ? '${userData.age == 0 ? '' : '${userData.age.toString()} ${getAgeSuffix(userData.age!)}'}${userData.location != null ? ', ${userData.location}' : ''}'
-                            : '',
+                        Provider.of<GoogleSignInProvider>(context,
+                                listen: false)
+                            .setAgeAndLocString(),
                         style: GoogleFonts.overpass(
                             color: Colors.white, fontSize: 16),
                       ))),

@@ -328,7 +328,7 @@ class _NoticesPageState extends State<NoticesPage> {
                                                 .getCurrentUser
                                                 .placeId ==
                                             null) {
-                                      print('essa');
+                                      showLocationProblem();
                                     } else {
                                       correctSearchinPrefs =
                                           tempSearchingPrefs.value;
