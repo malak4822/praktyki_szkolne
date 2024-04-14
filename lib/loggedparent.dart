@@ -29,19 +29,17 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
   int _currentIndex = 1;
   Completer<void> setUserOnStartVal = Completer<void>();
 
-  final GlobalKey<LoggedParentWidgetState> widgetKey1 =
+  GlobalKey<LoggedParentWidgetState> myWidgetKey =
       GlobalKey<LoggedParentWidgetState>();
 
   @override
   void initState() {
     downloadLists();
     setUpUser();
-
     super.initState();
   }
 
   void downloadLists() {
-    print("DOWNLOADING LIST");
     usersData = MyDb().downloadUsersStates();
     jobsData = MyDb().downloadJobAds();
   }
@@ -71,14 +69,19 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
                 .getCurrentUser
                 .placeId,
         wasSortedByLocation: wasSortedByLocation,
-        callBack: (info) {
-          Provider.of<GoogleSignInProvider>(context, listen: false)
-              .changeSortedLoc = true;
-          usersSortedByLocation = List.from(info);
+        callBack: (info, bool reseting) {
+          if (reseting) {
+            downloadLists();
+            setState(() {});
+          } else {
+
+            Provider.of<GoogleSignInProvider>(context, listen: false)
+                .changeSortedLoc = true;
+            usersSortedByLocation = List.from(info);
+          }
         },
         usersSortedByLocation: usersSortedByLocation,
         noticesData: usersData,
-        widgetKey1: widgetKey1,
       ),
       NoticesPage(
         isAccountTypeUser:
@@ -94,7 +97,6 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
         callBack: () {},
         usersSortedByLocation: null,
         noticesData: jobsData,
-        widgetKey1: widgetKey1,
       ),
       FutureBuilder(
           future: setUserOnStartVal.future,

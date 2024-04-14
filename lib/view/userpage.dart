@@ -119,7 +119,7 @@ class UserPage extends StatelessWidget {
                       child: CircleAvatar(
                           backgroundColor:
                               const Color.fromARGB(255, 88, 231, 244),
-                          radius: 82,
+                          radius: 80,
                           child: ClipOval(
                               child: FadeInImage.assetNetwork(
                             fit: BoxFit.cover,
@@ -132,7 +132,8 @@ class UserPage extends StatelessWidget {
                             imageErrorBuilder: (context, error, stackTrace) =>
                                 Image.asset('images/photos/man_praktyki.png'),
                             placeholder: 'images/photos/man_praktyki.png',
-                          ))))),
+                          )))
+                          )),
               if (!isOwnProfile)
                 IconButton(
                     alignment: Alignment.topLeft,

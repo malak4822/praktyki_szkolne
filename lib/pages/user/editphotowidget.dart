@@ -50,15 +50,14 @@ class _EditPhotoState extends State<EditPhoto> {
               decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(colors: gradient)),
-              child: SizedBox()
-              // ClipOval(
-              //     child: FadeInImage(
-              //   fit: BoxFit.cover,
-              //   image: Provider.of<EditUser>(context).pictureToShow ??
-              //       const NetworkImage(basicPPUrl),
-              //   placeholder: const NetworkImage(basicPPUrl),
-              // )),
-              
+              child:
+              ClipOval(
+                  child: FadeInImage(
+                fit: BoxFit.cover,
+                image: Provider.of<EditUser>(context).pictureToShow ??
+                    const NetworkImage(basicPPUrl),
+                placeholder: const NetworkImage(basicPPUrl),
+              )),
             )),
         IconButton(
             onPressed: () async {

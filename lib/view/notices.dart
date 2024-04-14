@@ -1,7 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:prakty/constants.dart';
-import 'package:prakty/loggedparent.dart';
 import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/jobs/addeditjob.dart';
@@ -25,10 +26,8 @@ class NoticesPage extends StatefulWidget {
     required this.callBack,
     required this.usersSortedByLocation,
     required this.noticesData,
-    required this.widgetKey1,
   });
 
-  final GlobalKey<LoggedParentWidgetState> widgetKey1;
   final Function callBack;
   bool wasSortedByLocation;
   final bool? isAccountTypeUser;
@@ -49,7 +48,6 @@ class _NoticesPageState extends State<NoticesPage> {
   @override
   void initState() {
     readSearchingPrefs();
-
     super.initState();
   }
 
@@ -72,14 +70,18 @@ class _NoticesPageState extends State<NoticesPage> {
               actions: [
                 ElevatedButton.icon(
                     onPressed: () {
-                      isTabVisible.value = false;
-                      Provider.of<EditUser>(context, listen: false)
-                          .toogleEditingPopUp(1);
                       Navigator.pop(context);
+                      if (isTabVisible.value) {
+                        isTabVisible.value = false;
+                      }
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const EditUserPage()));
+
+                      Provider.of<EditUser>(context, listen: false)
+                          .toogleEditingPopUp(1);
                     },
                     icon:
                         const Icon(Icons.arrow_right_alt, color: Colors.white),
@@ -141,9 +143,14 @@ class _NoticesPageState extends State<NoticesPage> {
                     if (Provider.of<GoogleSignInProvider>(context,
                             listen: false)
                         .needToResetDataList) {
-                      widget.widgetKey1.currentState?.initState();
-                      widget.widgetKey1.currentState?.build(context);
-                      return widget.noticesData;
+                      // USER SETTINGS CHANGED, DOWNLOADING AND SORTING
+                      Provider.of<GoogleSignInProvider>(context, listen: false)
+                          .changeResetDataList = false;
+                      widget.callBack(null, true);
+                      return SortFunctions(value).sortParticularAlgorytm(
+                          widget.isUserNoticePage,
+                          correctSearchinPrefs[0],
+                          widget.currentUserPlaceId);
                     } else {
                       if (widget.isUserNoticePage &&
                           correctSearchinPrefs[0] == 3) {
@@ -204,7 +211,7 @@ class _NoticesPageState extends State<NoticesPage> {
                           widget.wasSortedByLocation == false &&
                           info.isNotEmpty) {
                         // SAVING SORTED BY LOCATION DATA
-                        widget.callBack(info);
+                        widget.callBack(info, false);
                       }
 
                       return CustomScrollView(
@@ -226,7 +233,6 @@ class _NoticesPageState extends State<NoticesPage> {
                               const SizedBox(width: 12),
                             ],
                           ),
-
                           SliverList(
                               delegate: SliverChildBuilderDelegate(
                             childCount: info.length,
@@ -258,7 +264,6 @@ class _NoticesPageState extends State<NoticesPage> {
                               }
                             },
                           )),
-                          // ),
                         ],
                       );
                     }
@@ -321,13 +326,14 @@ class _NoticesPageState extends State<NoticesPage> {
                                   child: const Icon(Icons.done_outline_rounded,
                                       size: 32, color: Colors.white),
                                   onPressed: () async {
-                                    if (tempSearchingPrefs.value[0] == 3 &&
+                                    String? placeId =
                                         Provider.of<GoogleSignInProvider>(
-                                                    context,
-                                                    listen: false)
-                                                .getCurrentUser
-                                                .placeId ==
-                                            null) {
+                                                context,
+                                                listen: false)
+                                            .getCurrentUser
+                                            .placeId;
+                                    if (tempSearchingPrefs.value[0] == 3 &&
+                                        (placeId == null || placeId.isEmpty)) {
                                       showLocationProblem();
                                     } else {
                                       correctSearchinPrefs =
