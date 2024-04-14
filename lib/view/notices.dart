@@ -70,7 +70,6 @@ class _NoticesPageState extends State<NoticesPage> {
               actions: [
                 ElevatedButton.icon(
                     onPressed: () {
-                      var test;
 
                       Navigator.pop(context);
                       if (isTabVisible.value) {
