@@ -7,6 +7,13 @@ import 'package:prakty/services/database.dart';
 import '../models/user_model.dart';
 
 class GoogleSignInProvider extends ChangeNotifier {
+  int _pageIndex = 1;
+  int get pageIndex => _pageIndex;
+  set setPageIndex(int newIndex) {
+    _pageIndex = newIndex;
+    notifyListeners();
+  }
+
   FirebaseAuth auth = FirebaseAuth.instance;
 
   bool _wasSortedByLocation = false;
@@ -51,7 +58,6 @@ class GoogleSignInProvider extends ChangeNotifier {
       if (newAge != null) {
         _loggedUser.age = newAge;
       }
-      _wasSortedByLocation = false;
     } else {
       _loggedUser.username = newUsername;
       _loggedUser.description = newDescription;

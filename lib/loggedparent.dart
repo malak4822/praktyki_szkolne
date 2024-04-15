@@ -26,7 +26,7 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
   Future<List<JobAdModel>>? jobsData;
   bool wasDataSaved = false;
 
-  int _currentIndex = 1;
+  late int _currentIndex;
   Completer<void> setUserOnStartVal = Completer<void>();
 
   GlobalKey<LoggedParentWidgetState> myWidgetKey =
@@ -51,13 +51,14 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
   }
 
   void changePage(int newIndex) {
-    setState(() {
-      _currentIndex = newIndex;
-    });
+    Provider.of<GoogleSignInProvider>(context, listen: false).setPageIndex =
+        newIndex;
   }
 
   @override
   Widget build(BuildContext context) {
+    _currentIndex = Provider.of<GoogleSignInProvider>(context).pageIndex;
+
     wasSortedByLocation =
         Provider.of<GoogleSignInProvider>(context, listen: false)
             .wasSortedByLocation;
@@ -71,12 +72,14 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
         wasSortedByLocation: wasSortedByLocation,
         callBack: (info, bool reseting) {
           if (reseting) {
+            // USER SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING
             downloadLists();
             setState(() {});
           } else {
-
+            // SAVING SORTED DATA
             Provider.of<GoogleSignInProvider>(context, listen: false)
                 .changeSortedLoc = true;
+
             usersSortedByLocation = List.from(info);
           }
         },

@@ -8,7 +8,8 @@ class WidgetListGenerator {
   Function callBack;
   List<int> searchingPrefs;
 
-  Widget myText(index, text, listToOpen) => ListTile(
+  Widget myText(index, text, listToOpen) =>
+   ListTile(
       title: Text(text, style: fontSize16),
       leading: Radio(
         fillColor: MaterialStateProperty.all(Colors.white),
@@ -53,9 +54,9 @@ List<String> sortUsers() => [
 List<String> filterUsers() => ['filterUser1', 'filterUser2', 'filterUser3'];
 
 List<String> sortJobs() => [
-      'Najnowsze',
-      'Długość opisu',
-      'Najbliżej Ciebię',
+      'Nabliżej Mnie',
+      'Najwcześniej Dodane',
+      'Najdłuższy Opis',
     ];
 
 List<String> filterJobs() => ['filterJobs1', 'filterJobs2', 'filterJobs3'];

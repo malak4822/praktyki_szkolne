@@ -70,12 +70,13 @@ class _NoticesPageState extends State<NoticesPage> {
               actions: [
                 ElevatedButton.icon(
                     onPressed: () {
-                      var test;
-
                       Navigator.pop(context);
                       if (isTabVisible.value) {
                         isTabVisible.value = false;
                       }
+
+                      Provider.of<GoogleSignInProvider>(context, listen: false)
+                          .setPageIndex = 2;
 
                       Navigator.push(
                           context,
@@ -145,10 +146,12 @@ class _NoticesPageState extends State<NoticesPage> {
                     if (Provider.of<GoogleSignInProvider>(context,
                             listen: false)
                         .needToResetDataList) {
-                      // USER SETTINGS CHANGED, DOWNLOADING AND SORTING
+                      // USER SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING
                       Provider.of<GoogleSignInProvider>(context, listen: false)
                           .changeResetDataList = false;
+
                       widget.callBack(null, true);
+
                       return SortFunctions(value).sortParticularAlgorytm(
                           widget.isUserNoticePage,
                           correctSearchinPrefs[0],
@@ -279,12 +282,12 @@ class _NoticesPageState extends State<NoticesPage> {
                       Material(
                         color: Colors.white70,
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(16),
+                          // borderRadius: BorderRadius.circular(16),
                           onTap: () {
                             isTabVisible.value = false;
                           },
                           splashFactory: InkRipple.splashFactory,
-                          splashColor: gradient[1],
+                          splashColor: Color.fromARGB(255, 34, 237, 255),
                         ),
                       ),
                       Center(

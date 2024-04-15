@@ -117,23 +117,23 @@ class UserPage extends StatelessWidget {
                       radius: 86,
                       backgroundColor: Colors.white,
                       child: CircleAvatar(
-                          backgroundColor:
-                              const Color.fromARGB(255, 88, 231, 244),
-                          radius: 80,
-                          child: ClipOval(
-                              child: FadeInImage.assetNetwork(
-                            fit: BoxFit.cover,
-                            height: 160,
-                            width: 160,
-                            filterQuality: FilterQuality.low,
-                            placeholderFilterQuality: FilterQuality.low,
-                            fadeInDuration: const Duration(milliseconds: 500),
-                            image: userData.profilePicture ?? '',
-                            imageErrorBuilder: (context, error, stackTrace) =>
-                                Image.asset('images/photos/man_praktyki.png'),
-                            placeholder: 'images/photos/man_praktyki.png',
-                          )))
-                          )),
+                        backgroundColor:
+                            const Color.fromARGB(255, 88, 231, 244),
+                        radius: 80,
+                        child: ClipOval(
+                            child: FadeInImage.assetNetwork(
+                          fit: BoxFit.cover,
+                          height: 160,
+                          width: 160,
+                          filterQuality: FilterQuality.low,
+                          placeholderFilterQuality: FilterQuality.low,
+                          fadeInDuration: const Duration(milliseconds: 500),
+                          image: userData.profilePicture ?? '',
+                          imageErrorBuilder: (context, error, stackTrace) =>
+                              Image.asset('images/photos/man_praktyki.png'),
+                          placeholder: 'images/photos/man_praktyki.png',
+                        )),
+                      ))),
               if (!isOwnProfile)
                 IconButton(
                     alignment: Alignment.topLeft,

@@ -135,32 +135,28 @@ class _EditPrivUserInfoState extends State<EditPrivUserInfo> {
       ],
     )));
   }
-
-  Widget button(IconData icon, String text, Function function, bool? isEager) =>
-      Container(
-        decoration: BoxDecoration(
-            color: isEager == null
-                ? Colors.white24
-                : isEager == true
-                    ? Colors.white24
-                    : const Color.fromARGB(112, 106, 245, 108)),
-        height: 60,
-        width: double.maxFinite,
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () => function(),
-            splashFactory: InkRipple.splashFactory,
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(icon, color: Colors.white),
-              const SizedBox(width: 10),
-              Text(
-                text,
-                style: fontSize16,
-                overflow: TextOverflow.ellipsis,
-              )
-            ]),
-          ),
-        ),
-      );
 }
+
+Widget button(IconData icon, String text, Function function, bool? isEager) =>
+    Container(
+      decoration: BoxDecoration(
+          color: isEager == null
+              ? Colors.white24
+              : isEager == true
+                  ? Colors.white24
+                  : const Color.fromARGB(112, 106, 245, 108)),
+      height: 60,
+      width: double.maxFinite,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => function(),
+          splashFactory: InkRipple.splashFactory,
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(icon, color: Colors.white),
+            const SizedBox(width: 10),
+            Text(text, style: fontSize16, overflow: TextOverflow.ellipsis)
+          ]),
+        ),
+      ),
+    );

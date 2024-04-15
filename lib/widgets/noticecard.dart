@@ -4,9 +4,7 @@ import 'package:prakty/constants.dart';
 import 'package:prakty/models/advertisements_model.dart';
 import 'package:prakty/models/user_model.dart';
 import 'package:prakty/pages/jobs/jobadvertisement.dart';
-import 'package:prakty/providers/googlesign.dart';
 import 'package:prakty/view/userpage.dart';
-import 'package:provider/provider.dart';
 
 class NoticeCard extends StatelessWidget {
   const NoticeCard({super.key, required this.noticeType, required this.info});
@@ -15,21 +13,16 @@ class NoticeCard extends StatelessWidget {
   final String noticeType;
   // String noticeType -> OPTIONS: 'userNotice', 'jobNotice', 'jobOwnNotice'
 
-  NetworkImage showCorrectImage() {
-    if (noticeType == 'userNotice') {
-      return NetworkImage(info.profilePicture);
-    } else {
-      return NetworkImage(info.jobImage);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    bool isUserNotice = false;
+
     MyUser? userNoticeInfo;
     JobAdModel? jobNoticeInfo;
 
     if (noticeType == 'userNotice') {
       userNoticeInfo = info;
+      isUserNotice = true;
     } else {
       jobNoticeInfo = info;
     }
@@ -44,14 +37,14 @@ class NoticeCard extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
                 borderRadius: BorderRadius.circular(12),
-                highlightColor: Colors.blueAccent,
-                splashColor: Colors.blue,
+                highlightColor: const Color.fromARGB(255, 28, 206, 222),
+                splashColor: const Color.fromARGB(255, 34, 237, 255),
                 splashFactory: InkRipple.splashFactory,
                 onTap: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => noticeType == 'userNotice'
+                        builder: (context) => isUserNotice
                             ? UserPage(
                                 isOwnProfile: false, shownUser: userNoticeInfo!)
                             : JobAdvertisement(
@@ -59,10 +52,7 @@ class NoticeCard extends StatelessWidget {
                                 areMyOffers: noticeType == 'jobOwnNotice'
                                     ? true
                                     : false),
-                      )).then((value) {
-                    Provider.of<GoogleSignInProvider>(context, listen: false)
-                        .setState();
-                  });
+                      ));
                 },
                 child: Padding(
                     padding:
@@ -74,7 +64,7 @@ class NoticeCard extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  noticeType == 'userNotice'
+                                  isUserNotice
                                       ? userNoticeInfo!.username
                                       : jobNoticeInfo!.jobName,
                                   style: fontSize20,
@@ -82,11 +72,11 @@ class NoticeCard extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.center,
                                 ),
-                                if (noticeType == 'userNotice'
+                                if (isUserNotice
                                     ? userNoticeInfo!.description != null
                                     : jobNoticeInfo!.jobDescription != '')
                                   Text(
-                                      noticeType == 'userNotice'
+                                      isUserNotice
                                           ? userNoticeInfo!.description!
                                           : jobNoticeInfo!.jobDescription,
                                       maxLines: 2,
@@ -98,7 +88,7 @@ class NoticeCard extends StatelessWidget {
                                           color: Colors.white)),
                                 Row(
                                   children: [
-                                    if (noticeType == 'userNotice'
+                                    if (isUserNotice
                                         ? false
                                         : jobNoticeInfo!.canRemotely)
                                       Expanded(
@@ -114,7 +104,7 @@ class NoticeCard extends StatelessWidget {
                                                   color: Colors.white)),
                                         ],
                                       )),
-                                    if (noticeType == 'userNotice'
+                                    if (isUserNotice
                                         ? userNoticeInfo!.location != null
                                         : true)
                                       Expanded(
@@ -123,7 +113,7 @@ class NoticeCard extends StatelessWidget {
                                             size: 18, color: Colors.white),
                                         Expanded(
                                             child: Text(
-                                                ' ${noticeType == 'userNotice' ? userNoticeInfo!.location : jobNoticeInfo!.jobLocation}',
+                                                ' ${isUserNotice ? userNoticeInfo!.location : jobNoticeInfo!.jobLocation}',
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 1,
                                                 style: GoogleFonts.overpass(
@@ -138,68 +128,34 @@ class NoticeCard extends StatelessWidget {
                         radius: 58,
                         backgroundColor: Colors.white,
                         child: CircleAvatar(
-                            radius: 52,
-                            backgroundColor: const Color.fromARGB(255, 88, 231, 244),
-                            child: ClipOval(
-                              clipBehavior: Clip.antiAliasWithSaveLayer,
-                              child: FadeInImage.assetNetwork(
-                                  fit: BoxFit.cover,
-                                  height: 104,
-                                  width: 104,
-                                  filterQuality: FilterQuality.low,
-                                  placeholderFilterQuality: FilterQuality.low,
-                                  placeholder: noticeType == 'userNotice'
-                                      ? 'images/photos/man_praktyki.png'
-                                      : 'images/photos/company_icon.png',
-                                  image: noticeType == 'userNotice'
-                                      ? info.profilePicture ?? ''
-                                      : info.jobImage ?? '',
-                                  imageErrorBuilder:
-                                      (context, error, stackTrace) =>
-                                          Image.asset(
-                                            noticeType == 'userNotice'
-                                                ? 'images/photos/man_praktyki.png'
-                                                : 'images/photos/company_icon.png',
-                                          )),
-                            )),
+                          radius: 52,
+                          backgroundColor:
+                              const Color.fromARGB(255, 88, 231, 244),
+                          child: ClipOval(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            child: FadeInImage.assetNetwork(
+                                fit: BoxFit.cover,
+                                height: 104,
+                                width: 104,
+                                filterQuality: FilterQuality.low,
+                                placeholderFilterQuality: FilterQuality.low,
+                                placeholder: isUserNotice
+                                    ? 'images/photos/man_praktyki.png'
+                                    : 'images/photos/company_icon.png',
+                                image: isUserNotice
+                                    ? info.profilePicture ??
+                                        'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8'
+                                    : info.jobImage ??
+                                        'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fcompany_icon.png?alt=media&token=7c9796bf-2b8b-40d4-bc71-b85aeb82c269',
+                                imageErrorBuilder:
+                                    (context, error, stackTrace) => Image.asset(
+                                          isUserNotice
+                                              ? 'images/photos/man_praktyki.png'
+                                              : 'images/photos/company_icon.png',
+                                        )),
+                          ),
+                        ),
                       ),
-                      // CircleAvatar(
-                      //     radius: 52,
-                      //     backgroundColor: Colors.white,
-                      // child: CircleAvatar(
-                      //     radius: 48,
-                      //     backgroundColor: Colors.white,
-                      //     child: Container(
-                      //         height: 96,
-                      //         width: 96,
-                      //         decoration: const BoxDecoration(
-                      //             shape: BoxShape.circle,
-                      //             color: Colors.transparent),
-                      //         child: ClipOval(
-                      //             child: FadeInImage(
-                      //                 fit: BoxFit.cover,
-                      //                 fadeInDuration:
-                      //                     const Duration(milliseconds: 500),
-                      //                 image: NetworkImage(
-                      //                     noticeType == 'userNotice'
-                      //                         ? info.profilePicture
-                      //                         : info.jobImage),
-                      //                 placeholder: AssetImage(noticeType ==
-                      //                         'userNotice'
-                      //                     ? 'images/photos/man_praktyki.png'
-                      //                     : 'images/photos/company_icon.png'))))
-                      // CircleAvatar(
-                      //   radius: 50,
-                      //   foregroundImage: NetworkImage(
-                      //     showCorrectImage(),
-                      //   ),
-                      //   child: Container(
-                      //     decoration: const BoxDecoration(
-                      //         shape: BoxShape.circle,
-                      //         gradient: LinearGradient(colors: gradient)),
-                      //   ),
-                      // )
-                      // )),
                       const SizedBox(width: 10),
                     ])))));
   }

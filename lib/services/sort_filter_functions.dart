@@ -15,7 +15,7 @@ class SortFunctions {
     List<dynamic>? noticesInfo = List.from(info);
 
     if (isUserNoticePage) {
-      noticesInfo.whereType<MyUser>().toList();
+      noticesInfo.cast<MyUser>().toList();
       switch (radioValue) {
         case 0:
           noticesInfo
@@ -35,16 +35,41 @@ class SortFunctions {
               .sort((a, b) => b.skillsSet.length.compareTo(a.skillsSet.length));
           break;
         case 3:
-            Map<String, int>? places =
-                await countDistanceToSort(true, currentUserPlaceId!);
-            if (places != null) {
-              noticesInfo.sort((a, b) => (places[a.userId] ?? double.infinity)
-                  .compareTo(places[b.userId] ?? double.infinity));
-            } 
+          Map<String, int>? places =
+              await countDistanceToSort(true, currentUserPlaceId!);
+          if (places != null) {
+            noticesInfo.sort((a, b) => (places[a.userId] ?? double.infinity)
+                .compareTo(places[b.userId] ?? double.infinity));
+          }
           break;
       }
     } else {
-      noticesInfo.whereType<JobAdModel>().toList();
+      // noticesInfo as List<JobAdModel>;
+      noticesInfo.cast<JobAdModel>().toList();
+
+      switch (radioValue) {
+        case 0:
+          // Map<String, int>? places =
+          //     await countDistanceToSort(true, currentUserPlaceId!);
+          // if (places != null) {
+          //   noticesInfo.sort((a, b) => (places[a.userId] ?? double.infinity)
+          //       .compareTo(places[b.userId] ?? double.infinity));
+          // }
+
+          break;
+        case 1:
+          noticesInfo.sort((a, b) {
+            if (a.jobDescription.isEmpty || b.jobDescription.isEmpty) {
+              return 0;
+            } else {
+              return b.jobDescription.compareTo(a.jobDescription);
+            }
+          });
+          break;
+        case 2:
+        // noticesInfo
+        //     .sort((a, b) => b. .compareTo(a.accountCreated));
+      }
     }
     return noticesInfo;
   }
@@ -70,7 +95,6 @@ class SortFunctions {
 
     try {
       // RETREIVING USERS LAT & LNGS
-
       await Future.forEach(uris.entries, (MapEntry<String, Uri> entry) async {
         LatLng? singleLatLng = await getLatLangFromPlace(entry.value);
         if (singleLatLng != null) {
@@ -84,7 +108,7 @@ class SortFunctions {
     // RETREIVING CURRENT USER LAT & LNGS
     myLatLang = await getLatLangFromPlace(takeUri(currentUserPlaceId));
 
-// CALUCALTING DISTANCE BEETWEEN USERS AND CURRENT USER
+    // CALUCALTING DISTANCE BEETWEEN USERS AND CURRENT USER
     if (myLatLang != null) {
       distances = usersLatLng.map((userId, singleLatLang) {
         double latLength = (myLatLang!.latitude - singleLatLang.latitude);
