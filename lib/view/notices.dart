@@ -24,7 +24,7 @@ class NoticesPage extends StatefulWidget {
     required this.currentUserPlaceId,
     required this.wasSortedByLocation,
     required this.callBack,
-    required this.usersSortedByLocation,
+    required this.dataSortedByLocation,
     required this.noticesData,
   });
 
@@ -36,18 +36,19 @@ class NoticesPage extends StatefulWidget {
 
   Future<List<Object>>? noticesData;
 
-  List<MyUser>? usersSortedByLocation;
+  List<Object>? dataSortedByLocation;
 
   @override
   State<NoticesPage> createState() => _NoticesPageState();
 }
 
 class _NoticesPageState extends State<NoticesPage> {
+  late final Completer<void> _futureNoticesData = Completer<void>();
   List<int> correctSearchinPrefs = [0, 0, 0, 0];
 
   @override
   void initState() {
-    readSearchingPrefs();
+    readSearchingPrefs().then((value) => _futureNoticesData.complete());
     super.initState();
   }
 
@@ -76,7 +77,7 @@ class _NoticesPageState extends State<NoticesPage> {
                       }
 
                       Provider.of<GoogleSignInProvider>(context, listen: false)
-                          .setPageIndex = 2;
+                          .setPageIndex = 1;
 
                       Navigator.push(
                           context,
@@ -98,7 +99,7 @@ class _NoticesPageState extends State<NoticesPage> {
   final ValueNotifier<bool> isTabVisible = ValueNotifier<bool>(false);
   int listToOpen = 0;
 
-  void readSearchingPrefs() async {
+  Future<void> readSearchingPrefs() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     List<String> searchingPrefStringList =
@@ -122,6 +123,7 @@ class _NoticesPageState extends State<NoticesPage> {
 
   @override
   Widget build(BuildContext context) {
+    String? loc = widget.currentUserPlaceId;
     return Scaffold(
       appBar: AppBar(toolbarHeight: 0),
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
@@ -142,49 +144,83 @@ class _NoticesPageState extends State<NoticesPage> {
           child: Stack(
             children: [
               FutureBuilder(
-                  future: (widget.noticesData)?.then((value) {
-                    if (Provider.of<GoogleSignInProvider>(context,
-                            listen: false)
-                        .needToResetDataList) {
-                      // USER SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING
-                      Provider.of<GoogleSignInProvider>(context, listen: false)
-                          .changeResetDataList = false;
+                  future: _futureNoticesData.future.then((_) =>
+                      (widget.noticesData)?.then((value) {
+                        // SORTING BY LOCATION ON USER PAGE
+                        if ((widget.isUserNoticePage &&
+                            correctSearchinPrefs[0] == 3)) {
+                          print('SORTING BY LOCATION ON USER PAGE');
 
-                      widget.callBack(null, true);
+                          if (Provider.of<GoogleSignInProvider>(context,
+                                  listen: false)
+                              .needToResetUsersDataList) {
+                            print(
+                                'USER SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING');
+                            Provider.of<GoogleSignInProvider>(context,
+                                    listen: false)
+                                .toogleUsersDataList = false;
 
-                      return SortFunctions(value).sortParticularAlgorytm(
-                          widget.isUserNoticePage,
-                          correctSearchinPrefs[0],
-                          widget.currentUserPlaceId);
-                    } else {
-                      if (widget.isUserNoticePage &&
-                          correctSearchinPrefs[0] == 3) {
-                        if (widget.currentUserPlaceId == null ||
-                            widget.currentUserPlaceId!.isEmpty) {
-                          // THERE IS NO OUR LOCATION
-                          showLocationProblem();
-
-                          return widget.noticesData;
-                        } else {
-                          if (widget.wasSortedByLocation) {
-                            // RESTORING PREV. SORTING
-                            return widget.usersSortedByLocation;
+                            widget.callBack(null, 'setStateOnUserPage');
                           } else {
-                            return SortFunctions(value).sortParticularAlgorytm(
-                                widget.isUserNoticePage,
-                                correctSearchinPrefs[0],
-                                widget.currentUserPlaceId);
+                            if (widget.currentUserPlaceId == null ||
+                                widget.currentUserPlaceId!.isEmpty) {
+                              print('THERE IS NO OUR LOCATION');
+                              showLocationProblem();
+
+                              return widget.noticesData;
+                            } else {
+                              if (widget.wasSortedByLocation) {
+                                print('RESTORING PREV. SORTING');
+                                return widget.dataSortedByLocation;
+                              } else {
+                                return SortFunctions(value)
+                                    .sortParticularAlgorytm(
+                                        widget.isUserNoticePage,
+                                        correctSearchinPrefs[0],
+                                        loc);
+                              }
+                            }
                           }
+                        } else if ((!widget.isUserNoticePage &&
+                            correctSearchinPrefs[2] == 0)) {
+                          print('SORTING BY LOCATION ON JOBS PAGE');
+
+                          if (Provider.of<GoogleSignInProvider>(context,
+                                  listen: false)
+                              .needToResetJobsDataList) {
+                            print(
+                                'JOBS SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING');
+                            Provider.of<GoogleSignInProvider>(context,
+                                    listen: false)
+                                .changeResetDataList = false;
+
+                            widget.callBack(null, 'setStateOnJobsPage');
+                          } else {
+                            if (loc == null || loc.isEmpty) {
+                              showLocationProblem();
+
+                              return widget.noticesData;
+                            } else {
+                              if (widget.wasSortedByLocation) {
+                                print('RESTORING PREV. SORTING');
+                                return widget.dataSortedByLocation;
+                              } else {
+                                return SortFunctions(value)
+                                    .sortParticularAlgorytm(
+                                        widget.isUserNoticePage,
+                                        correctSearchinPrefs[0],
+                                        loc);
+                              }
+                            }
+                          }
+                        } else {
+                          print('NOT LOCATION, NORMAL SORTING');
+                          return SortFunctions(value).sortParticularAlgorytm(
+                              widget.isUserNoticePage,
+                              correctSearchinPrefs[0],
+                              loc);
                         }
-                      } else {
-                        // NORMAL SORTING
-                        return SortFunctions(value).sortParticularAlgorytm(
-                            widget.isUserNoticePage,
-                            correctSearchinPrefs[0],
-                            widget.currentUserPlaceId);
-                      }
-                    }
-                  }),
+                      })),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const LoadingWidget();
@@ -211,12 +247,17 @@ class _NoticesPageState extends State<NoticesPage> {
                       );
                     } else {
                       List<dynamic> info = snapshot.data!;
-                      if (widget.isUserNoticePage &&
-                          correctSearchinPrefs[0] == 3 &&
-                          widget.wasSortedByLocation == false &&
-                          info.isNotEmpty) {
-                        // SAVING SORTED BY LOCATION DATA
-                        widget.callBack(info, false);
+
+                      if (widget.wasSortedByLocation == false) {
+                        if (correctSearchinPrefs[0] == 3 ||
+                            widget.isUserNoticePage) {
+                          // print('SAVING JOBS SORTED BY LOCATION');
+                          widget.callBack(info, 'saveUsersLocList');
+                        } else if (correctSearchinPrefs[2] == 0 ||
+                            !widget.isUserNoticePage) {
+                          // print('SAVING JOBS SORTED BY LOCATION');
+                          widget.callBack(info, 'saveJobsLocList');
+                        }
                       }
 
                       return CustomScrollView(
@@ -287,7 +328,7 @@ class _NoticesPageState extends State<NoticesPage> {
                             isTabVisible.value = false;
                           },
                           splashFactory: InkRipple.splashFactory,
-                          splashColor: Color.fromARGB(255, 34, 237, 255),
+                          splashColor: const Color.fromARGB(255, 34, 237, 255),
                         ),
                       ),
                       Center(

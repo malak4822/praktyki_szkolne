@@ -16,13 +16,13 @@ class GoogleSignInProvider extends ChangeNotifier {
 
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  bool _wasSortedByLocation = false;
-  bool get wasSortedByLocation => _wasSortedByLocation;
-  set changeSortedLoc(bool newVal) => _wasSortedByLocation = newVal;
+  bool _needToResetUsersDataList = false;
+  bool get needToResetUsersDataList => _needToResetUsersDataList;
+  set toogleUsersDataList(bool newData) => _needToResetUsersDataList = newData;
 
-  bool _needToResetDataList = false;
-  bool get needToResetDataList => _needToResetDataList;
-  set changeResetDataList(bool newLoc) => _needToResetDataList = newLoc;
+  bool _needToResetJobsDataList = false;
+  bool get needToResetJobsDataList => _needToResetJobsDataList;
+  set changeResetDataList(bool newData) => _needToResetJobsDataList = newData;
 
   final bool _isLiked = false;
   bool get isLiked => _isLiked;

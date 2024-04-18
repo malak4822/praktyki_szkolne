@@ -19,36 +19,30 @@ class LoggedParentWidget extends StatefulWidget {
 }
 
 class LoggedParentWidgetState extends State<LoggedParentWidget> {
-  List<MyUser>? usersSortedByLocation;
-  bool wasSortedByLocation = false;
-
   Future<List<MyUser>>? usersData;
   Future<List<JobAdModel>>? jobsData;
-  bool wasDataSaved = false;
+
+  List<MyUser>? usersSortedByLocation;
+  List<JobAdModel>? jobsSortedByLocation;
+
+  bool wereUsersSortedByLocation = false;
+  bool wereJobsSortedByLocation = false;
 
   late int _currentIndex;
-  Completer<void> setUserOnStartVal = Completer<void>();
-
-  GlobalKey<LoggedParentWidgetState> myWidgetKey =
-      GlobalKey<LoggedParentWidgetState>();
+  late Future<void> setUserOnStartVal;
 
   @override
   void initState() {
-    downloadLists();
-    setUpUser();
+    usersData = MyDb().downloadUsersStates();
+    jobsData = MyDb().downloadJobAds();
+    setUserOnStartVal =
+        Provider.of<GoogleSignInProvider>(context, listen: false)
+            .setUserOnStart(context);
+
     super.initState();
   }
 
-  void downloadLists() {
-    usersData = MyDb().downloadUsersStates();
-    jobsData = MyDb().downloadJobAds();
-  }
 
-  void setUpUser() async {
-    await Provider.of<GoogleSignInProvider>(context, listen: false)
-        .setUserOnStart(context)
-        .then((value) => setUserOnStartVal.complete());
-  }
 
   void changePage(int newIndex) {
     Provider.of<GoogleSignInProvider>(context, listen: false).setPageIndex =
@@ -59,9 +53,8 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
   Widget build(BuildContext context) {
     _currentIndex = Provider.of<GoogleSignInProvider>(context).pageIndex;
 
-    wasSortedByLocation =
-        Provider.of<GoogleSignInProvider>(context, listen: false)
-            .wasSortedByLocation;
+
+
     List<Widget> pages = [
       NoticesPage(
         isUserNoticePage: true,
@@ -69,40 +62,28 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
             Provider.of<GoogleSignInProvider>(context, listen: false)
                 .getCurrentUser
                 .placeId,
-        wasSortedByLocation: wasSortedByLocation,
-        callBack: (info, bool reseting) {
-          if (reseting) {
-            // USER SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING
-            downloadLists();
-            setState(() {});
-          } else {
-            // SAVING SORTED DATA
-            Provider.of<GoogleSignInProvider>(context, listen: false)
-                .changeSortedLoc = true;
+        wasSortedByLocation: wereUsersSortedByLocation,
+        callBack: (info, String actionName) {
+          switch (actionName) {
+            case ('saveUsersLocList'):
+              // SAVING SORTED USERS DATA
+              wereUsersSortedByLocation = true;
+              usersSortedByLocation = List.from(info);
+              break;
 
-            usersSortedByLocation = List.from(info);
+            case ('setStateOnUserPage'):
+              // USER SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING
+              wereUsersSortedByLocation = false;
+              usersData = MyDb().downloadUsersStates();
+              setState(() {});
+              break;
           }
         },
-        usersSortedByLocation: usersSortedByLocation,
+        dataSortedByLocation: usersSortedByLocation,
         noticesData: usersData,
       ),
-      NoticesPage(
-        isAccountTypeUser:
-            Provider.of<GoogleSignInProvider>(context, listen: false)
-                .getCurrentUser
-                .isAccountTypeUser,
-        isUserNoticePage: false,
-        currentUserPlaceId:
-            Provider.of<GoogleSignInProvider>(context, listen: false)
-                .getCurrentUser
-                .placeId,
-        wasSortedByLocation: false,
-        callBack: () {},
-        usersSortedByLocation: null,
-        noticesData: jobsData,
-      ),
       FutureBuilder(
-          future: setUserOnStartVal.future,
+          future: setUserOnStartVal,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const LoadingWidget();
@@ -118,6 +99,36 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
                       style: fontSize20));
             }
           }),
+      NoticesPage(
+        isAccountTypeUser:
+            Provider.of<GoogleSignInProvider>(context, listen: false)
+                .getCurrentUser
+                .isAccountTypeUser,
+        isUserNoticePage: false,
+        currentUserPlaceId:
+            Provider.of<GoogleSignInProvider>(context, listen: false)
+                .getCurrentUser
+                .placeId,
+        wasSortedByLocation: wereJobsSortedByLocation,
+        callBack: (info, String actionName) {
+          switch (actionName) {
+            case ('saveJobsLocList'):
+              // SAVING SORTED JOBS DATA
+              wereJobsSortedByLocation = true;
+              jobsSortedByLocation = List.from(info);
+              break;
+
+            case ('setStateOnJobsPage'):
+              // USER SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING
+              wereJobsSortedByLocation = false;
+              jobsData = MyDb().downloadJobAds();
+              setState(() {});
+              break;
+          }
+        },
+        dataSortedByLocation: jobsSortedByLocation,
+        noticesData: jobsData,
+      ),
     ];
     return Scaffold(
       bottomNavigationBar: Container(
@@ -135,8 +146,8 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
           elevation: 0,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.people), label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.business), label: ""),
             BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
+            BottomNavigationBarItem(icon: Icon(Icons.business), label: ""),
           ],
         ),
       ),
