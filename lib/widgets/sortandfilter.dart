@@ -51,7 +51,7 @@ List<String> sortUsers() => [
       'Najbliżej Ciebię'
     ];
 
-List<String> filterUsers() => ['filterUser1', 'filterUser2', 'filterUser3'];
+List<String> filterUsers() => ['Bez Filtrów'];
 
 List<String> sortJobs() => [
       'Nabliżej Mnie',
@@ -59,4 +59,4 @@ List<String> sortJobs() => [
       'Najdłuższy Opis',
     ];
 
-List<String> filterJobs() => ['filterJobs1', 'filterJobs2', 'filterJobs3'];
+List<String> filterJobs() => ['Bez Filtrów', 'Praktyki Zdalne', 'Praktyki Odpłatne'];

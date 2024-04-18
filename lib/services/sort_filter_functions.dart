@@ -7,16 +7,26 @@ import 'package:prakty/models/user_model.dart';
 import 'package:prakty/services/gmapfetchingurl.dart';
 
 class SortFunctions {
-  const SortFunctions(this.info);
+  const SortFunctions(this.info, this.correctSearchinPrefs);
   final List info;
+  final List<int> correctSearchinPrefs;
 
   Future<List<dynamic>?> sortParticularAlgorytm(
-      bool isUserNoticePage, int radioValue, String? currentUserPlaceId) async {
+      bool isUserNoticePage, String? currentUserPlaceId) async {
+    late int radioSortValue;
+    late int radioFilter;
+    if (isUserNoticePage) {
+      radioSortValue = correctSearchinPrefs[0];
+      radioFilter = correctSearchinPrefs[1];
+    } else {
+      radioSortValue = correctSearchinPrefs[2];
+      radioFilter = correctSearchinPrefs[3];
+    }
     List<dynamic>? noticesInfo = List.from(info);
 
     if (isUserNoticePage) {
       noticesInfo.cast<MyUser>().toList();
-      switch (radioValue) {
+      switch (radioSortValue) {
         case 0:
           noticesInfo
               .sort((a, b) => b.accountCreated.compareTo(a.accountCreated));
@@ -47,7 +57,7 @@ class SortFunctions {
       // noticesInfo as List<JobAdModel>;
       noticesInfo.cast<JobAdModel>().toList();
 
-      switch (radioValue) {
+      switch (radioSortValue) {
         case 0:
           // Map<String, int>? places =
           //     await countDistanceToSort(true, currentUserPlaceId!);
@@ -67,8 +77,32 @@ class SortFunctions {
           });
           break;
         case 2:
-        // noticesInfo
-        //     .sort((a, b) => b. .compareTo(a.accountCreated));
+          // BEZSENS NAPISANY
+          noticesInfo.sort((a, b) {
+            if (a.companyName.isEmpty || b.companyName.isEmpty) {
+              return 0;
+            } else {
+              return b.companyName.compareTo(a.companyName);
+            }
+          });
+      }
+    }
+
+    //  FILTERING
+    if (isUserNoticePage == false) {
+      print('easas');
+      noticesInfo.cast<JobAdModel>().toList();
+      switch (radioFilter) {
+        case 0:
+          break;
+        case 1:
+          noticesInfo =
+              List.from(noticesInfo.where((notice) => notice.canRemotely));
+          break;
+        case 2:
+          noticesInfo =
+              List.from(noticesInfo.where((notice) => notice.arePaid));
+          break;
       }
     }
     return noticesInfo;

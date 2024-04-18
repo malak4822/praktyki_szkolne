@@ -49,7 +49,6 @@ class _EditNameAndDescState extends State<EditNameAndDesc> {
             updateValues(widget.descriptionCont, 'Opis', 8, 500,
                 Icons.description_rounded, TextInputType.text, null),
             const SizedBox(height: 10),
-            if (widget.isAccountTypeUser)
               Row(
                 children: [
                   const Icon(Icons.location_on_sharp, color: Colors.white),
@@ -92,7 +91,6 @@ class _EditNameAndDescState extends State<EditNameAndDesc> {
                 ],
               ),
             const SizedBox(height: 16),
-            if (widget.isAccountTypeUser)
               Row(children: [
                 const Icon(Icons.person, color: Colors.white),
                 const SizedBox(width: 16),

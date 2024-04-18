@@ -88,8 +88,9 @@ class EditUser extends ChangeNotifier {
 
   Future<void> deleteSelectedImage() async {
     try {
-      _imgFile = null;
+      _pictureToShow = null;
       await _imgFile?.delete();
+      _imgFile = null;
     } catch (e) {
       debugPrint('Error deleting image: $e');
     }
@@ -134,9 +135,9 @@ class EditUser extends ChangeNotifier {
   bool get isEditingSeen => _isEditingSeen;
 
   void checkEmptiness(
-      String name, String? description, int? age, String? location) {
+      String name, String description, int? age, String? location) {
     if (name.isEmpty ||
-        description == null ||
+        description.isEmpty ||
         age == null ||
         location == null) {
       _areFieldsEmpty = true;

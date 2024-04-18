@@ -71,6 +71,11 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
 
   @override
   Widget build(BuildContext context) {
+    Widget boolBox(String txt) => Row(children: [
+          const Icon((Icons.done_outline_rounded),
+              size: 18, color: Colors.white),
+          Text(' $txt', style: fontSize16, textAlign: TextAlign.center)
+        ]);
     return Scaffold(
       body: SafeArea(
           child: Stack(children: [
@@ -172,16 +177,14 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                         if (jobInfo.jobQualification.isNotEmpty)
                           Text(jobInfo.jobQualification,
                               style: fontSize16, textAlign: TextAlign.center),
-                        if (jobInfo.jobQualification.isNotEmpty)
+                        if (jobInfo.canRemotely || jobInfo.arePaid)
                           const Divider(color: Colors.white, thickness: 2),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon((Icons.done_outline_rounded),
-                                  size: 18, color: Colors.white),
-                              Text(' Zdalne',
-                                  style: fontSize16,
-                                  textAlign: TextAlign.center)
+                              if (jobInfo.canRemotely) boolBox('Zdalne'),
+                              if (jobInfo.arePaid) const SizedBox(width: 18),
+                              if (jobInfo.arePaid) boolBox('Płatne'),
                             ])
                       ]))),
               const SizedBox(height: 12),
@@ -347,4 +350,3 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
     );
   }
 }
-

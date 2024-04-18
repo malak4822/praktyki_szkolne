@@ -10,6 +10,7 @@ class JobAdModel {
   String jobQualification;
   String jobDescription;
   bool canRemotely;
+  bool arePaid;
 
   JobAdModel({
     required this.jobId,
@@ -23,5 +24,6 @@ class JobAdModel {
     required this.jobQualification,
     required this.jobDescription,
     required this.canRemotely,
+    required this.arePaid,
   });
 }

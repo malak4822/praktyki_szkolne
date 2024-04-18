@@ -113,14 +113,25 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
                 }
               }
               break;
+            case ('Telefon Kontaktowy'):
+              if (val.isNotEmpty) {
+                if (val.length != 9) {
+                  return 'Telefon Nie Ma 9 Cyfr';
+                }
+              } else {
+                return 'Pole Nie Może Być Puste';
+              }
+              break;
             case ('Imię I Nazwisko'):
               if (val.length < 7) {
                 return 'Imię I Nazwisko Jest Za Krótkie';
               }
               break;
+            case ('Opis'):
+              break;
             case ('Opis Stanowiska'):
-              if (val.length < 40) {
-                return 'Proszę Wpisać Minimum 40 znaków';
+              if (val.length < 30) {
+                return 'Opis Musi Mieć Minimum 30 Znaków';
               }
               break;
 
@@ -131,9 +142,9 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
               }
               break;
             default:
-             if(val.isEmpty){
-              return 'Pole Nie Może Być Puste';
-             }
+              if (val.isEmpty) {
+                return 'Pole Nie Może Być Puste';
+              }
           }
         }
         return null;

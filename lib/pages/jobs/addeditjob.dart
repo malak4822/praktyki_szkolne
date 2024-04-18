@@ -35,6 +35,7 @@ class _AddEditJobState extends State<AddEditJob> {
   TextEditingController jobQualification = TextEditingController();
   TextEditingController jobDescription = TextEditingController();
   bool canRemotely = false;
+  bool arePaid = false;
   File? noticePhoto;
   bool isLocationFilled = false;
   final _formKey = GlobalKey<FormState>();
@@ -72,6 +73,8 @@ class _AddEditJobState extends State<AddEditJob> {
       jobLocation.text = initialJobData!.jobLocation;
       jobQualification.text = initialJobData!.jobQualification;
       jobDescription.text = initialJobData!.jobDescription;
+      canRemotely = initialJobData!.canRemotely;
+      arePaid = initialJobData!.arePaid;
       isNoticeOwner = true;
       super.initState();
     }
@@ -104,9 +107,10 @@ class _AddEditJobState extends State<AddEditJob> {
                     .deleteJobAdvert(widget.initialEditingVal!.jobId);
                 isLoadingVis = false;
                 if (isOkay) {
-                  if (context.mounted) {
-                    Navigator.pop(context);
-                  }
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
                 }
               },
               icon:
@@ -176,8 +180,8 @@ class _AddEditJobState extends State<AddEditJob> {
                     updateValues(jobQualification, 'Nazwa Kwalifikacji', 1, 28,
                         Icons.text_fields_rounded, TextInputType.text, null),
                     const SizedBox(height: 12),
-                    updateValues(jobPhone, 'Telefon', 1, 9, Icons.phone,
-                        TextInputType.phone, null),
+                    updateValues(jobPhone, 'Telefon Kontaktowy', 1, 9,
+                        Icons.phone, TextInputType.phone, null),
                     const SizedBox(height: 12),
                     updateValues(jobEmail, 'Email', 1, null, Icons.email,
                         TextInputType.emailAddress, null),
@@ -226,12 +230,18 @@ class _AddEditJobState extends State<AddEditJob> {
                         )
                       ],
                     ),
+                    const SizedBox(height: 4),
                     Visibility(
                         visible: isLocationFilled,
-                        child: Row(
+                        child: const Row(
                           children: [
-                            const SizedBox(width: 52),
-                            Text('Proszę Uzupełnić Miejsce', style: fontSize16)
+                            SizedBox(width: 52),
+                            Text(
+                              'Proszę Uzupełnić Miejsce',
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 161, 42, 34),
+                                  fontSize: 13),
+                            )
                           ],
                         )),
                     const SizedBox(height: 20),
@@ -252,6 +262,23 @@ class _AddEditJobState extends State<AddEditJob> {
                         onChanged: (newValue) {
                           setState(() {
                             canRemotely = newValue!;
+                          });
+                        }),
+                    CheckboxListTile(
+                        contentPadding: EdgeInsets.only(
+                            left: MediaQuery.of(context).size.width * 2 / 11),
+                        checkboxShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0)),
+                        activeColor: Colors.white,
+                        side: MaterialStateBorderSide.resolveWith((states) =>
+                            const BorderSide(width: 2, color: Colors.white)),
+                        title: Text("Praktyki Odpłatne", style: fontSize16),
+                        value: arePaid,
+                        dense: true,
+                        controlAffinity: ListTileControlAffinity.leading,
+                        onChanged: (newValue) {
+                          setState(() {
+                            arePaid = newValue!;
                           });
                         }),
                     const SizedBox(height: 16),
@@ -285,7 +312,8 @@ class _AddEditJobState extends State<AddEditJob> {
                                           placeId,
                                           jobQualification.text,
                                           jobDescription.text,
-                                          canRemotely);
+                                          canRemotely,
+                                          arePaid);
                                   if (isOkay.keys.first == true) {
                                     if (context.mounted) {
                                       Provider.of<GoogleSignInProvider>(context,
@@ -300,7 +328,8 @@ class _AddEditJobState extends State<AddEditJob> {
                                               jobLocation.text,
                                               jobQualification.text,
                                               jobDescription.text,
-                                              canRemotely);
+                                              canRemotely,
+                                              arePaid);
                                     }
                                   }
                                 } else {
@@ -319,12 +348,12 @@ class _AddEditJobState extends State<AddEditJob> {
                                         jobLocation.text,
                                         jobQualification.text,
                                         jobDescription.text,
-                                        canRemotely);
+                                        canRemotely,
+                                        arePaid);
                                   }
                                 }
                               }
-                             if (context.mounted) {
-                              Navigator.pop(context);}
+                              Navigator.pop(context);
                             } else {
                               setState(() {
                                 isLocationFilled = true;

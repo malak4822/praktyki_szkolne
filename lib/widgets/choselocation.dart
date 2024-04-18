@@ -235,10 +235,10 @@ class _FindOnMapState extends State<FindOnMap> {
                               placeAutoCompleteFromLocation(
                                   placesFromLocation[0]);
                             } else {
-                              if (context.mounted) {
-                                showSnackBar(context,
-                                    'Nie Znaleziono Żadnych Lokalizacji');
-                              }
+                              // if (context.mounted) {
+                              //   showSnackBar(context,
+                              //       'Nie Znaleziono Żadnych Lokalizacji');
+                              // }
                             }
                           },
                         ),

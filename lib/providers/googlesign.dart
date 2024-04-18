@@ -50,18 +50,14 @@ class GoogleSignInProvider extends ChangeNotifier {
       String? newLocation,
       String? newPlaceId,
       int? newAge) {
-    if (isAccountTypeUser) {
-      _loggedUser.username = newUsername;
-      _loggedUser.description = newDescription;
-      _loggedUser.location = newLocation;
-      _loggedUser.placeId = newPlaceId;
-      if (newAge != null) {
-        _loggedUser.age = newAge;
-      }
-    } else {
-      _loggedUser.username = newUsername;
-      _loggedUser.description = newDescription;
+    _loggedUser.username = newUsername;
+    _loggedUser.description = newDescription;
+    _loggedUser.location = newLocation;
+    _loggedUser.placeId = newPlaceId;
+    if (newAge != null) {
+      _loggedUser.age = newAge;
     }
+
     notifyListeners();
   }
 
@@ -86,7 +82,8 @@ class GoogleSignInProvider extends ChangeNotifier {
       String jobLocation,
       String jobQualification,
       String jobDescription,
-      bool canRemotely) {
+      bool canRemotely,
+      bool arePaid) {
     int offerIndex =
         _myOffersList.indexWhere((element) => element.jobId == jobId);
 
@@ -101,6 +98,7 @@ class GoogleSignInProvider extends ChangeNotifier {
     _myOffersList[offerIndex].jobQualification = jobQualification;
     _myOffersList[offerIndex].jobDescription = jobDescription;
     _myOffersList[offerIndex].canRemotely = canRemotely;
+    _myOffersList[offerIndex].arePaid = arePaid;
     notifyListeners();
   }
 

@@ -25,6 +25,7 @@ class UserPage extends StatelessWidget {
           ? Provider.of<GoogleSignInProvider>(context, listen: false)
               .getCurrentUser
           : shownUser;
+
       return Scaffold(
           body: ListView(children: [
         SizedBox(
@@ -60,12 +61,8 @@ class UserPage extends StatelessWidget {
                                   .checkEmptiness(
                                       userData.username,
                                       userData.description ?? '',
-                                      userData.isAccountTypeUser
-                                          ? userData.age
-                                          : 1,
-                                      userData.isAccountTypeUser
-                                          ? userData.location
-                                          : 'a');
+                                      userData.age,
+                                      userData.location);
 
                               Navigator.push(
                                   context,
@@ -128,7 +125,8 @@ class UserPage extends StatelessWidget {
                           filterQuality: FilterQuality.low,
                           placeholderFilterQuality: FilterQuality.low,
                           fadeInDuration: const Duration(milliseconds: 500),
-                          image: userData.profilePicture ?? '',
+                          image: userData.profilePicture ??
+                              'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fman_praktyki.png?alt=media&token=dec782e2-1e50-4066-b0b6-0dc8019463d8&_gl=1*5iyx8e*_ga*MTg3NTU1MzM0MC4xNjk4MzAyMTM5*_ga_CW55HF8NVT*MTY5OTI4NjY4OC42LjEuMTY5OTI4NjcwMS40Ny4wLjA.',
                           imageErrorBuilder: (context, error, stackTrace) =>
                               Image.asset('images/photos/man_praktyki.png'),
                           placeholder: 'images/photos/man_praktyki.png',
@@ -162,17 +160,14 @@ class UserPage extends StatelessWidget {
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.w800))),
-                  Visibility(
-                      visible: userData.isAccountTypeUser,
-                      child: Center(
-                          child: Text(
-                        textAlign: TextAlign.center,
-                        Provider.of<GoogleSignInProvider>(context,
-                                listen: false)
-                            .setAgeAndLocString(),
-                        style: GoogleFonts.overpass(
-                            color: Colors.white, fontSize: 16),
-                      ))),
+                  Center(
+                      child: Text(
+                    textAlign: TextAlign.center,
+                    Provider.of<GoogleSignInProvider>(context, listen: false)
+                        .setAgeAndLocString(),
+                    style:
+                        GoogleFonts.overpass(color: Colors.white, fontSize: 16),
+                  )),
                   const SizedBox(height: 5),
                   if (userData.description != null)
                     Text(userData.description!,
@@ -213,7 +208,9 @@ class UserPage extends StatelessWidget {
                     Icons.email_rounded, 'mailto:${userData.email}', true)),
             const SizedBox(width: 10),
             Visibility(
-                visible: userData.phoneNum != '',
+                visible: userData.phoneNum != null
+                    ? userData.phoneNum!.isNotEmpty
+                    : false,
                 child: Row(
                   children: [
                     contactBox(

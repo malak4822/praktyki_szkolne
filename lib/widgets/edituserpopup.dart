@@ -121,13 +121,8 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
                     infoFields[4]);
                 editUserFunction.toogleEditingPopUp(3);
               }
-              if (user.isAccountTypeUser) {
-                editUserFunction.checkEmptiness(descriptionCont.text,
-                    nameCont.text, ageCont, locationCont.text);
-              } else {
-                editUserFunction.checkEmptiness(
-                    descriptionCont.text, nameCont.text, 1, 'a');
-              }
+              editUserFunction.checkEmptiness(descriptionCont.text,
+                  nameCont.text, ageCont, locationCont.text);
               editUserFunction.changeLoading();
             }
           }

@@ -102,28 +102,14 @@ class MyDb {
       String? placeId,
       int? newAge) async {
     try {
-      if (isAccountTypeUser) {
-        await _firestore.collection('users').doc(userId).update({
-          'username': newUsername,
-          'description': newDescription,
-          'location': newLocation,
-          'placeId': placeId,
-          'age': newAge,
-        });
-        return [
-          newUsername,
-          newDescription,
-          newLocation,
-          placeId,
-          newAge
-        ];
-      } else {
-        await _firestore.collection('users').doc(userId).update({
-          'username': newUsername,
-          'description': newDescription,
-        });
-        return [newUsername, newDescription, null, null];
-      }
+      await _firestore.collection('users').doc(userId).update({
+        'username': newUsername,
+        'description': newDescription,
+        'location': newLocation,
+        'placeId': placeId,
+        'age': newAge,
+      });
+      return [newUsername, newDescription, newLocation, placeId, newAge];
     } catch (e) {
       debugPrint(e.toString());
       return null;
@@ -152,9 +138,13 @@ class MyDb {
   Future<List<Map<String, int>>?> updateSkillBoxes(
       String userId, List<Map<String, int>> actuallSkillSet) async {
     try {
-      await _firestore.collection('users').doc(userId).update({
-        'skillsSet': actuallSkillSet,
-      });
+      if (actuallSkillSet.isNotEmpty) {
+        await _firestore.collection('users').doc(userId).update({
+          'skillsSet': actuallSkillSet,
+        });
+      } else {
+        debugPrint('actuallSkillSet is empty. Not updating Firestore.');
+      }
       return actuallSkillSet;
     } catch (e) {
       debugPrint(e.toString());
@@ -213,6 +203,7 @@ class MyDb {
           jobQualification: myJobList[i]['jobQualification'],
           jobDescription: myJobList[i]['jobDescription'],
           canRemotely: myJobList[i]['canRemotely'],
+          arePaid: myJobList[i]['arePaid'],
         ));
       }
       return advertInfo;
@@ -286,6 +277,7 @@ class MyDb {
           jobQualification: element['jobQualification'],
           jobDescription: element['jobDescription'],
           canRemotely: element['canRemotely'],
+          arePaid: element['arePaid'],
         ));
       }
 
@@ -321,6 +313,7 @@ class MyDb {
             jobQualification: docSnapshot['jobQualification'],
             jobDescription: docSnapshot['jobDescription'],
             canRemotely: docSnapshot['canRemotely'],
+            arePaid: docSnapshot['arePaid'],
           ));
         } else {
           await _firestore.collection('users').doc(userId).update({
@@ -436,7 +429,8 @@ class MyDb {
       String jobLocation,
       String jobQualification,
       String jobDescription,
-      bool canRemotely) async {
+      bool canRemotely,
+      bool arePaid) async {
     late String jobId;
     String generateRandomCode() {
       const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -469,7 +463,8 @@ class MyDb {
         'jobLocation': jobLocation,
         'jobQualification': jobQualification,
         'jobDescription': jobDescription,
-        'canRemotely': canRemotely
+        'canRemotely': canRemotely,
+        'arePaid': arePaid,
       });
     } catch (e) {
       debugPrint(e.toString());
@@ -487,7 +482,8 @@ class MyDb {
       String placeId,
       String jobQualification,
       String jobDescription,
-      bool canRemotely) async {
+      bool canRemotely,
+      bool arePaid) async {
     try {
       String? imageUrl;
 
@@ -510,7 +506,8 @@ class MyDb {
         'placeId': placeId,
         'jobQualification': jobQualification,
         'jobDescription': jobDescription,
-        'canRemotely': canRemotely
+        'canRemotely': canRemotely,
+        'arePaid': arePaid
       });
       return {true: imageUrl};
     } catch (e) {

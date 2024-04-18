@@ -146,6 +146,9 @@ class _NoticesPageState extends State<NoticesPage> {
               FutureBuilder(
                   future: _futureNoticesData.future.then((_) =>
                       (widget.noticesData)?.then((value) {
+                        SortFunctions sortFuncInstanc =
+                            SortFunctions(value, correctSearchinPrefs);
+
                         // SORTING BY LOCATION ON USER PAGE
                         if ((widget.isUserNoticePage &&
                             correctSearchinPrefs[0] == 3)) {
@@ -173,11 +176,8 @@ class _NoticesPageState extends State<NoticesPage> {
                                 print('RESTORING PREV. SORTING');
                                 return widget.dataSortedByLocation;
                               } else {
-                                return SortFunctions(value)
-                                    .sortParticularAlgorytm(
-                                        widget.isUserNoticePage,
-                                        correctSearchinPrefs[0],
-                                        loc);
+                                return sortFuncInstanc.sortParticularAlgorytm(
+                                    widget.isUserNoticePage, loc);
                               }
                             }
                           }
@@ -205,20 +205,15 @@ class _NoticesPageState extends State<NoticesPage> {
                                 print('RESTORING PREV. SORTING');
                                 return widget.dataSortedByLocation;
                               } else {
-                                return SortFunctions(value)
-                                    .sortParticularAlgorytm(
-                                        widget.isUserNoticePage,
-                                        correctSearchinPrefs[0],
-                                        loc);
+                                return sortFuncInstanc.sortParticularAlgorytm(
+                                    widget.isUserNoticePage, loc);
                               }
                             }
                           }
                         } else {
                           print('NOT LOCATION, NORMAL SORTING');
-                          return SortFunctions(value).sortParticularAlgorytm(
-                              widget.isUserNoticePage,
-                              correctSearchinPrefs[0],
-                              loc);
+                          return sortFuncInstanc.sortParticularAlgorytm(
+                              widget.isUserNoticePage, loc);
                         }
                       })),
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -248,17 +243,17 @@ class _NoticesPageState extends State<NoticesPage> {
                     } else {
                       List<dynamic> info = snapshot.data!;
 
-                      if (widget.wasSortedByLocation == false) {
-                        if (correctSearchinPrefs[0] == 3 ||
-                            widget.isUserNoticePage) {
-                          // print('SAVING JOBS SORTED BY LOCATION');
-                          widget.callBack(info, 'saveUsersLocList');
-                        } else if (correctSearchinPrefs[2] == 0 ||
-                            !widget.isUserNoticePage) {
-                          // print('SAVING JOBS SORTED BY LOCATION');
-                          widget.callBack(info, 'saveJobsLocList');
-                        }
-                      }
+                      // if (widget.wasSortedByLocation == false) {
+                      //   if (correctSearchinPrefs[0] == 3 ||
+                      //       widget.isUserNoticePage) {
+                      //     // print('SAVING JOBS SORTED BY LOCATION');
+                      //     widget.callBack(info, 'saveUsersLocList');
+                      //   } else if (correctSearchinPrefs[2] == 0 ||
+                      //       !widget.isUserNoticePage) {
+                      //     // print('SAVING JOBS SORTED BY LOCATION');
+                      //     widget.callBack(info, 'saveJobsLocList');
+                      //   }
+                      // }
 
                       return CustomScrollView(
                         clipBehavior: Clip.none,

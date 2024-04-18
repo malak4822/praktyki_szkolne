@@ -31,10 +31,15 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
   late int _currentIndex;
   late Future<void> setUserOnStartVal;
 
+  Future<void> _handleRefresh() async {
+    downloadList();
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {});
+  }
+
   @override
   void initState() {
-    usersData = MyDb().downloadUsersStates();
-    jobsData = MyDb().downloadJobAds();
+    downloadList();
     setUserOnStartVal =
         Provider.of<GoogleSignInProvider>(context, listen: false)
             .setUserOnStart(context);
@@ -42,7 +47,10 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
     super.initState();
   }
 
-
+  void downloadList() {
+    usersData = MyDb().downloadUsersStates();
+    jobsData = MyDb().downloadJobAds();
+  }
 
   void changePage(int newIndex) {
     Provider.of<GoogleSignInProvider>(context, listen: false).setPageIndex =
@@ -52,8 +60,6 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
   @override
   Widget build(BuildContext context) {
     _currentIndex = Provider.of<GoogleSignInProvider>(context).pageIndex;
-
-
 
     List<Widget> pages = [
       NoticesPage(
@@ -151,7 +157,12 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
           ],
         ),
       ),
-      body: pages[_currentIndex],
+      body: RefreshIndicator(
+          color: Color.fromARGB(255, 21, 187, 242),
+          strokeWidth: 4,
+          edgeOffset: 22,
+          onRefresh: _handleRefresh,
+          child: pages[_currentIndex]),
     );
   }
 }
