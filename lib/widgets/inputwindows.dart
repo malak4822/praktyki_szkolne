@@ -105,36 +105,35 @@ Widget updateValues(myController, hintTxt, maxLines, maxLength, icon,
       if (hintTxt == 'Miejsce') {
       } else {
         if (val != null) {
-          if (hintTxt == 'Telefon') {
-            if (val.isNotEmpty) {
-              if (val.length != 9) {
-                return 'Telefon Nie Ma 9 Cyfr';
-              }
-            } else {
-              if (hintTxt != 'Opis') {
-                if (val.isEmpty) {
-                  return 'Proszę Uzupełnić Puste Pole';
-                } else if (val.length < 7) {
-                  return 'Liczba Znaków Jest Za Mała';
-                }
-                if (val == 'Opis Stanowiska') {
-                  if (val.length < 40) {
-                    return 'Proszę Wpisać Minimum 40 znaków';
-                  }
-                }
-                if (hintTxt == 'Email') {
-                  if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-                      .hasMatch(val)) {
-                    return 'Wpisz Poprawny E-mail';
-                  }
-                }
-                if (hintTxt == 'Numer Telefonu') {
-                  if (val.length != 9) {
-                    return 'Telefon Nie ma 9 Cyfr';
-                  }
+          switch (hintTxt) {
+            case ('Telefon'):
+              if (val.isNotEmpty) {
+                if (val.length != 9) {
+                  return 'Telefon Nie Ma 9 Cyfr';
                 }
               }
-            }
+              break;
+            case ('Imię I Nazwisko'):
+              if (val.length < 7) {
+                return 'Imię I Nazwisko Jest Za Krótkie';
+              }
+              break;
+            case ('Opis Stanowiska'):
+              if (val.length < 40) {
+                return 'Proszę Wpisać Minimum 40 znaków';
+              }
+              break;
+
+            case ('Email'):
+              if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                  .hasMatch(val)) {
+                return 'Wpisz Poprawny E-mail';
+              }
+              break;
+            default:
+             if(val.isEmpty){
+              return 'Pole Nie Może Być Puste';
+             }
           }
         }
         return null;

@@ -141,8 +141,9 @@ class GoogleSignInProvider extends ChangeNotifier {
       if (age! % 10 == 2 || age % 10 == 3 || age % 10 == 4) {
         if (age == 14) {
           finalString += ' lat';
+        } else {
+          finalString += ' lata';
         }
-        finalString += ' lata';
       } else {
         finalString += ' lat';
       }
