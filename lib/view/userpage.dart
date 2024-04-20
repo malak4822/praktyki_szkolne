@@ -26,6 +26,10 @@ class UserPage extends StatelessWidget {
               .getCurrentUser
           : shownUser;
 
+      String locAndAge =
+          Provider.of<GoogleSignInProvider>(context, listen: false)
+              .setAgeAndLocString(shownUser.age, shownUser.location);
+
       return Scaffold(
           body: ListView(children: [
         SizedBox(
@@ -160,14 +164,14 @@ class UserPage extends StatelessWidget {
                               color: Colors.white,
                               fontSize: 20,
                               fontWeight: FontWeight.w800))),
-                  Center(
-                      child: Text(
-                    textAlign: TextAlign.center,
-                    Provider.of<GoogleSignInProvider>(context, listen: false)
-                        .setAgeAndLocString(),
-                    style:
-                        GoogleFonts.overpass(color: Colors.white, fontSize: 16),
-                  )),
+                  if (locAndAge.isNotEmpty)
+                    Center(
+                        child: Text(
+                      textAlign: TextAlign.center,
+                      locAndAge,
+                      style: GoogleFonts.overpass(
+                          color: Colors.white, fontSize: 16),
+                    )),
                   const SizedBox(height: 5),
                   if (userData.description != null)
                     Text(userData.description!,

@@ -22,7 +22,7 @@ class GoogleSignInProvider extends ChangeNotifier {
 
   bool _needToResetJobsDataList = false;
   bool get needToResetJobsDataList => _needToResetJobsDataList;
-  set changeResetDataList(bool newData) => _needToResetJobsDataList = newData;
+  set toogleJobsDataList(bool newData) => _needToResetJobsDataList = newData;
 
   final bool _isLiked = false;
   bool get isLiked => _isLiked;
@@ -129,14 +129,12 @@ class GoogleSignInProvider extends ChangeNotifier {
       skillsSet: []);
   MyUser get getCurrentUser => _loggedUser;
 
-  String setAgeAndLocString() {
+  String setAgeAndLocString(int? age, String? location) {
     String finalString = '';
 
-    int? age = _loggedUser.age;
-
-    if (_loggedUser.age != null) {
-      finalString += _loggedUser.age.toString();
-      if (age! % 10 == 2 || age % 10 == 3 || age % 10 == 4) {
+    if (age != null) {
+      finalString += age.toString();
+      if (age % 10 == 2 || age % 10 == 3 || age % 10 == 4) {
         if (age == 14) {
           finalString += ' lat';
         } else {
@@ -147,14 +145,13 @@ class GoogleSignInProvider extends ChangeNotifier {
       }
     }
 
-    if (_loggedUser.age != null && _loggedUser.location != null) {
-      if (_loggedUser.location!.isNotEmpty) {
+    if (age != null && location != null) {
+      if (location.isNotEmpty) {
         finalString += ', ';
       }
     }
-
-    if (_loggedUser.location != null) {
-      finalString += _loggedUser.location.toString();
+    if (location != null) {
+      finalString += location.toString();
     }
     return finalString;
   }

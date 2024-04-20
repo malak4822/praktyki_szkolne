@@ -25,7 +25,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
   late TextEditingController emailCont;
   late TextEditingController passCont;
   late TextEditingController phoneCont;
-  String placeId = '';
+  late String? placeId;
 
   @override
   void initState() {
@@ -37,6 +37,7 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
     emailCont = TextEditingController(text: user.email);
     passCont = TextEditingController();
     phoneCont = TextEditingController(text: user.phoneNum);
+    placeId = user.placeId;
     super.initState();
   }
 
@@ -44,25 +45,19 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
   @override
   Widget build(BuildContext context) {
     int tabToOpen = Provider.of<EditUser>(context, listen: false).tabToOpen;
-
-    var editUserFunction = Provider.of<EditUser>(context, listen: false);
-
-    var googleSignFunction =
-        Provider.of<GoogleSignInProvider>(context, listen: false);
-
     int? ageCont = user.age;
 
-// CONTACT CONTROLLERS
-
-    // saving placeId for users is error / it doesnt send data do db
+    var editUserFunction = Provider.of<EditUser>(context, listen: false);
+    var googleSignFunction =
+        Provider.of<GoogleSignInProvider>(context, listen: false);
 
     final formKeyPhone = GlobalKey<FormState>();
     final formKeyDesc = GlobalKey<FormState>();
 
     List<Widget> editWidgetTypes = [
       EditPhoto(user: user),
-      EditNameAndDesc(nameCont, descriptionCont, locationCont, emailCont,
-          ageCont, (newVal) => ageCont = newVal, (placeRef) {
+      EditNameAndDesc(nameCont, descriptionCont, locationCont, placeId,
+          emailCont, ageCont, (newVal) => ageCont = newVal, (placeRef) {
         placeId = placeRef;
       }, user.isAccountTypeUser, formKeyDesc),
       const EditSkillSet(),
@@ -113,13 +108,20 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
                   ageCont);
               if (infoFields != null) {
                 googleSignFunction.refreshNameAndDesc(
-                    user.isAccountTypeUser,
-                    infoFields[0]!,
-                    infoFields[1]!,
-                    infoFields[2],
-                    infoFields[3],
-                    infoFields[4]);
+                  user.isAccountTypeUser,
+                  infoFields[0]!,
+                  infoFields[1]!,
+                  infoFields[2],
+                  infoFields[3],
+                  infoFields[4],
+                );
                 editUserFunction.toogleEditingPopUp(3);
+                if (context.mounted) {
+                  Provider.of<GoogleSignInProvider>(context, listen: false)
+                      .toogleUsersDataList = true;
+                  Provider.of<GoogleSignInProvider>(context, listen: false)
+                      .toogleJobsDataList = true;
+                }
               }
               editUserFunction.checkEmptiness(descriptionCont.text,
                   nameCont.text, ageCont, locationCont.text);
@@ -159,10 +161,6 @@ class _EditPopUpParentState extends State<EditPopUpParent> {
           if (tabToOpen != 3 && tabToOpen != 1) {
             editUserFunction.changeLoading();
             editUserFunction.toogleEditingPopUp(3);
-          }
-          if (context.mounted) {
-            Provider.of<GoogleSignInProvider>(context, listen: false)
-                .changeResetDataList = true;
           }
         }
       })),

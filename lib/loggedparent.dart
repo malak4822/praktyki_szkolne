@@ -32,8 +32,11 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
   late Future<void> setUserOnStartVal;
 
   Future<void> _handleRefresh() async {
+    Provider.of<GoogleSignInProvider>(context, listen: false)
+        .toogleUsersDataList = true;
+    Provider.of<GoogleSignInProvider>(context, listen: false)
+        .toogleJobsDataList = true;
     downloadList();
-    await Future.delayed(Duration(seconds: 1));
     setState(() {});
   }
 
@@ -158,7 +161,7 @@ class LoggedParentWidgetState extends State<LoggedParentWidget> {
         ),
       ),
       body: RefreshIndicator(
-          color: Color.fromARGB(255, 21, 187, 242),
+          color: const Color.fromARGB(255, 21, 187, 242),
           strokeWidth: 4,
           edgeOffset: 22,
           onRefresh: _handleRefresh,

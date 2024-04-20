@@ -107,10 +107,12 @@ class _AddEditJobState extends State<AddEditJob> {
                     .deleteJobAdvert(widget.initialEditingVal!.jobId);
                 isLoadingVis = false;
                 if (isOkay) {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                    Navigator.pop(context);
+                  }
                 }
               },
               icon:
@@ -353,7 +355,9 @@ class _AddEditJobState extends State<AddEditJob> {
                                   }
                                 }
                               }
-                              Navigator.pop(context);
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
                             } else {
                               setState(() {
                                 isLocationFilled = true;

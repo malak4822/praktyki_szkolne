@@ -24,14 +24,45 @@ class SortFunctions {
     }
     List<dynamic>? noticesInfo = List.from(info);
 
+    //  FILTERING
+    if (isUserNoticePage == false) {
+      noticesInfo.cast<JobAdModel>().toList();
+      switch (radioFilter) {
+        case 0:
+          break;
+        case 1:
+          noticesInfo =
+              List.from(noticesInfo.where((notice) => notice.canRemotely));
+          break;
+        case 2:
+          noticesInfo =
+              List.from(noticesInfo.where((notice) => notice.arePaid));
+          break;
+      }
+    }
     if (isUserNoticePage) {
       noticesInfo.cast<MyUser>().toList();
       switch (radioSortValue) {
         case 0:
+          Map<String, int>? places =
+              await countDistanceToSort(false, currentUserPlaceId!);
+          if (places != null) {
+            noticesInfo.sort((a, b) => (places[a.userId] ?? double.infinity)
+                .compareTo(places[b.userId] ?? double.infinity));
+          }
+          break;
+
+        case 1:
           noticesInfo
               .sort((a, b) => b.accountCreated.compareTo(a.accountCreated));
+
           break;
-        case 1:
+        case 2:
+          noticesInfo
+              .sort((a, b) => b.skillsSet.length.compareTo(a.skillsSet.length));
+
+          break;
+        case 3:
           noticesInfo.sort((a, b) {
             if (a.age == null || b.age == null) {
               return 0;
@@ -40,18 +71,6 @@ class SortFunctions {
             }
           });
           break;
-        case 2:
-          noticesInfo
-              .sort((a, b) => b.skillsSet.length.compareTo(a.skillsSet.length));
-          break;
-        case 3:
-          Map<String, int>? places =
-              await countDistanceToSort(true, currentUserPlaceId!);
-          if (places != null) {
-            noticesInfo.sort((a, b) => (places[a.userId] ?? double.infinity)
-                .compareTo(places[b.userId] ?? double.infinity));
-          }
-          break;
       }
     } else {
       // noticesInfo as List<JobAdModel>;
@@ -59,12 +78,13 @@ class SortFunctions {
 
       switch (radioSortValue) {
         case 0:
-          // Map<String, int>? places =
-          //     await countDistanceToSort(true, currentUserPlaceId!);
-          // if (places != null) {
-          //   noticesInfo.sort((a, b) => (places[a.userId] ?? double.infinity)
-          //       .compareTo(places[b.userId] ?? double.infinity));
-          // }
+          Map<String, int>? places =
+              await countDistanceToSort(true, currentUserPlaceId!);
+
+          if (places != null) {
+            noticesInfo.sort((a, b) => (places[a.jobId] ?? double.infinity)
+                .compareTo(places[b.jobId] ?? double.infinity));
+          }
 
           break;
         case 1:
@@ -88,23 +108,6 @@ class SortFunctions {
       }
     }
 
-    //  FILTERING
-    if (isUserNoticePage == false) {
-      print('easas');
-      noticesInfo.cast<JobAdModel>().toList();
-      switch (radioFilter) {
-        case 0:
-          break;
-        case 1:
-          noticesInfo =
-              List.from(noticesInfo.where((notice) => notice.canRemotely));
-          break;
-        case 2:
-          noticesInfo =
-              List.from(noticesInfo.where((notice) => notice.arePaid));
-          break;
-      }
-    }
     return noticesInfo;
   }
 
@@ -117,13 +120,16 @@ class SortFunctions {
     Map<String, Uri> uris = {};
     Map<String, LatLng> usersLatLng = {};
 
+    // TODO:MAKE JOBLOCATION, JOB NOTICES DONT HAVE EQUVALENT OF USER PLACEID
+
     for (int i = 0; i < info.length; i++) {
       userLocationsList
-          .add(isJobAdModel ? info[i].placeId : info[i].jobLocation);
+          .add(isJobAdModel ? info[i].jobLocation : info[i].placeId);
       if (userLocationsList[i] != null || userLocationsList[i] == '') {
-        String userId = info[i].userId;
-        Uri placeUri = takeUri(info[i].placeId);
-        uris[userId] = placeUri;
+        String ids = isJobAdModel ? info[i].jobId : info[i].userId;
+        Uri placeUri =
+            takeUri(isJobAdModel ? info[i].jobLocation : info[i].placeId);
+        uris[ids] = placeUri;
       }
     }
 

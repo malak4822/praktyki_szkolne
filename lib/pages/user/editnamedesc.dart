@@ -9,6 +9,7 @@ class EditNameAndDesc extends StatefulWidget {
       this.nameCont,
       this.descriptionCont,
       this.locationCont,
+      this.placeId,
       this.emailCont,
       this.ageCont,
       this.ageCallback,
@@ -17,6 +18,7 @@ class EditNameAndDesc extends StatefulWidget {
       this.formKey,
       {super.key});
 
+  final String? placeId;
   final TextEditingController nameCont;
   final TextEditingController descriptionCont;
   final TextEditingController emailCont;
@@ -33,8 +35,6 @@ class EditNameAndDesc extends StatefulWidget {
 }
 
 class _EditNameAndDescState extends State<EditNameAndDesc> {
-  String placeId = '';
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -49,79 +49,74 @@ class _EditNameAndDescState extends State<EditNameAndDesc> {
             updateValues(widget.descriptionCont, 'Opis', 8, 500,
                 Icons.description_rounded, TextInputType.text, null),
             const SizedBox(height: 10),
-              Row(
-                children: [
-                  const Icon(Icons.location_on_sharp, color: Colors.white),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                            borderRadius: BorderRadius.circular(16),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => FindOnMap(callBack:
-                                              (String val, String placeRef) {
-                                            setState(() {
-                                              widget.locationCont.text = val;
-                                            });
-
-                                            widget.placeCallBack(placeRef);
-                                          })));
-                            },
-                            child: Center(
-                                child: Text(
-                              widget.locationCont.text.isEmpty
-                                  ? 'Miejsce'
-                                  : widget.locationCont.text,
-                              style: fontSize16,
-                              textAlign: TextAlign.center,
-                            ))),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            const SizedBox(height: 16),
-              Row(children: [
-                const Icon(Icons.person, color: Colors.white),
+            Row(
+              children: [
+                const Icon(Icons.location_on_sharp, color: Colors.white),
                 const SizedBox(width: 16),
                 Expanded(
-                    child: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white, width: 2),
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
                           borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: CupertinoPicker(
-                            itemExtent: 18,
-                            scrollController: FixedExtentScrollController(
-                                initialItem: widget.ageCont != null
-                                    ? widget.ageCont! - 14
-                                    : 0),
-                            onSelectedItemChanged: (int newVal) =>
-                                widget.ageCallback(newVal + 14),
-                            children: List.generate(
-                                14 + 27,
-                                (index) => Text(
-                                    '${(14 + index).toString()} lat',
-                                    style: fontSize16))))),
-              ]),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => FindOnMap(callBack:
+                                            (String val, String placeRef) {
+                                          setState(() {
+                                            widget.locationCont.text = val;
+                                          });
+
+                                          widget.placeCallBack(placeRef);
+                                        })));
+                          },
+                          child: Center(
+                              child: Text(
+                            widget.locationCont.text.isEmpty
+                                ? 'Miejsce'
+                                : widget.locationCont.text,
+                            style: fontSize16,
+                            textAlign: TextAlign.center,
+                          ))),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(children: [
+              const Icon(Icons.person, color: Colors.white),
+              const SizedBox(width: 16),
+              Expanded(
+                  child: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white, width: 2),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: CupertinoPicker(
+                          itemExtent: 18,
+                          scrollController: FixedExtentScrollController(
+                              initialItem: widget.ageCont != null
+                                  ? widget.ageCont! - 14
+                                  : 0),
+                          onSelectedItemChanged: (int newVal) =>
+                              widget.ageCallback(newVal + 14),
+                          children: List.generate(
+                              14 + 27,
+                              (index) => Text('${(14 + index).toString()} lat',
+                                  style: fontSize16))))),
+            ]),
           ]))),
     );
   }
 }
-
-// TODO: FIX BUG, WHEN SAVING USER INFO AND NOT CHANGING LOCATION, IT ERASES PLACEID
-
-// TODO: FIX BUG, WHEN CHANGING PHONE NUMBER YOU CANT LEAVE EMPTY SPACE
 
 // TODO: REFACTOR / CLEAN CODE IN INPUTWINDOWS.DART

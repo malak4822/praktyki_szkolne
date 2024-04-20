@@ -149,9 +149,8 @@ class _NoticesPageState extends State<NoticesPage> {
                         SortFunctions sortFuncInstanc =
                             SortFunctions(value, correctSearchinPrefs);
 
-                        // SORTING BY LOCATION ON USER PAGE
                         if ((widget.isUserNoticePage &&
-                            correctSearchinPrefs[0] == 3)) {
+                            correctSearchinPrefs[0] == 0)) {
                           print('SORTING BY LOCATION ON USER PAGE');
 
                           if (Provider.of<GoogleSignInProvider>(context,
@@ -176,6 +175,8 @@ class _NoticesPageState extends State<NoticesPage> {
                                 print('RESTORING PREV. SORTING');
                                 return widget.dataSortedByLocation;
                               } else {
+                                print('NORMAL LOCATION SORTING');
+
                                 return sortFuncInstanc.sortParticularAlgorytm(
                                     widget.isUserNoticePage, loc);
                               }
@@ -183,8 +184,6 @@ class _NoticesPageState extends State<NoticesPage> {
                           }
                         } else if ((!widget.isUserNoticePage &&
                             correctSearchinPrefs[2] == 0)) {
-                          print('SORTING BY LOCATION ON JOBS PAGE');
-
                           if (Provider.of<GoogleSignInProvider>(context,
                                   listen: false)
                               .needToResetJobsDataList) {
@@ -192,7 +191,7 @@ class _NoticesPageState extends State<NoticesPage> {
                                 'JOBS SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING');
                             Provider.of<GoogleSignInProvider>(context,
                                     listen: false)
-                                .changeResetDataList = false;
+                                .toogleJobsDataList = false;
 
                             widget.callBack(null, 'setStateOnJobsPage');
                           } else {
@@ -205,6 +204,7 @@ class _NoticesPageState extends State<NoticesPage> {
                                 print('RESTORING PREV. SORTING');
                                 return widget.dataSortedByLocation;
                               } else {
+                                print('NORMAL SORTING');
                                 return sortFuncInstanc.sortParticularAlgorytm(
                                     widget.isUserNoticePage, loc);
                               }
@@ -243,17 +243,17 @@ class _NoticesPageState extends State<NoticesPage> {
                     } else {
                       List<dynamic> info = snapshot.data!;
 
-                      // if (widget.wasSortedByLocation == false) {
-                      //   if (correctSearchinPrefs[0] == 3 ||
-                      //       widget.isUserNoticePage) {
-                      //     // print('SAVING JOBS SORTED BY LOCATION');
-                      //     widget.callBack(info, 'saveUsersLocList');
-                      //   } else if (correctSearchinPrefs[2] == 0 ||
-                      //       !widget.isUserNoticePage) {
-                      //     // print('SAVING JOBS SORTED BY LOCATION');
-                      //     widget.callBack(info, 'saveJobsLocList');
-                      //   }
-                      // }
+                      if (widget.wasSortedByLocation == false) {
+                        if (correctSearchinPrefs[0] == 0 &&
+                            widget.isUserNoticePage) {
+                          // print('SAVING JOBS SORTED BY LOCATION');
+                          widget.callBack(info, 'saveUsersLocList');
+                        } else if (correctSearchinPrefs[2] == 0 &&
+                            !widget.isUserNoticePage) {
+                          // print('SAVING JOBS SORTED BY LOCATION');
+                          widget.callBack(info, 'saveJobsLocList');
+                        }
+                      }
 
                       return CustomScrollView(
                         clipBehavior: Clip.none,
