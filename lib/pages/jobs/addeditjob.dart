@@ -31,7 +31,7 @@ class _AddEditJobState extends State<AddEditJob> {
   TextEditingController jobEmail = TextEditingController();
   TextEditingController jobPhone = TextEditingController();
   TextEditingController jobLocation = TextEditingController();
-  String placeId = '';
+  late String jobPlaceId;
   TextEditingController jobQualification = TextEditingController();
   TextEditingController jobDescription = TextEditingController();
   bool canRemotely = false;
@@ -71,6 +71,7 @@ class _AddEditJobState extends State<AddEditJob> {
       jobEmail.text = initialJobData!.jobEmail;
       jobPhone.text = initialJobData!.jobPhone.toString();
       jobLocation.text = initialJobData!.jobLocation;
+      jobPlaceId = initialJobData!.jobPlaceId;
       jobQualification.text = initialJobData!.jobQualification;
       jobDescription.text = initialJobData!.jobDescription;
       canRemotely = initialJobData!.canRemotely;
@@ -216,7 +217,7 @@ class _AddEditJobState extends State<AddEditJob> {
                                                     jobLocation.text =
                                                         locationText;
                                                   });
-                                                  placeId = placeRef;
+                                                  jobPlaceId = placeRef;
                                                 })));
                                   },
                                   child: Center(
@@ -301,6 +302,9 @@ class _AddEditJobState extends State<AddEditJob> {
                               if (await Provider.of<EditUser>(context,
                                       listen: false)
                                   .checkInternetConnectivity()) {
+                                setState(() {
+                                  isLoadingVis = true;
+                                });
                                 if (isNoticeOwner) {
                                   Map<bool, String?> isOkay = await MyDb()
                                       .updateJob(
@@ -311,7 +315,7 @@ class _AddEditJobState extends State<AddEditJob> {
                                           jobEmail.text,
                                           int.parse(jobPhone.text),
                                           jobLocation.text,
-                                          placeId,
+                                          jobPlaceId,
                                           jobQualification.text,
                                           jobDescription.text,
                                           canRemotely,
@@ -322,12 +326,15 @@ class _AddEditJobState extends State<AddEditJob> {
                                               listen: false)
                                           .refreshJobInfo(
                                               initialJobData!.jobId,
-                                              isOkay.values.first,
+                                              isOkay.keys.first
+                                                  ? isOkay.values.first
+                                                  : null,
                                               jobName.text,
                                               companyName.text,
                                               jobEmail.text,
                                               int.parse(jobPhone.text),
                                               jobLocation.text,
+                                              jobPlaceId,
                                               jobQualification.text,
                                               jobDescription.text,
                                               canRemotely,
@@ -348,15 +355,16 @@ class _AddEditJobState extends State<AddEditJob> {
                                         jobEmail.text,
                                         int.parse(jobPhone.text),
                                         jobLocation.text,
+                                        jobPlaceId,
                                         jobQualification.text,
                                         jobDescription.text,
                                         canRemotely,
                                         arePaid);
                                   }
                                 }
-                              }
-                              if (context.mounted) {
-                                Navigator.pop(context);
+                                setState(() {
+                                  isLoadingVis = false;
+                                });
                               }
                             } else {
                               setState(() {

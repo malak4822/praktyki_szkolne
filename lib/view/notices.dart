@@ -44,7 +44,7 @@ class NoticesPage extends StatefulWidget {
 
 class _NoticesPageState extends State<NoticesPage> {
   late final Completer<void> _futureNoticesData = Completer<void>();
-  List<int> correctSearchinPrefs = [0, 0, 0, 0];
+  List<int> correctSearchinPrefs = [1, 0, 1, 0];
 
   @override
   void initState() {
@@ -95,7 +95,7 @@ class _NoticesPageState extends State<NoticesPage> {
   }
 
   ValueNotifier<List<int>> tempSearchingPrefs =
-      ValueNotifier<List<int>>([0, 0, 0, 0]);
+      ValueNotifier<List<int>>([1, 0, 1, 0]);
   final ValueNotifier<bool> isTabVisible = ValueNotifier<bool>(false);
   int listToOpen = 0;
 
@@ -103,7 +103,7 @@ class _NoticesPageState extends State<NoticesPage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     List<String> searchingPrefStringList =
-        prefs.getStringList('searchingPrefs') ?? ['0', '0', '0', '0'];
+        prefs.getStringList('searchingPrefs') ?? ['1', '0', '1', '0'];
 
     List<int> convertedToInts =
         List.from(searchingPrefStringList.map((e) => int.parse(e)));
@@ -151,13 +151,13 @@ class _NoticesPageState extends State<NoticesPage> {
 
                         if ((widget.isUserNoticePage &&
                             correctSearchinPrefs[0] == 0)) {
-                          print('SORTING BY LOCATION ON USER PAGE');
+                          // print('SORTING BY LOCATION ON USER PAGE');
 
                           if (Provider.of<GoogleSignInProvider>(context,
                                   listen: false)
                               .needToResetUsersDataList) {
-                            print(
-                                'USER SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING');
+                            // print(
+                            //     'USER SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING');
                             Provider.of<GoogleSignInProvider>(context,
                                     listen: false)
                                 .toogleUsersDataList = false;
@@ -166,16 +166,16 @@ class _NoticesPageState extends State<NoticesPage> {
                           } else {
                             if (widget.currentUserPlaceId == null ||
                                 widget.currentUserPlaceId!.isEmpty) {
-                              print('THERE IS NO OUR LOCATION');
+                              // print('THERE IS NO OUR LOCATION');
                               showLocationProblem();
 
                               return widget.noticesData;
                             } else {
                               if (widget.wasSortedByLocation) {
-                                print('RESTORING PREV. SORTING');
+                                // print('RESTORING PREV. SORTING');
                                 return widget.dataSortedByLocation;
                               } else {
-                                print('NORMAL LOCATION SORTING');
+                                // print('NORMAL LOCATION SORTING');
 
                                 return sortFuncInstanc.sortParticularAlgorytm(
                                     widget.isUserNoticePage, loc);
@@ -187,8 +187,8 @@ class _NoticesPageState extends State<NoticesPage> {
                           if (Provider.of<GoogleSignInProvider>(context,
                                   listen: false)
                               .needToResetJobsDataList) {
-                            print(
-                                'JOBS SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING');
+                            // print(
+                            //     'JOBS SETTINGS CHANGED, DOWNLOADING LIST AGAIN AND SORTING');
                             Provider.of<GoogleSignInProvider>(context,
                                     listen: false)
                                 .toogleJobsDataList = false;
@@ -201,17 +201,17 @@ class _NoticesPageState extends State<NoticesPage> {
                               return widget.noticesData;
                             } else {
                               if (widget.wasSortedByLocation) {
-                                print('RESTORING PREV. SORTING');
+                                // print('RESTORING PREV. SORTING');
                                 return widget.dataSortedByLocation;
                               } else {
-                                print('NORMAL SORTING');
+                                // print('NORMAL SORTING');
                                 return sortFuncInstanc.sortParticularAlgorytm(
                                     widget.isUserNoticePage, loc);
                               }
                             }
                           }
                         } else {
-                          print('NOT LOCATION, NORMAL SORTING');
+                          // print('NOT LOCATION, NORMAL SORTING');
                           return sortFuncInstanc.sortParticularAlgorytm(
                               widget.isUserNoticePage, loc);
                         }

@@ -7,6 +7,7 @@ class JobAdModel {
   String? jobImage;
   int jobPhone;
   String jobLocation;
+  String jobPlaceId;
   String jobQualification;
   String jobDescription;
   bool canRemotely;
@@ -21,6 +22,7 @@ class JobAdModel {
     required this.jobImage,
     required this.jobPhone,
     required this.jobLocation,
+    required this.jobPlaceId,
     required this.jobQualification,
     required this.jobDescription,
     required this.canRemotely,

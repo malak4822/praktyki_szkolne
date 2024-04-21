@@ -48,6 +48,7 @@ class MyOffers extends StatelessWidget {
                       ]));
                 } else {
                   List<JobAdModel> jobList = [];
+                  print(snapshot.data!);
                   jobList = List.from(snapshot.data!);
                   Provider.of<GoogleSignInProvider>(context, listen: false)
                       .setMyOffersList = jobList;
@@ -67,3 +68,6 @@ class MyOffers extends StatelessWidget {
     ])));
   }
 }
+
+// TODO: BUG Z ZAMIENIANIEM ZDJ. PROFILOWEGO PRZY EDYCJI OGLOSZENIA 
+// TODO: BUG Z MOŻLIWOŚCIĄ EDYCJI OGŁOSZEŃ KTÓRE SĄ NA TABLICY OGŁOSZEŃ

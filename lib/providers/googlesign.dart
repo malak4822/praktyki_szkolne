@@ -73,32 +73,38 @@ class GoogleSignInProvider extends ChangeNotifier {
   set setMyOffersList(List<JobAdModel> newList) => _myOffersList = newList;
 
   void refreshJobInfo(
-      String jobId,
+      String currjobId,
       String? pictureToShow,
       String jobName,
       String companyName,
       String jobEmail,
       int jobPhone,
       String jobLocation,
+      String jobPlaceId,
       String jobQualification,
       String jobDescription,
       bool canRemotely,
       bool arePaid) {
     int offerIndex =
-        _myOffersList.indexWhere((element) => element.jobId == jobId);
+        _myOffersList.indexWhere((element) => element.jobId == currjobId);
 
-    if (_myOffersList[offerIndex].jobImage != 'fresh') {
-      _myOffersList[offerIndex].jobImage = pictureToShow;
-    }
-    _myOffersList[offerIndex].jobName = jobName;
-    _myOffersList[offerIndex].companyName = companyName;
-    _myOffersList[offerIndex].jobEmail = jobEmail;
-    _myOffersList[offerIndex].jobPhone = jobPhone;
-    _myOffersList[offerIndex].jobLocation = jobLocation;
-    _myOffersList[offerIndex].jobQualification = jobQualification;
-    _myOffersList[offerIndex].jobDescription = jobDescription;
-    _myOffersList[offerIndex].canRemotely = canRemotely;
-    _myOffersList[offerIndex].arePaid = arePaid;
+    print(_myOffersList);
+    print('-------------');
+    print(offerIndex);
+
+    // if (_myOffersList[offerIndex].jobImage != 'fresh') {
+    //   _myOffersList[offerIndex].jobImage = pictureToShow;
+    // }
+    // _myOffersList[offerIndex].jobName = jobName;
+    // _myOffersList[offerIndex].companyName = companyName;
+    // _myOffersList[offerIndex].jobEmail = jobEmail;
+    // _myOffersList[offerIndex].jobPhone = jobPhone;
+    // _myOffersList[offerIndex].jobLocation = jobLocation;
+    // _myOffersList[offerIndex].jobPlaceId = jobPlaceId;
+    // _myOffersList[offerIndex].jobQualification = jobQualification;
+    // _myOffersList[offerIndex].jobDescription = jobDescription;
+    // _myOffersList[offerIndex].canRemotely = canRemotely;
+    // _myOffersList[offerIndex].arePaid = arePaid;
     notifyListeners();
   }
 

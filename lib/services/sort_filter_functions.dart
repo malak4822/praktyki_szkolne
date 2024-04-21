@@ -89,21 +89,20 @@ class SortFunctions {
           break;
         case 1:
           noticesInfo.sort((a, b) {
-            if (a.jobDescription.isEmpty || b.jobDescription.isEmpty) {
-              return 0;
-            } else {
-              return b.jobDescription.compareTo(a.jobDescription);
-            }
-          });
-          break;
-        case 2:
-          // BEZSENS NAPISANY
-          noticesInfo.sort((a, b) {
             if (a.companyName.isEmpty || b.companyName.isEmpty) {
               return 0;
             } else {
               return b.companyName.compareTo(a.companyName);
             }
+          });
+          break;
+        case 2:
+          noticesInfo.sort((a, b) {
+            // if (a.jobDescription.isEmpty || b.jobDescription.isEmpty) {
+            //   return 99999;
+            // } else {
+            return b.jobDescription.length.compareTo(a.jobDescription.length);
+            // }
           });
       }
     }
@@ -120,19 +119,17 @@ class SortFunctions {
     Map<String, Uri> uris = {};
     Map<String, LatLng> usersLatLng = {};
 
-    // TODO:MAKE JOBLOCATION, JOB NOTICES DONT HAVE EQUVALENT OF USER PLACEID
-
     for (int i = 0; i < info.length; i++) {
       userLocationsList
-          .add(isJobAdModel ? info[i].jobLocation : info[i].placeId);
+          .add(isJobAdModel ? info[i].jobPlaceId : info[i].placeId);
       if (userLocationsList[i] != null || userLocationsList[i] == '') {
         String ids = isJobAdModel ? info[i].jobId : info[i].userId;
         Uri placeUri =
-            takeUri(isJobAdModel ? info[i].jobLocation : info[i].placeId);
+            takeUri(isJobAdModel ? info[i].jobPlaceId : info[i].placeId);
         uris[ids] = placeUri;
       }
     }
-
+// TODO: naprawic opis i sortowanie inne
     try {
       // RETREIVING USERS LAT & LNGS
       await Future.forEach(uris.entries, (MapEntry<String, Uri> entry) async {
