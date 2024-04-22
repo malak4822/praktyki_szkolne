@@ -36,7 +36,7 @@ class _AddEditJobState extends State<AddEditJob> {
   TextEditingController jobDescription = TextEditingController();
   bool canRemotely = false;
   bool arePaid = false;
-  File? noticePhoto;
+  File? noticePhotoPath;
   bool isLocationFilled = false;
   final _formKey = GlobalKey<FormState>();
 
@@ -48,22 +48,22 @@ class _AddEditJobState extends State<AddEditJob> {
     final pickedImage = await imagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 18);
     if (pickedImage != null) {
+      noticePhotoPath = File(pickedImage.path);
+
       setState(() {
-        noticePhoto = File(pickedImage.path);
         pictureToShow = FileImage(File(pickedImage.path));
       });
     }
   }
 
-  ImageProvider<Object> pictureToShow = const NetworkImage(
-      'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fcompany_icon.png?alt=media&token=7c9796bf-2b8b-40d4-bc71-b85aeb82c269');
-
+  ImageProvider<Object> pictureToShow =
+      const AssetImage('images/photos/company_icon.png');
   @override
   void initState() {
     if (widget.isEditing == true) {
       if (widget.initialEditingVal!.jobImage != null) {
-        noticePhoto = File('fresh');
         pictureToShow = NetworkImage(widget.initialEditingVal!.jobImage!);
+
       }
       initialJobData = widget.initialEditingVal;
       jobName.text = initialJobData!.jobName;
@@ -159,10 +159,10 @@ class _AddEditJobState extends State<AddEditJob> {
                                   fit: BoxFit.cover,
                                   image: pictureToShow),
                               imageButtons(() {
-                                noticePhoto = null;
+                                noticePhotoPath = null;
                                 setState(() {
-                                  pictureToShow = const NetworkImage(
-                                      'https://firebasestorage.googleapis.com/v0/b/praktyki-szkolne.appspot.com/o/my_files%2Fcompany_icon.png?alt=media&token=7c9796bf-2b8b-40d4-bc71-b85aeb82c269');
+                                  pictureToShow = const AssetImage(
+                                      'images/photos/company_icon.png');
                                 });
                               }, Icons.delete_outline_rounded,
                                   Alignment.topLeft),
@@ -309,7 +309,8 @@ class _AddEditJobState extends State<AddEditJob> {
                                   Map<bool, String?> isOkay = await MyDb()
                                       .updateJob(
                                           initialJobData!.jobId,
-                                          noticePhoto,
+                                          noticePhotoPath,
+                                          pictureToShow,
                                           jobName.text,
                                           companyName.text,
                                           jobEmail.text,
@@ -349,7 +350,7 @@ class _AddEditJobState extends State<AddEditJob> {
                                                 listen: false)
                                             .getCurrentUser
                                             .userId,
-                                        noticePhoto,
+                                        noticePhotoPath,
                                         jobName.text,
                                         companyName.text,
                                         jobEmail.text,
@@ -365,6 +366,9 @@ class _AddEditJobState extends State<AddEditJob> {
                                 setState(() {
                                   isLoadingVis = false;
                                 });
+                                if (context.mounted) {
+                                  Navigator.pop(context);
+                                }
                               }
                             } else {
                               setState(() {
@@ -377,21 +381,22 @@ class _AddEditJobState extends State<AddEditJob> {
                             color: Colors.white, size: 24)),
                   ])))),
       backButton(context),
-      Align(
-          alignment: Alignment.topRight,
-          child: GestureDetector(
-              onTap: () => showDeleteConfirmationDialog(context),
-              child: Container(
-                  width: 62,
-                  height: 62,
-                  alignment: Alignment.topRight,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      color: gradient[1],
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(62))),
-                  child: const Icon(Icons.delete_outline_rounded,
-                      color: Colors.white, size: 28)))),
+      if (widget.isEditing)
+        Align(
+            alignment: Alignment.topRight,
+            child: GestureDetector(
+                onTap: () => showDeleteConfirmationDialog(context),
+                child: Container(
+                    width: 62,
+                    height: 62,
+                    alignment: Alignment.topRight,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        color: gradient[1],
+                        borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(62))),
+                    child: const Icon(Icons.delete_outline_rounded,
+                        color: Colors.white, size: 28)))),
       Visibility(visible: isLoadingVis, child: const LoadingWidget())
     ])));
   }

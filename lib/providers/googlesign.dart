@@ -88,23 +88,17 @@ class GoogleSignInProvider extends ChangeNotifier {
     int offerIndex =
         _myOffersList.indexWhere((element) => element.jobId == currjobId);
 
-    print(_myOffersList);
-    print('-------------');
-    print(offerIndex);
-
-    // if (_myOffersList[offerIndex].jobImage != 'fresh') {
-    //   _myOffersList[offerIndex].jobImage = pictureToShow;
-    // }
-    // _myOffersList[offerIndex].jobName = jobName;
-    // _myOffersList[offerIndex].companyName = companyName;
-    // _myOffersList[offerIndex].jobEmail = jobEmail;
-    // _myOffersList[offerIndex].jobPhone = jobPhone;
-    // _myOffersList[offerIndex].jobLocation = jobLocation;
-    // _myOffersList[offerIndex].jobPlaceId = jobPlaceId;
-    // _myOffersList[offerIndex].jobQualification = jobQualification;
-    // _myOffersList[offerIndex].jobDescription = jobDescription;
-    // _myOffersList[offerIndex].canRemotely = canRemotely;
-    // _myOffersList[offerIndex].arePaid = arePaid;
+    _myOffersList[offerIndex].jobImage = pictureToShow;
+    _myOffersList[offerIndex].jobName = jobName;
+    _myOffersList[offerIndex].companyName = companyName;
+    _myOffersList[offerIndex].jobEmail = jobEmail;
+    _myOffersList[offerIndex].jobPhone = jobPhone;
+    _myOffersList[offerIndex].jobLocation = jobLocation;
+    _myOffersList[offerIndex].jobPlaceId = jobPlaceId;
+    _myOffersList[offerIndex].jobQualification = jobQualification;
+    _myOffersList[offerIndex].jobDescription = jobDescription;
+    _myOffersList[offerIndex].canRemotely = canRemotely;
+    _myOffersList[offerIndex].arePaid = arePaid;
     notifyListeners();
   }
 

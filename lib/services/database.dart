@@ -478,7 +478,8 @@ class MyDb {
 
   Future<Map<bool, String?>> updateJob(
       String jobId,
-      File? noticePhoto,
+      File? noticePhotoPath,
+      ImageProvider pictureToShow,
       String jobName,
       String companyName,
       String jobEmail,
@@ -492,17 +493,20 @@ class MyDb {
     try {
       String? imageUrl;
 
-      if (noticePhoto != null) {
-        final storageReference =
-            FirebaseStorage.instance.ref().child('job_ad_pictures/$jobId.jpg');
-        if (noticePhoto.path != 'fresh') {
-          await storageReference.putFile(noticePhoto);
-        }
+      if (pictureToShow is NetworkImage) {
+      } else {
+        if (noticePhotoPath != null) {
+          final storageReference = FirebaseStorage.instance
+              .ref()
+              .child('job_ad_pictures/$jobId.jpg');
+          await storageReference.putFile(noticePhotoPath);
 
-        imageUrl = await storageReference.getDownloadURL();
+          imageUrl = await storageReference.getDownloadURL();
+        }
       }
       await _firestore.collection('jobAd').doc(jobId).update({
-        'jobImage': imageUrl,
+        'jobImage':
+            (pictureToShow is NetworkImage) ? pictureToShow.url : imageUrl,
         'jobName': jobName,
         'companyName': companyName,
         'jobEmail': jobEmail,
@@ -514,7 +518,9 @@ class MyDb {
         'canRemotely': canRemotely,
         'arePaid': arePaid
       });
-      return {true: imageUrl};
+      return {
+        true: (pictureToShow is NetworkImage) ? pictureToShow.url : imageUrl,
+      };
     } catch (e) {
       debugPrint(e.toString());
       return {false: null};

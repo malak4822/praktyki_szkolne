@@ -48,7 +48,6 @@ class MyOffers extends StatelessWidget {
                       ]));
                 } else {
                   List<JobAdModel> jobList = [];
-                  print(snapshot.data!);
                   jobList = List.from(snapshot.data!);
                   Provider.of<GoogleSignInProvider>(context, listen: false)
                       .setMyOffersList = jobList;
@@ -60,7 +59,7 @@ class MyOffers extends StatelessWidget {
                       itemCount: jobList.length,
                       itemBuilder: (context, index) {
                         return NoticeCard(
-                            noticeType: 'jobNotice', info: jobList[index]);
+                            noticeType: 'jobNoticeEditable', info: jobList[index]);
                       });
                 }
               })),

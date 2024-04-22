@@ -13,9 +13,9 @@ import 'package:provider/provider.dart';
 
 class JobAdvertisement extends StatefulWidget {
   const JobAdvertisement(
-      {super.key, required this.jobInfo, required this.areMyOffers});
+      {super.key, required this.jobInfo, required this.isOfferEditable});
 
-  final bool areMyOffers;
+  final bool isOfferEditable;
   final JobAdModel jobInfo;
   @override
   State<JobAdvertisement> createState() => _JobAdvertisementState();
@@ -24,36 +24,16 @@ class JobAdvertisement extends StatefulWidget {
 class _JobAdvertisementState extends State<JobAdvertisement> {
   Future<MyUser?>? ownerData;
   late JobAdModel jobInfo;
+  // JOBINFO OPTIONS: 'jobNotice', 'jobNoticeEditable'
 
   @override
   void initState() {
-    if (widget.areMyOffers) {
-      jobInfo = Provider.of<GoogleSignInProvider>(context, listen: false)
-          .myOffersList
-          .firstWhere(
-            (element) => element.jobId == widget.jobInfo.jobId,
-          );
-    } else {
-      jobInfo = widget.jobInfo;
-    }
-
+    jobInfo = widget.jobInfo;
     ownerData = MyDb().takeAdOwnersData(jobInfo.belongsToUser);
-    if (ownerData != null) {
-      ownerData!.then((value) {
-        if (Provider.of<GoogleSignInProvider>(context, listen: false)
-                .getCurrentUser
-                .userId ==
-            value!.userId) {
-          setState(() {
-            isOwnNotice = true;
-          });
-        }
-      });
-    }
+
     super.initState();
   }
 
-  bool isOwnNotice = false;
   void showSnackBar(BuildContext context, String text) {
     final snackBar = SnackBar(
       padding: const EdgeInsets.fromLTRB(46, 4, 0, 4),
@@ -305,7 +285,7 @@ class _JobAdvertisementState extends State<JobAdvertisement> {
                       ))),
             ]))),
         backButton(context),
-        if (isOwnNotice)
+        if (widget.isOfferEditable)
           Align(
               alignment: Alignment.topRight,
               child: GestureDetector(

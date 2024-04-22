@@ -11,7 +11,7 @@ class NoticeCard extends StatelessWidget {
 
   final dynamic info;
   final String noticeType;
-  // String noticeType -> OPTIONS: 'userNotice', 'jobNotice', 'jobOwnNotice'
+  // String noticeType -> OPTIONS: 'userNotice', 'jobNotice', 'jobNotice', jobNoticeEditable
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class NoticeCard extends StatelessWidget {
                                 isOwnProfile: false, shownUser: userNoticeInfo!)
                             : JobAdvertisement(
                                 jobInfo: jobNoticeInfo!,
-                                areMyOffers: noticeType == 'jobOwnNotice'
+                                isOfferEditable: noticeType == 'jobNoticeEditable'
                                     ? true
                                     : false),
                       ));
