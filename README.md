@@ -1,4 +1,4 @@
-<img src='https://limode.pl/wp-content/uploads/2024/04/6531135b-f743-47d7-8311-d78106360eac.png' width='40'> # Praktyki Szkolne
+<img src='https://limode.pl/wp-content/uploads/2024/04/6531135b-f743-47d7-8311-d78106360eac.png' width='40'> #Praktyki Szkolne
 
 ## Description
 Project have over 5880 lines of code. “Praktyki Szkolne” is an app developed over 10 months with the primary aim of assisting young students in securing school apprenticeships. It was born out of the scarcity of opportunities for students to gain real-world job experience in the market. Personally, I encountered significant challenges in finding apprenticeships, which served as the main impetus behind creating the app.
